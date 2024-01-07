@@ -1,3 +1,5 @@
+require("options")
+
 require("install-lazy")
 require("plugins")
-require("options")
+require("keymaps")
