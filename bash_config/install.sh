@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "Configuring '.bashrc' file."
+echo "Updating '.bashrc' file with latest configuration files."
 
 for f in ./scripts/*
 do
