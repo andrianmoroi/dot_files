@@ -1,5 +1,3 @@
-print("keymaps")
-
 local opts = { noremap = true, silent = true }
 
 -- set custom buffers commands
@@ -8,7 +6,7 @@ vim.api.nvim_set_keymap("n", "<leader>W", ":w<cr>", opts)
 vim.api.nvim_set_keymap("n", "<leader>c", ":bdelete<cr>", opts)
 
 -- open explorer
-vim.api.nvim_set_keymap("n", "<leader>e", ":Lexplore 15<cr>", opts)
+vim.api.nvim_set_keymap("n", "<leader>e", ":Lexplore 20<cr>", opts)
 
 -- open telescope
 vim.api.nvim_set_keymap("n", "<leader>b", ":Telescope buffers<cr>", opts)
