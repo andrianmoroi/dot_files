@@ -16,7 +16,7 @@ function _g_options() {
     fi
 }
 
-# Go function to a folder stored in bookmark
+# Go function - cd to a folder stored in bookmark
 function g() {
     local path=`_g_path $1`
 
