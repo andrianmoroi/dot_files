@@ -23,4 +23,14 @@ function g() {
     cd $path
 }
 
+# Explorer function - open bookmark folder in windows explorer.
+function e() {
+    local path=`_g_path $1`
+
+    cd $path
+    explorer.exe .
+    cd - >> /dev/null
+}
+
 complete -F _g_options g
+complete -F _g_options e
