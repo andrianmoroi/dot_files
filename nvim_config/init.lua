@@ -634,7 +634,7 @@ require("lazy").setup({
 		config = function()
 			require("catppuccin").setup({
 
-				transparent_background = false,
+				transparent_background = true,
 			})
 		end,
 		init = function()
