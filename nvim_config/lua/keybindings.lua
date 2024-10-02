@@ -29,4 +29,6 @@ vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" }
 -- vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
 -- This should be temporarilly, maybe use a local .sh file for running buid commands.
-vim.keymap.set("n", "<C-b>", "<cmd>!./build.sh &<CR>")
+-- vim.keymap.set("n", "<C-b>", "<cmd>!./build.sh &<CR>")
+--
+vim.keymap.set("n", "<C-b>", ":horizontal terminal ./build.sh<CR>:resize 10<CR>")
