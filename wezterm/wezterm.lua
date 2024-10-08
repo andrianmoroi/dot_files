@@ -2,8 +2,6 @@ local wezterm = require("wezterm")
 
 local config = wezterm.config_builder()
 
-config.default_domain = "WSL:Ubuntu"
-
 config.color_scheme = "Afterglow"
 config.window_background_opacity = 0.95
 config.audible_bell = "Disabled"
@@ -21,5 +19,8 @@ config.keys = {
 		action = wezterm.action.ReloadConfiguration,
 	},
 }
+
+config.default_domain = "WSL:Ubuntu"
+config.default_prog = { "tmux" }
 
 return config
