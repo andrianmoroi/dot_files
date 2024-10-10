@@ -1,4 +1,7 @@
+-- IMPORTANT: Settings should be loaded before lazy plugin manager, needs to be
+-- setup the mapleader and maplocalleader
 require("settings")
+
 require("keybindings")
 require("highlight_yank_text")
 require("lazy_setup")
@@ -433,6 +436,11 @@ require("lazy").setup({
 						Lua = {
 							completion = {
 								callSnippet = "Replace",
+							},
+							diagnostics = {
+								globals = {
+									"vim",
+								},
 							},
 							-- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
 							-- diagnostics = { disable = { 'missing-fields' } },
