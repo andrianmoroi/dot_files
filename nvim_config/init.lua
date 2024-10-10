@@ -28,7 +28,6 @@ local options = {
 
 require("lazy").setup({
 	"tpope/vim-sleuth", -- Detect tabstop and shiftwidth automatically
-
 	{
 		"lewis6991/gitsigns.nvim",
 		opts = {
