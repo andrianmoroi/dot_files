@@ -5,6 +5,7 @@
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
+vim.opt.cmdheight = 0
 
 vim.g.have_nerd_font = true
 
