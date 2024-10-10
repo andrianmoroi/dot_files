@@ -198,7 +198,12 @@ require("lazy").setup({
 
 			-- See `:help telescope.builtin`
 			local builtin = require("telescope.builtin")
-			vim.keymap.set("n", "<C-p>", builtin.find_files, { desc = "[S]earch [F]iles" })
+			vim.keymap.set(
+				"n",
+				"<C-p>",
+				':lua require("telescope.builtin").find_files({ hidden = true, file_ignore_patterns = { ".git"} })<CR>',
+				{ desc = "[S]earch [F]iles" }
+			)
 
 			vim.keymap.set("n", "<leader>sh", builtin.help_tags, { desc = "[S]earch [H]elp" })
 			vim.keymap.set("n", "<leader>sk", builtin.keymaps, { desc = "[S]earch [K]eymaps" })
@@ -752,6 +757,18 @@ require("lazy").setup({
 		opts = {},
 	},
 
+	{
+		"folke/zen-mode.nvim",
+		opts = {
+
+			-- your configuration comes here
+			-- or leave it empty to use the default settings
+			-- refer to the configuration section below
+		},
+		config = function()
+			vim.keymap.set("n", "<leader>zz", ":ZenMode<CR>", { desc = "[S]earch [F]iles" })
+		end,
+	},
 	-- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
 	-- init.lua. If you want these files, they are in the repository, so you can just download them and
 	-- place them in the correct locations.
