@@ -21,6 +21,5 @@ config.keys = {
 }
 
 config.default_domain = "WSL:Ubuntu"
-config.default_prog = { "tmux" }
 
 return config
