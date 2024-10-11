@@ -6,9 +6,6 @@ require("keybindings")
 require("highlight_yank_text")
 require("lazy_setup")
 
-vim.opt.laststatus = 3
-vim.o.cmdheight = 0
-
 local options = {
 	ui = {
 		icons = vim.g.have_nerd_font and {} or {
