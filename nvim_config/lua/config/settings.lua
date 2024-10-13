@@ -14,7 +14,9 @@ vim.opt.relativenumber = false
 vim.opt.mouse = "a" -- enables mouse support for all modes
 
 vim.opt.tabstop = 4
+vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
+vim.cmd("set expandtab") -- use spaces for identation instead of tabs.
 
 -- show an additional message when in Insert/Visual/Replace mode
 -- no effect when cmdheight is 0
