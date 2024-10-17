@@ -14,5 +14,8 @@ vim.keymap.set("n", "<right>", '<cmd>echo "Use l to move!!"<CR>')
 vim.keymap.set("n", "<up>", '<cmd>echo "Use k to move!!"<CR>')
 vim.keymap.set("n", "<down>", '<cmd>echo "Use j to move!!"<CR>')
 
+-- Insert tab character
+vim.keymap.set("i", "<S-Tab>", "<C-V><Tab>")
+
 -- TODO: improve this usecase, maybe use a TMUX split in the future.
 vim.keymap.set("n", "<C-b>", ":horizontal terminal ./build.sh<CR>:resize 10<CR>")
