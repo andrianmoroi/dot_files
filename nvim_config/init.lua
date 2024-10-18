@@ -35,3 +35,5 @@ require("lazy").setup({
 }, options)
 
 vim.keymap.set("n", "<leader>n", ":bnext<CR>")
+
+-- require("experiment.solution_explorer")
