@@ -38,7 +38,7 @@ vim.keymap.set(
     ':lua require("telescope.builtin").find_files({ hidden = true, file_ignore_patterns = { ".git"} })<CR>',
     { desc = "Search Files" }
 )
-
+vim.keymap.set("n", "<C-t>", ":UndotreeToggle<CR>:UndotreeFocus<CR>", { desc = "Toggle Undotree" })
 
 
 
