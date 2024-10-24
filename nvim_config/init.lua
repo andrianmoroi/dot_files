@@ -2,7 +2,6 @@
 -- setup the mapleader and maplocalleader
 require("config.settings")
 
-require("config.keybindings")
 require("config.highlight_yank_text")
 require("config.lazy_setup")
 
@@ -34,4 +33,5 @@ require("lazy").setup({
     checker = { enabled = true },
 }, options)
 
-vim.keymap.set("n", "<leader>n", ":bnext<CR>")
+require("config.keybindings")
+
