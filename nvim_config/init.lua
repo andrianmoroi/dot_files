@@ -7,31 +7,31 @@ require("config.highlight_yank_text")
 require("config.lazy_setup")
 
 local options = {
-	ui = {
-		icons = vim.g.have_nerd_font and {} or {
-			cmd = "⌘",
-			config = "🛠",
-			event = "📅",
-			ft = "📂",
-			init = "⚙",
-			keys = "🗝",
-			plugin = "🔌",
-			runtime = "💻",
-			require = "🌙",
-			source = "📄",
-			start = "🚀",
-			task = "📌",
-			lazy = "💤 ",
-		},
-	},
+    ui = {
+        icons = vim.g.have_nerd_font and {} or {
+            cmd = "⌘",
+            config = "🛠",
+            event = "📅",
+            ft = "📂",
+            init = "⚙",
+            keys = "🗝",
+            plugin = "🔌",
+            runtime = "💻",
+            require = "🌙",
+            source = "📄",
+            start = "🚀",
+            task = "📌",
+            lazy = "💤 ",
+        },
+    },
 }
 
 require("lazy").setup({
-	spec = {
-		import = "plugins",
-	},
+    spec = {
+        import = "plugins",
+    },
 
-	checker = { enabled = true },
+    checker = { enabled = true },
 }, options)
 
 vim.keymap.set("n", "<leader>n", ":bnext<CR>")
