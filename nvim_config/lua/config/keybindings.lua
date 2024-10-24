@@ -5,6 +5,8 @@ vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagn
 vim.keymap.set("n", "<leader>h", ":Telescope help_tags<CR>", { desc = "Open [H]elp tags" })
 vim.keymap.set("n", "<C-k>", ":Telescope keymaps<CR>")
 
+vim.keymap.set("n", "<leader>dw", ":DBUIToggle<CR>", { desc = "[D]atabase [V]iew" })
+
 -- Move through quick list
 -- vim.keymap.set("n", "<C-j>", "<cmd>cnext<CR>")
 -- vim.keymap.set("n", "<C-k>", "<cmd>cprevious<CR>")
