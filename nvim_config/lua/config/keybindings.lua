@@ -35,7 +35,7 @@ end, { desc = "[/] Fuzzily search in current buffer" })
 -- Important views
 --
 vim.keymap.set("n", "<C-h>", ":Telescope help_tags<CR>", { desc = "Open help tags" })
-vim.keymap.set("n", "<C-g>", ":Neogit<CR>", { desc = "Git View" })
+vim.keymap.set("n", "<C-g>", ":Neogit kind=replace<CR>", { desc = "Git View" })
 vim.keymap.set("n", "<C-a>", ":DBUIToggle<CR>", { desc = "Database View" })
 vim.keymap.set("n", "<C-e>", "<cmd>:Neotree toggle=true right<CR>")
 -- TODO: improve this usecase, maybe use a TMUX split in the future.
