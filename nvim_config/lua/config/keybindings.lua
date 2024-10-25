@@ -5,6 +5,14 @@ local telescope_builtin = require("telescope.builtin")
 --
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
+
+vim.keymap.set("n", "<leader>w", "<cmd>w<CR>")
+vim.keymap.set("n", "<leader>W", "<cmd>w<CR>")
+vim.keymap.set("n", "<leader>q", "<cmd>bdelete<CR>")
+vim.keymap.set("n", "<Tab>", "<cmd>bnext<CR>")
+vim.keymap.set("n", "<leader>j", "<cmd>bnext<CR>")
+vim.keymap.set("n", "<leader>k", "<cmd>bprevious<CR>")
+
 -- Insert tab character
 vim.keymap.set("i", "<S-Tab>", "<C-V><Tab>")
 -- TIP: Disable arrow keys in normal mode
