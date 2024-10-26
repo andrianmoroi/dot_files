@@ -10,6 +10,7 @@ vim.keymap.set("n", "<leader>w", "<cmd>w<CR>")
 vim.keymap.set("n", "<leader>W", "<cmd>w<CR>")
 vim.keymap.set("n", "<leader>q", "<cmd>bdelete<CR>")
 vim.keymap.set("n", "<Tab>", "<cmd>bnext<CR>")
+vim.keymap.set("n", "<S-Tab>", "<cmd>bprevious<CR>")
 vim.keymap.set("n", "<leader>j", "<cmd>bnext<CR>")
 vim.keymap.set("n", "<leader>k", "<cmd>bprevious<CR>")
 
