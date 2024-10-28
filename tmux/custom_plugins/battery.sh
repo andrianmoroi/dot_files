@@ -23,6 +23,6 @@ case $status in
       ;;
 esac
 
-index=$((capacity/10))
+index=$(((capacity+5)/10))
 
 echo ${icons[index]}
