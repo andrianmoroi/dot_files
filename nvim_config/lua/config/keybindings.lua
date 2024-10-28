@@ -6,8 +6,8 @@ local telescope_builtin = require("telescope.builtin")
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
 
-vim.keymap.set("n", "<leader>w", "<cmd>w<CR>")
-vim.keymap.set("n", "<leader>q", "<cmd>bdelete<CR>")
+vim.keymap.set("n", "<leader>w", "<cmd>w<CR>", { desc = "Write file" })
+vim.keymap.set("n", "<leader>q", "<cmd>bdelete<CR>", { desc = "Close buffer" })
 vim.keymap.set("n", "<Tab>", "<cmd>bnext<CR>")
 vim.keymap.set("n", "<S-Tab>", "<cmd>bprevious<CR>")
 
@@ -19,17 +19,18 @@ vim.keymap.set("n", "<leader>/", function()
             winblend = 10,
             previewer = false,
         }))
-end, { desc = "[/] Fuzzily search in current buffer" })
+end, { desc = "Fuzzily search in current buffer" })
 
 vim.keymap.set("n", "<left>", '<cmd>echo "Use h to move!!"<CR>')
 vim.keymap.set("n", "<right>", '<cmd>echo "Use l to move!!"<CR>')
 vim.keymap.set("n", "<up>", '<cmd>echo "Use k to move!!"<CR>')
 vim.keymap.set("n", "<down>", '<cmd>echo "Use j to move!!"<CR>')
-vim.keymap.set("n", "<leader>zz", ":ZenMode<CR>", { desc = "[Z]en Mode" })
+vim.keymap.set("n", "<leader>z", "<cmd>ZenMode<CR>", { desc = "Zen Mode" })
 vim.keymap.set("n",
     "<leader>x",
     [[:lua if vim.fn.expand('%:e') == 'sh' then vim.cmd('!chmod +x %') end <CR>]],
-    { desc = "Make file E[x]ecutable", noremap  = true, silent  = true})
+    { desc = "Make file Executable", noremap = true, silent = true })
+
 
 --
 -- Important Control views
@@ -60,7 +61,7 @@ vim.keymap.set("n", "<leader>sw", telescope_builtin.grep_string, { desc = "[S]ea
 vim.keymap.set("n", "<leader>sg", telescope_builtin.live_grep, { desc = "[S]earch by [G]rep" })
 vim.keymap.set("n", "<leader>sr", telescope_builtin.resume, { desc = "[S]earch [R]esume" })
 vim.keymap.set("n", "<leader>s.", telescope_builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
-vim.keymap.set("n", "<leader><leader>", telescope_builtin.buffers, { desc = "[ ] Find existing buffers" })
+vim.keymap.set("n", "<leader><leader>", telescope_builtin.buffers, { desc = "Find existing buffers" })
 vim.keymap.set("n", "<leader>sn", function()
     telescope_builtin.find_files({ cwd = vim.fn.stdpath("config") })
 end, { desc = "[S]earch [N]eovim files" })
