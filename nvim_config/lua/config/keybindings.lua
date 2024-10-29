@@ -44,7 +44,7 @@ vim.keymap.set("n", "<C-b>", ":horizontal terminal ./build.sh<CR>:resize 10<CR>"
 vim.keymap.set(
     "n",
     "<C-p>",
-    ':lua require("telescope.builtin").find_files({ hidden = true, file_ignore_patterns = { ".git"} })<CR>',
+    ':lua require("telescope.builtin").find_files({ find_command={"find", ".", "-type", "f", "-not", "-path", "./.git/*", "-printf", "%P\\n"}})<CR>',
     { desc = "Search Files" }
 )
 
