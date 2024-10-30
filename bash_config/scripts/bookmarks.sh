@@ -25,7 +25,7 @@ function _g_options() {
 
 # Explorer function - open bookmark folder in windows explorer.
 # function e() {
-     local path=`_g_path $1`
+#     local path=`_g_path $1`
 #
 #     cd $path
 #     explorer.exe .

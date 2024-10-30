@@ -1,4 +1,4 @@
-function g() {
+g() {
     local options=$(cat ~/.config/bookmarks.txt | awk 'NF { print $1;}')
 
     local selected=$(printf "%s\n" "${options[@]}" | fzf)
@@ -8,7 +8,7 @@ function g() {
     cd $path
 }
 
-function e() {
+e() {
     g
 
     explorer.exe .
