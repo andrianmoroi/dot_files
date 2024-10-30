@@ -16,21 +16,21 @@ function _g_options() {
     fi
 }
 
-# Go function - cd to a folder stored in bookmark
-function g() {
-    local path=`_g_path $1`
-
-    cd $path
-}
+# # Go function - cd to a folder stored in bookmark
+# function g() {
+#     local path=`_g_path $1`
+#
+#     cd $path
+# }
 
 # Explorer function - open bookmark folder in windows explorer.
-function e() {
-    local path=`_g_path $1`
-
-    cd $path
-    explorer.exe .
-    cd - >> /dev/null
-}
+# function e() {
+     local path=`_g_path $1`
+#
+#     cd $path
+#     explorer.exe .
+#     cd - >> /dev/null
+# }
 
 complete -F _g_options g
 complete -F _g_options e
