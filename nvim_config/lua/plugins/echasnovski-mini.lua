@@ -20,7 +20,7 @@ return {
                     if size < 0 then
                         sizeFormat = ""
                     elseif size < 1024 then
-                        sizeFormat = string.format('(%dB)', size)
+                        sizeFormat = string.format('(%d B)', size)
                     elseif size < 1048576 then
                         sizeFormat = string.format('(%.2f KiB)', size / 1024)
                     else
