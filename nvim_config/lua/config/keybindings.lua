@@ -11,6 +11,7 @@ vim.keymap.set("n", "<leader>q", ":bn|bd #<CR>", { desc = "Close buffer" })
 vim.keymap.set("n", "<Tab>", "<cmd>bnext<CR>")
 vim.keymap.set("n", "<S-Tab>", "<cmd>bprevious<CR>")
 
+vim.keymap.set("n", "<C-n>", "<cmd>enew<CR>")
 vim.keymap.set("n", "<C-w>n", "<cmd>vnew<CR>")
 
 
