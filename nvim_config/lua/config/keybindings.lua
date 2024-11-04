@@ -11,6 +11,9 @@ vim.keymap.set("n", "<leader>q", ":bn|bd #<CR>", { desc = "Close buffer" })
 vim.keymap.set("n", "<Tab>", "<cmd>bnext<CR>")
 vim.keymap.set("n", "<S-Tab>", "<cmd>bprevious<CR>")
 
+vim.keymap.set("n", "<C-w>n", "<cmd>vnew<CR>")
+
+
 -- Insert tab character
 vim.keymap.set("i", "<S-Tab>", "<C-V><Tab>")
 vim.keymap.set("n", "<leader>/", function()
@@ -25,7 +28,7 @@ end, { desc = "Fuzzily search in current buffer" })
 -- vim.keymap.set("n", "<right>", '<cmd>echo "Use l to move!!"<CR>')
 -- vim.keymap.set("n", "<up>", '<cmd>echo "Use k to move!!"<CR>')
 -- vim.keymap.set("n", "<down>", '<cmd>echo "Use j to move!!"<CR>')
-vim.keymap.set("n", "<leader>z", "<cmd>ZenMode<CR>", { desc = "Zen Mode" })
+-- vim.keymap.set("n", "<leader>z", "<cmd>ZenMode<CR>", { desc = "Zen Mode" })
 vim.keymap.set("n",
     "<leader>x",
     [[:lua if vim.fn.expand('%:e') == 'sh' then vim.cmd('!chmod +x %') end <CR>]],
