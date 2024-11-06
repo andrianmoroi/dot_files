@@ -24,6 +24,7 @@ return {
              [[- Fix Visual mode status bar]],
              [[- Add Zen mode support]],
              [[- Improve buffer management shortcuts]],
+             [[- Change highliting color]],
          }
 
 
