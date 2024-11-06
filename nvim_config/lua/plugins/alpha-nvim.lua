@@ -21,9 +21,9 @@ return {
              [[]],
              [[]],
              [[]],
-             [[1. Fix Visual mode status bar]],
-             [[2. Add Zen mode support]],
-             [[3. Improve buffer management shortcuts]],
+             [[- Fix Visual mode status bar]],
+             [[- Add Zen mode support]],
+             [[- Improve buffer management shortcuts]],
          }
 
 
