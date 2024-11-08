@@ -37,8 +37,26 @@ vim.keymap.set("n",
 
 
 --
+-- Insert mode
+--
+--
+vim.keymap.set("i", "'", "''<left>")
+vim.keymap.set("i", "\"", "\"\"<left>")
+vim.keymap.set("i", "(", "()<left>")
+vim.keymap.set("i", "{", "{}<left>")
+vim.keymap.set("i", "[", "[]<left>")
+
+--
+-- Visual mode
+--
+vim.keymap.set("v", "<C-s>", ":sort<CR>")
+vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
+vim.keymap.set("v", "K", ":m '>-2<CR>gv=gv")
+
+--
 -- Important Control views
 --
+
 vim.keymap.set("n", "<C-e>", "<cmd>:Neotree toggle=true right<CR>")
 vim.keymap.set("n", "<C-l>", "<cmd>:Lazy update<CR>")
 vim.keymap.set("n", "<C-h>", ":Telescope help_tags<CR>", { desc = "Open help tags" })

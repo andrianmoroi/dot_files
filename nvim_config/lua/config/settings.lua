@@ -35,7 +35,8 @@ vim.opt.signcolumn = "yes" -- Keep signcolumn on by default
 vim.opt.updatetime = 250
 
 -- Displays which-key popup sooner
-vim.opt.timeoutlen = 300
+vim.opt.timeoutlen = 3000
+vim.opt.ttimeoutlen = 0
 
 -- Configure how new splits should be opened
 vim.opt.splitright = true
