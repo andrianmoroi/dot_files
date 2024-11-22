@@ -40,11 +40,11 @@ vim.keymap.set("n",
 -- Insert mode
 --
 --
-vim.keymap.set("i", "'", "''<left>")
-vim.keymap.set("i", "\"", "\"\"<left>")
-vim.keymap.set("i", "(", "()<left>")
-vim.keymap.set("i", "{", "{}<left>")
-vim.keymap.set("i", "[", "[]<left>")
+-- vim.keymap.set("i", "\"", "\"\"<left>")
+-- vim.keymap.set("i", "'", "''<left>")
+-- vim.keymap.set("i", "(", "()<left>")
+-- vim.keymap.set("i", "{", "{}<left>")
+-- vim.keymap.set("i", "[", "[]<left>")
 
 --
 -- Visual mode
