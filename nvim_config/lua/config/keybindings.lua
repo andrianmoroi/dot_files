@@ -103,6 +103,14 @@ vim.keymap.set(
     { desc = "Search Files" }
 )
 
+
+--
+-- Resize panes
+--
+vim.keymap.set("n", "<C-w>+", "5<C-w>+")
+vim.keymap.set("n", "<C-w>-", "5<C-w>-")
+
+
 --
 -- Views
 --
