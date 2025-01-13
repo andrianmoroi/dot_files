@@ -109,6 +109,8 @@ vim.keymap.set(
 --
 vim.keymap.set("n", "<C-w>+", "5<C-w>+")
 vim.keymap.set("n", "<C-w>-", "5<C-w>-")
+vim.keymap.set("n", "<C-w>>", "5<C-w>>")
+vim.keymap.set("n", "<C-w><", "5<C-w><")
 
 
 --
