@@ -32,8 +32,12 @@ return {
 
                     --  To jump back, press <C-t>.
                     map("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
+                    map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
                     map("gr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
                     map("gI", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
+                    map("<leader>rn", vim.lsp.buf.rename, "[R]e[n]ame")
+                    map("<leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ction", { "n", "x" })
+
                     map("<leader>dt", require("telescope.builtin").lsp_type_definitions, "Type [D]efinition")
                     map("<leader>ds", require("telescope.builtin").lsp_document_symbols, "[D]ocument [S]ymbols")
                     map(
@@ -41,9 +45,25 @@ return {
                         require("telescope.builtin").lsp_dynamic_workspace_symbols,
                         "[D] Workspace [S]ymbols"
                     )
-                    map("<leader>rn", vim.lsp.buf.rename, "[R]e[n]ame")
-                    map("<leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ction", { "n", "x" })
-                    map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
+                    map("<leader>dp", function()
+                        -- vim.diagnostic.jump({ count = -1, float = true })
+                        vim.diagnostic.goto_prev({
+                            float = true
+                        })
+                    end, "[Document] [P]revious diagnostic issue.")
+                    map("<leader>dn", function()
+                        -- vim.diagnostic.jump({ count = 1, float = true })
+                        vim.diagnostic.goto_next({
+                            float = true
+                        })
+                    end, "[Document] [N]ext diagnostic issue.")
+                    map("<leader>dd", function()
+                        vim.diagnostic.open_float({
+                            border = "rounded",
+                        })
+                    end, "[Document] [D]iagnose float issue.")
+
+
 
                     local client = vim.lsp.get_client_by_id(event.data.client_id)
                     if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
@@ -103,6 +123,8 @@ return {
             require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
             require("mason-lspconfig").setup({
+                ensure_installed = {},
+                automatic_installation = {},
                 handlers = {
                     function(server_name)
                         local server = servers[server_name] or {}
