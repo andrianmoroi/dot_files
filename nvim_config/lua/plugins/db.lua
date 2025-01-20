@@ -21,6 +21,7 @@ return {
     init = function()
         -- Your DBUI configuration
         vim.g.db_ui_use_nerd_fonts = vim.g.have_nerd_font
+        vim.g.db_ui_use_nvim_notify = 1
 
         local cmp = require("cmp")
 
