@@ -27,12 +27,30 @@ return {
 
         require("telescope").setup({
             pickers = {
+                help_tags = {
+                    theme="ivy",
+                },
+                buffers = {
+                    theme="ivy",
+                },
+                live_grep = {
+                    theme="ivy",
+                },
+                keymaps = {
+                    theme="ivy",
+                },
+                grep_string = {
+                    theme="ivy",
+                },
                 find_files = {
                     theme="ivy",
                     hidden = true
                 },
             },
             extensions = {
+                fzf = {
+                    fuzzy=true
+                },
                 ["ui-select"] = {
                     require("telescope.themes").get_dropdown(),
                 },
@@ -44,6 +62,6 @@ return {
 
         pcall(require("telescope").load_extension, "fzf")
         pcall(require("telescope").load_extension, "ui-select")
-        require("telescope").load_extension("file_browser")
+        pcall(require("telescope").load_extension, "file_browser")
     end,
 }
