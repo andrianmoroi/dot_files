@@ -54,6 +54,10 @@ vim.keymap.set("n", "<C-w>-", "7<C-w>-")
 vim.keymap.set("n", "<C-w>>", "7<C-w>>")
 vim.keymap.set("n", "<C-w><", "7<C-w><")
 
+vim.keymap.set({"n", "x"}, "<leader>y", '"+y', {desc = "Copy to clipboard"} )
+vim.keymap.set({"n", "x"}, "<leader>p", '"+p', {desc = "Paste from clipboard"} )
+vim.keymap.set({"n", "x"}, "<leader>P", '"+P', {desc = "Paste from clipboard"} )
+
 -- vim.keymap.set("n", "<left>", '<cmd>echo "Use h to move!!"<CR>')
 -- vim.keymap.set("n", "<right>", '<cmd>echo "Use l to move!!"<CR>')
 -- vim.keymap.set("n", "<up>", '<cmd>echo "Use k to move!!"<CR>')
