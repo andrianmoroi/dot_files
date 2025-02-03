@@ -17,6 +17,8 @@ return {
             "nvim-tree/nvim-web-devicons",
             enabled = vim.g.have_nerd_font
         },
+        { "nvim-telescope/telescope-ui-select.nvim" },
+        { "nvim-telescope/telescope-file-browser.nvim", },
     },
     config = function()
         -- Two important keymaps to use while in Telescope are:
@@ -38,5 +40,6 @@ return {
 
         pcall(require("telescope").load_extension, "fzf")
         pcall(require("telescope").load_extension, "ui-select")
+        require("telescope").load_extension("file_browser")
     end,
 }

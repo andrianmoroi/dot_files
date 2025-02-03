@@ -90,6 +90,7 @@ vim.keymap.set("v", "K", ":m '>-2<CR>gv=gv")
 --
 
 vim.keymap.set("n", "<C-e>", "<cmd>:Neotree toggle=true right<CR>")
+vim.keymap.set("n", "<S-e>", "<cmd>:Telescope file_browser<CR>")
 vim.keymap.set("n", "<C-l>", "<cmd>:Lazy update<CR>")
 vim.keymap.set("n", "<C-h>", ":Telescope help_tags<CR>", { desc = "Open help tags" })
 vim.keymap.set("n", "<C-g>", ":Neogit kind=replace<CR>", { desc = "Git View" })
