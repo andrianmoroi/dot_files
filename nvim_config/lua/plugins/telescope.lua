@@ -28,13 +28,17 @@ return {
         require("telescope").setup({
             pickers = {
                 find_files = {
+                    theme="ivy",
                     hidden = true
-                }
+                },
             },
             extensions = {
                 ["ui-select"] = {
                     require("telescope.themes").get_dropdown(),
                 },
+                file_browser = {
+                    theme="ivy"
+                }
             },
         })
 
