@@ -27,6 +27,11 @@ return {
             pickers = {
                 help_tags = {
                     theme="ivy",
+                    mappings = {
+                        i = {
+                            ["<CR>"] = "file_vsplit"
+                        }
+                    }
                 },
                 buffers = {
                     theme="ivy",
