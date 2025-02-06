@@ -1,4 +1,4 @@
-local telescope_builtin = require("telescope.builtin")
+-- local telescope_builtin = require("telescope.builtin")
 
 require("config.keybindings.common")
 require("config.keybindings.search")
@@ -17,8 +17,8 @@ vim.keymap.set("n",
 -- Visual mode
 --
 vim.keymap.set("v", "<C-s>", ":sort<CR>")
-vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
-vim.keymap.set("v", "K", ":m '>-2<CR>gv=gv")
+-- vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
+-- vim.keymap.set("v", "K", ":m '>-2<CR>gv=gv")
 
 --
 -- Important Control views
