@@ -10,7 +10,7 @@ vim.opt.cmdheight = 0
 vim.g.have_nerd_font = true
 
 vim.opt.number = true
-vim.opt.relativenumber = true
+vim.opt.relativenumber = false
 vim.opt.mouse = "a" -- enables mouse support for all modes
 
 vim.opt.tabstop = 4
