@@ -138,3 +138,5 @@ function cb(){
         main
     fi
 }
+
+bind -x '"\C-g": pwd | cb'  # Binds Ctrl+g to `my_function`

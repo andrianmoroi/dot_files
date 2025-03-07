@@ -42,5 +42,5 @@ _goto_fzf() {
     cd $path
 }
 
-bind -x '"\C-g": _goto_fzf'  # Binds Ctrl+g to `my_function`
+# bind -x '"\C-g": _goto_fzf'  # Binds Ctrl+g to `my_function`
 
