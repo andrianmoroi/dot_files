@@ -32,7 +32,7 @@ vim.keymap.set("n", "<leader>q", function()
         vim.cmd(":bn")
     end
 
-    vim.api.nvim_buf_delete(buffer_index, {})
+    vim.api.nvim_buf_delete(buffer_index, { force = true })
 end, { desc = "Close buffer" })
 
 vim.keymap.set("n", "<M-q>", ":q<CR>", { desc = "Close pane" })
@@ -54,9 +54,9 @@ vim.keymap.set("n", "<C-w>-", "7<C-w>-")
 vim.keymap.set("n", "<C-w>>", "7<C-w>>")
 vim.keymap.set("n", "<C-w><", "7<C-w><")
 
-vim.keymap.set({"n", "x"}, "<leader>y", '"+y', {desc = "Copy to clipboard"} )
-vim.keymap.set({"n", "x"}, "<leader>p", '"+p', {desc = "Paste from clipboard"} )
-vim.keymap.set({"n", "x"}, "<leader>P", '"+P', {desc = "Paste from clipboard"} )
+vim.keymap.set({ "n", "x" }, "<leader>y", '"+y', { desc = "Copy to clipboard" })
+vim.keymap.set({ "n", "x" }, "<leader>p", '"+p', { desc = "Paste from clipboard" })
+vim.keymap.set({ "n", "x" }, "<leader>P", '"+P', { desc = "Paste from clipboard" })
 
 -- vim.keymap.set("n", "<left>", '<cmd>echo "Use h to move!!"<CR>')
 -- vim.keymap.set("n", "<right>", '<cmd>echo "Use l to move!!"<CR>')
