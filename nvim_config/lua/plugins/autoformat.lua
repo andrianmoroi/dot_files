@@ -1,7 +1,9 @@
 return { -- Autoformat
     "stevearc/conform.nvim",
     event = { "BufWritePre" },
+
     cmd = { "ConformInfo" },
+
     keys = {
         {
             "<leader>cf",
@@ -12,6 +14,7 @@ return { -- Autoformat
             desc = "Format buffer",
         },
     },
+
     opts = {
         notify_on_error = false,
         formatters_by_ft = {
@@ -23,6 +26,19 @@ return { -- Autoformat
 
                 return { "stylua" .. args }
             end,
+
+            -- Conform will run multiple formatters sequentially
+            python = { "autopep8", "black" },
+            -- You can customize some of the format options for the filetype (:help conform.format)
+            rust = { "rustfmt", lsp_format = "fallback" },
+            -- Conform will run the first available formatter
+            -- javascript = function()
+            -- 	return { "prettier", "$FILENAME", "--tab-width", vim.opt.shiftwidth._value }
+            -- end,
+
+            json = { "json-lsp" },
+
+            html = { "ast-grep", "prettierd" },
         },
     },
 }
