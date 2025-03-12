@@ -3,7 +3,7 @@ local wezterm = require("wezterm")
 local config = wezterm.config_builder()
 
 config.color_scheme = "Afterglow"
--- config.window_background_opacity = 0.95
+config.window_background_opacity = 0.95
 config.audible_bell = "Disabled"
 config.automatically_reload_config = true
 config.enable_tab_bar = false
