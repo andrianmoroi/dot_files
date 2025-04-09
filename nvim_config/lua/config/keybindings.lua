@@ -1,6 +1,7 @@
 -- local telescope_builtin = require("telescope.builtin")
 
 require("config.keybindings.common")
+require("config.keybindings.markdown")
 require("config.keybindings.search")
 
 

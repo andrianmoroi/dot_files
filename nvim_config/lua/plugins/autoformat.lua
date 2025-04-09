@@ -36,9 +36,14 @@ return { -- Autoformat
             -- 	return { "prettier", "$FILENAME", "--tab-width", vim.opt.shiftwidth._value }
             -- end,
 
-            json = { "json-lsp" },
+            json = { "clang-format" },
 
             html = { "ast-grep", "prettierd" },
+
+            javascript = { "clang-format" },
+            js = { "clang-format" },
+
+            markdown = { "doctoc" }
         },
     },
 }

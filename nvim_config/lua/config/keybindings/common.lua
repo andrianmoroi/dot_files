@@ -37,8 +37,8 @@ end, { desc = "Close buffer" })
 
 vim.keymap.set("n", "<M-q>", ":q<CR>", { desc = "Close pane" })
 
-vim.keymap.set("n", "<Tab>", "<cmd>bnext<CR>", { desc = "Switch to next tab" })
-vim.keymap.set("n", "<S-Tab>", "<cmd>bprevious<CR>", { desc = "Switch to previous tab" })
+vim.keymap.set("n", "<Tab>", "<cmd>bnext<CR>", { desc = "Switch to next buffer" })
+vim.keymap.set("n", "<S-Tab>", "<cmd>bprevious<CR>", { desc = "Switch to previous buffer" })
 
 vim.keymap.set("n", "<C-n>", "<cmd>enew<CR>", { desc = "New empty buffer" })
 vim.keymap.set("n", "<C-w>n", "<cmd>vnew<CR>", { desc = "New vertical empty buffer" })

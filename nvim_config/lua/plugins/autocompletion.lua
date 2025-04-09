@@ -14,16 +14,38 @@ return { -- Autocompletion
                 end
                 return "make install_jsregexp"
             end)(),
+
+            config = function()
+                local ls = require("luasnip")
+
+                vim.keymap.set({ "i", "s" }, "<C-J>", function()
+                    -- if ls.locally_jumpable(1) then
+                        ls.jump(1)
+                    -- end
+                end, { silent = true })
+                vim.keymap.set({ "i", "s" }, "<C-K>", function()
+                    -- if ls.locally_jumpable(-1) then
+                        ls.jump(-1)
+                    -- end
+                end, { silent = true })
+
+                vim.keymap.set({ "i" }, "<C-L>", function() ls.expand() end, { silent = true })
+                vim.keymap.set({ "i", "s" }, "<C-E>", function()
+                    if ls.choice_active() then
+                        ls.change_choice(1)
+                    end
+                end, { silent = true })
+            end,
             dependencies = {
                 -- `friendly-snippets` contains a variety of premade snippets.
                 --    See the README about individual language/framework/plugin snippets:
                 --    https://github.com/rafamadriz/friendly-snippets
-                -- {
-                --   'rafamadriz/friendly-snippets',
-                --   config = function()
-                --     require('luasnip.loaders.from_vscode').lazy_load()
-                --   end,
-                -- },
+                {
+                    'rafamadriz/friendly-snippets',
+                    config = function()
+                        require('luasnip.loaders.from_vscode').lazy_load()
+                    end,
+                },
             },
         },
         "saadparwaiz1/cmp_luasnip",
