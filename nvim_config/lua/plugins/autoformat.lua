@@ -43,7 +43,11 @@ return { -- Autoformat
             javascript = { "clang-format" },
             js = { "clang-format" },
 
-            markdown = { "doctoc" }
+            markdown = { "doctoc" },
+            sql = { "sqlfmt" },
+
+
+            r = { "air" }
         },
     },
 }
