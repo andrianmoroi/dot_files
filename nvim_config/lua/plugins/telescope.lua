@@ -49,6 +49,9 @@ return {
                     theme="ivy",
                     hidden = true
                 },
+                diagnostics = {
+                    theme="ivy",
+                },
             },
             extensions = {
                 fzf = {
