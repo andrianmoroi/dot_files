@@ -65,38 +65,38 @@ return {
                             ["ia"] = "@parameter.inner",
                         },
                     },
-                    -- move = {
-                    --     enable = true,
-                    --     set_jumps = true, -- whether to set jumps in the jumplist
-                    --     goto_next_start = {
-                    --         ["]m"] = "@function.outer",
-                    --         ["gj"] = "@function.outer",
-                    --         ["]]"] = "@class.outer",
-                    --         ["]b"] = "@block.outer",
-                    --         ["]a"] = "@parameter.inner",
-                    --     },
-                    --     goto_next_end = {
-                    --         ["]M"] = "@function.outer",
-                    --         ["gJ"] = "@function.outer",
-                    --         ["]["] = "@class.outer",
-                    --         ["]B"] = "@block.outer",
-                    --         ["]A"] = "@parameter.inner",
-                    --     },
-                    --     goto_previous_start = {
-                    --         ["[m"] = "@function.outer",
-                    --         ["gk"] = "@function.outer",
-                    --         ["[["] = "@class.outer",
-                    --         ["[b"] = "@block.outer",
-                    --         ["[a"] = "@parameter.inner",
-                    --     },
-                    --     goto_previous_end = {
-                    --         ["[M"] = "@function.outer",
-                    --         ["gK"] = "@function.outer",
-                    --         ["[]"] = "@class.outer",
-                    --         ["[B"] = "@block.outer",
-                    --         ["[A"] = "@parameter.inner",
-                    --     },
-                    -- },
+                    move = {
+                        enable = true,
+                        set_jumps = true, -- whether to set jumps in the jumplist
+                        goto_next_start = {
+                            ["]f"] = "@function.outer",
+                            -- ["gj"] = "@function.outer",
+                            -- ["]]"] = "@class.outer",
+                            -- ["]b"] = "@block.outer",
+                            ["]a"] = "@parameter.inner",
+                        },
+                        goto_next_end = {
+                            ["]F"] = "@function.outer",
+                            -- ["gJ"] = "@function.outer",
+                            -- ["]["] = "@class.outer",
+                            -- ["]B"] = "@block.outer",
+                            ["]A"] = "@parameter.inner",
+                        },
+                        goto_previous_start = {
+                            ["[f"] = "@function.outer",
+                            -- ["gk"] = "@function.outer",
+                            -- ["[["] = "@class.outer",
+                            -- ["[b"] = "@block.outer",
+                            ["[a"] = "@parameter.inner",
+                        },
+                        goto_previous_end = {
+                            ["[F"] = "@function.outer",
+                            -- ["gK"] = "@function.outer",
+                            -- ["[]"] = "@class.outer",
+                            -- ["[B"] = "@block.outer",
+                            ["[A"] = "@parameter.inner",
+                        },
+                    },
                 },
             })
         end
