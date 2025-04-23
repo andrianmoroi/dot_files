@@ -20,11 +20,11 @@ return {
                     if size < 0 then
                         sizeFormat = ""
                     elseif size < 1024 then
-                        sizeFormat = string.format('(%d B)', size)
+                        sizeFormat = string.format('%d B', size)
                     elseif size < 1048576 then
-                        sizeFormat = string.format('(%.2f KiB)', size / 1024)
+                        sizeFormat = string.format('%.2f KiB', size / 1024)
                     else
-                        sizeFormat = string.format('(%.2f MiB)', size / 1048576)
+                        sizeFormat = string.format('%.2f MiB', size / 1048576)
                     end
 
                     return MiniStatusline.combine_groups({

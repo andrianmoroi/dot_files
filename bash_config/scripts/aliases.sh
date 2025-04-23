@@ -12,6 +12,7 @@ alias gl="git log --oneline"
 
 # alias l='lsd --group-dirs first -lAhF'
 alias l='ls --color --group-directories-first -lAhF'
+alias ll='ls --color --group-directories-first -lhF'
 alias b="cat ~/.config/bookmarks.txt | awk '{print \$1}' | grep .| fzf --preview \"cat ~/.config/bookmarks.txt | grep '^{}' | sed 's|^[^ \t]*\s*||' | xargs tree -L 1 | head -n 20\""
 
 alias tmx="tmux new-session -s \$(pwd | sed 's|.*/||')"
