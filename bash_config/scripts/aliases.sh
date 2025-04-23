@@ -1,4 +1,11 @@
+function open_nvim_file() {
+    local fname
+    fname=$(fzf) || return
+    nvim "$fname"
+}
+
 alias n="nvim"
+alias nf="open_nvim_file"
 alias gs="git status"
 alias gc="git add . && git commit -m"
 alias gl="git log --oneline"
