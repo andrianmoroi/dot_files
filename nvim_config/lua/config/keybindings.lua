@@ -40,7 +40,7 @@ vim.keymap.set({ 'n', 'v' }, '<leader>a', ':Gen<CR>', { desc = "[A]ssistant" })
 vim.keymap.set(
     "n",
     "<C-p>",
-    ':lua require("telescope.builtin").find_files({ find_command={"find", ".", "-type", "f", "-not", "-path", "./.git/*", "-printf", "%P\\n"}})<CR>',
+    ':lua require("telescope.builtin").find_files({ find_command={"find", ".", "-type", "f", "-not", "-path", "./.*/*", "-printf", "%P\\n"}})<CR>',
     { desc = "Search Files" }
 )
 
