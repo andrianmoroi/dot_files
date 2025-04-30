@@ -8,7 +8,22 @@ return {
     config = function()
         local dashboard = require("alpha.themes.theta")
         local alpha = require 'alpha'
-         dashboard.config.layout[2].val = {}
+        dashboard.config.layout[2].val = {}
+
+        local filepath = os.getenv("TODO_PATH")
+        local content = {}
+
+        if filepath ~= nil then
+            local file = io.open(filepath, "r")
+
+            if file then
+                content = file:read("*a")
+
+                dashboard.config.layout[2].val = content
+
+                file:close()
+            end
+        end
 
         -- -- TODO: Add a more inteligent way to update the layout.
         -- dashboard.config.layout[2].val = {
