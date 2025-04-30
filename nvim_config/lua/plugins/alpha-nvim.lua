@@ -11,15 +11,30 @@ return {
         dashboard.config.layout[2].val = {}
 
         local filepath = os.getenv("TODO_PATH")
-        local content = {}
 
         if filepath ~= nil then
             local file = io.open(filepath, "r")
 
             if file then
+                local content = {}
+                local in_progress = {}
                 content = file:read("*a")
 
-                dashboard.config.layout[2].val = content
+                for c in string.gmatch(content, "([^\r\n]+)") do
+                    if c and (string.sub(c, 1, #"- [-]") == "- [-]") then
+                        table.insert(in_progress, c)
+                    end
+                end
+
+                table.insert(in_progress, "")
+
+                for c in string.gmatch(content, "([^\r\n]+)") do
+                    if c and (string.sub(c, 1, #"- [ ]") == "- [ ]") then
+                        table.insert(in_progress, c)
+                    end
+                end
+
+                dashboard.config.layout[2].val = in_progress
 
                 file:close()
             end
