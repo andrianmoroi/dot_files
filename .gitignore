@@ -1,3 +1,4 @@
 tmux/plugins/*
+nvim_config/spell/*
 
 build.sh
