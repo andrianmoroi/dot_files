@@ -25,8 +25,9 @@ vim.keymap.set("v", "<C-s>", ":sort<CR>")
 -- Important Control views
 --
 
-vim.keymap.set("n", "<S-e>", "<cmd>:Neotree toggle=true right<CR>")
 vim.keymap.set("n", "<C-e>", function() require("mini.files").open() end)
+
+-- vim.keymap.set("n", "<S-e>", "<cmd>:Neotree toggle=true right<CR>")
 -- vim.keymap.set("n", "<C-e>", "<cmd>:Telescope file_browser<CR>")
 vim.keymap.set("n", "<C-l>", "<cmd>:Lazy update<CR>")
 vim.keymap.set("n", "<C-h>", ":Telescope help_tags<CR>", { desc = "Open help tags" })
