@@ -54,7 +54,7 @@ end
 local mini_files_setup = function()
     require('mini.files').setup({
         mappings = {
-            close       = 'q',
+            close       = '<ESC>',
             go_in       = 'l',
             go_in_plus  = '<ENTER>',
             go_out      = 'h',
