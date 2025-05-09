@@ -7,7 +7,7 @@ function open_nvim_file() {
 alias n="nvim"
 alias nf="open_nvim_file"
 alias gs="git status"
-alias gc="git add . && git commit -m"
+alias gc="git commit -m"
 alias gl="git log --oneline"
 
 # alias l='lsd --group-dirs first -lAhF'
