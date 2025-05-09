@@ -9,7 +9,8 @@ local status_line_setup = function()
                 local mode, mode_hl = MiniStatusline.section_mode({ trunc_width = 1000000 })
                 local fileStatus    = vim.bo.modified and "*" or ""
                 local fileinfo      = MiniStatusline.section_fileinfo({ trunc_width = 1000000 })
-                local location      =  '%l[%L]:%2v[%-2{virtcol("$") - 1}]'
+                -- local location      = '%P %l[%L]:%2v[%-2{virtcol("$") - 1}]'
+                local location      = '%P of %L'
                 local search        = MiniStatusline.section_searchcount({ trunc_width = 10 })
                 local lsp           = MiniStatusline.section_lsp({ trunc_width = 75 })
                 local diagnostics   = MiniStatusline.section_diagnostics({ trunc_width = 75 })
