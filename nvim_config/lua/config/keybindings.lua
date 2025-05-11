@@ -8,6 +8,8 @@ require("config.keybindings.search")
 
 
 
+
+
 -- vim.keymap.set("n", "<leader>z", "<cmd>ZenMode<CR>", { desc = "Zen Mode" })
 
 vim.keymap.set("n",
@@ -33,7 +35,7 @@ vim.keymap.set("n", "<C-l>", "<cmd>:Lazy update<CR>")
 vim.keymap.set("n", "<C-h>", ":Telescope help_tags<CR>", { desc = "Open help tags" })
 vim.keymap.set("n", "<C-g>", ":Neogit kind=replace<CR>", { desc = "Git View" })
 vim.keymap.set("n", "<C-b>", ":horizontal terminal ./build.sh<CR>:resize 10<CR>")
-vim.keymap.set("n", "<C-B>", ":vertical terminal ./build.sh<CR>")
+-- vim.keymap.set("n", "<C-B>", ":vertical terminal ./build.sh<CR>")
 vim.keymap.set("n", "<leader>z", ":%s/\\v", { desc = "[R]eplace" })
 vim.keymap.set("x", "<leader>z", ":s/\\v", { desc = "[R]eplace" })
 vim.keymap.set({ 'n', 'v' }, '<leader>a', ':Gen<CR>', { desc = "[A]ssistant" })
