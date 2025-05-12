@@ -3,6 +3,11 @@ vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" }
 vim.keymap.set("n", "<leader>x", "<cmd>luafile %<CR>", { desc = "Execute luafile" })
 
 vim.keymap.set("n", "<leader>w", "<cmd>w<CR>", { desc = "Write file" })
+vim.keymap.set("n", "<leader>cs", function()
+    local spell = vim.api.nvim_get_option_value("spell", {})
+
+    vim.api.nvim_set_option_value("spell", not spell, {})
+end, { desc = "Toggle spell checking" })
 
 local get_listed_bufs = function()
     return vim.tbl_filter(function(bufnr)

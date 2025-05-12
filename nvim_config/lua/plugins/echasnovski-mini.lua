@@ -17,6 +17,7 @@ local status_line_setup = function()
 
                 local size          = vim.fn.getfsize(vim.fn.getreg('%'))
                 local sizeFormat    = ""
+                local spell    = vim.api.nvim_get_option_value("spell", {}) and " " or ""
 
                 if size < 0 then
                     sizeFormat = ""
@@ -31,7 +32,7 @@ local status_line_setup = function()
                 return MiniStatusline.combine_groups({
                     { hl = mode_hl,                  strings = { mode } },
                     '%<', -- Mark general truncate point
-                    { hl = 'MiniStatuslineDevinfo',  strings = { diagnostics, lsp } },
+                    { hl = 'MiniStatuslineDevinfo',  strings = { diagnostics, spell, lsp } },
                     { hl = 'MiniStatuslineFilename', strings = { "%{expand('%:~:.')}", fileStatus } },
                     '%=', -- End left alignment
                     { hl = 'MiniStatuslineDevinfo',  strings = { vim.fn.reg_recording() ~= "" and "Recording: " .. vim.fn.reg_recording() or "" } },
