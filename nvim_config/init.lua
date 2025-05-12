@@ -34,4 +34,5 @@ require("lazy").setup({
 }, options)
 
 require("config.keybindings")
+require("config.custom_modes")
 
