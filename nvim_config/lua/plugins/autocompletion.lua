@@ -1,17 +1,15 @@
 return { -- Autocompletion
     "hrsh7th/nvim-cmp",
     event = "InsertEnter",
+
     dependencies = {
-        -- Snippet Engine & its associated nvim-cmp source
         {
             "L3MON4D3/LuaSnip",
             build = (function()
-                -- Build Step is needed for regex support in snippets.
-                -- This step is not supported in many windows environments.
-                -- Remove the below condition to re-enable on windows.
                 if vim.fn.has("win32") == 1 or vim.fn.executable("make") == 0 then
                     return
                 end
+
                 return "make install_jsregexp"
             end)(),
 
@@ -19,14 +17,14 @@ return { -- Autocompletion
                 local ls = require("luasnip")
 
                 vim.keymap.set({ "i", "s" }, "<C-J>", function()
-                    -- if ls.locally_jumpable(1) then
+                     if ls.locally_jumpable(1) then
                         ls.jump(1)
-                    -- end
+                     end
                 end, { silent = true })
                 vim.keymap.set({ "i", "s" }, "<C-K>", function()
-                    -- if ls.locally_jumpable(-1) then
+                     if ls.locally_jumpable(-1) then
                         ls.jump(-1)
-                    -- end
+                     end
                 end, { silent = true })
 
                 vim.keymap.set({ "i" }, "<C-L>", function() ls.expand() end, { silent = true })
@@ -37,9 +35,6 @@ return { -- Autocompletion
                 end, { silent = true })
             end,
             dependencies = {
-                -- `friendly-snippets` contains a variety of premade snippets.
-                --    See the README about individual language/framework/plugin snippets:
-                --    https://github.com/rafamadriz/friendly-snippets
                 {
                     'rafamadriz/friendly-snippets',
                     config = function()
@@ -62,6 +57,7 @@ return { -- Autocompletion
         local luasnip = require("luasnip")
         luasnip.config.setup({})
 
+
         cmp.setup({
             snippet = {
                 expand = function(args)
@@ -70,14 +66,8 @@ return { -- Autocompletion
             },
             completion = { completeopt = "menu,menuone,noinsert" },
 
-            -- For an understanding of why these mappings were
-            -- chosen, you will need to read `:help ins-completion`
-            --
-            -- No, but seriously. Please read `:help ins-completion`, it is really good!
             mapping = cmp.mapping.preset.insert({
-                -- Select the [n]ext item
                 ["<C-n>"] = cmp.mapping.select_next_item(),
-                -- Select the [p]revious item
                 ["<C-p>"] = cmp.mapping.select_prev_item(),
 
                 -- Scroll the documentation window [b]ack / [f]orward
@@ -89,15 +79,7 @@ return { -- Autocompletion
                 --  This will expand snippets if the LSP sent a snippet.
                 ["<C-y>"] = cmp.mapping.confirm({ select = true }),
 
-                -- If you prefer more traditional completion keymaps,
-                -- you can uncomment the following lines
-                --['<CR>'] = cmp.mapping.confirm { select = true },
-                --['<Tab>'] = cmp.mapping.select_next_item(),
-                --['<S-Tab>'] = cmp.mapping.select_prev_item(),
-
                 -- Manually trigger a completion from nvim-cmp.
-                --  Generally you don't need this, because nvim-cmp will display
-                --  completions whenever it has completion options available.
                 ["<C-Space>"] = cmp.mapping.complete({}),
 
                 -- Think of <c-l> as moving to the right of your snippet expansion.
