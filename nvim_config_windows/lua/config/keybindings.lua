@@ -6,8 +6,7 @@ require("config.keybindings.search")
 
 
 
-
-
+vim.opt.shell = "powershell"
 
 
 -- vim.keymap.set("n", "<leader>z", "<cmd>ZenMode<CR>", { desc = "Zen Mode" })
@@ -44,7 +43,11 @@ vim.keymap.set({ 'n', 'v' }, '<leader>a', ':Gen<CR>', { desc = "[A]ssistant" })
 vim.keymap.set(
     "n",
     "<C-p>",
-    ':lua require("telescope.builtin").find_files({ find_command={"find", ".", "-type", "f", "-not", "-path", "./.*/*", "-printf", "%P\\n"}})<CR>',
+    function()
+        require("telescope.builtin").find_files({
+            find_command = { "fd" }
+        })
+    end,
     { desc = "Search Files" }
 )
 

@@ -2,6 +2,9 @@ return {
     "nvim-telescope/telescope.nvim",
     event = "VimEnter",
     branch = "0.1.x",
+    requires = {
+        { 'nvim-lua/plenary.nvim' }
+    },
     dependencies = {
         "nvim-lua/plenary.nvim",
         {
@@ -26,7 +29,7 @@ return {
         require("telescope").setup({
             pickers = {
                 help_tags = {
-                    theme="ivy",
+                    theme = "ivy",
                     mappings = {
                         i = {
                             ["<CR>"] = "file_vsplit"
@@ -34,34 +37,34 @@ return {
                     }
                 },
                 buffers = {
-                    theme="ivy",
+                    theme = "ivy",
                 },
                 live_grep = {
-                    theme="ivy",
+                    theme = "ivy",
                 },
                 keymaps = {
-                    theme="ivy",
+                    theme = "ivy",
                 },
                 grep_string = {
-                    theme="ivy",
+                    theme = "ivy",
                 },
                 find_files = {
-                    theme="ivy",
+                    theme = "ivy",
                     hidden = true
                 },
                 diagnostics = {
-                    theme="ivy",
+                    theme = "ivy",
                 },
             },
             extensions = {
                 fzf = {
-                    fuzzy=true
+                    fuzzy = true
                 },
                 ["ui-select"] = {
                     require("telescope.themes").get_dropdown(),
                 },
                 file_browser = {
-                    theme="ivy"
+                    theme = "ivy"
                 }
             },
         })
