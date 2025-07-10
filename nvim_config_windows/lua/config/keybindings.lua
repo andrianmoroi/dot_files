@@ -37,7 +37,7 @@ vim.keymap.set("n", "<C-b>", ":horizontal terminal ./build.sh<CR>:resize 10<CR>"
 -- vim.keymap.set("n", "<C-B>", ":vertical terminal ./build.sh<CR>")
 vim.keymap.set("n", "<leader>z", ":%s/\\v", { desc = "[R]eplace" })
 vim.keymap.set("x", "<leader>z", ":s/\\v", { desc = "[R]eplace" })
-vim.keymap.set({ 'n', 'v' }, '<leader>a', ':Gen<CR>', { desc = "[A]ssistant" })
+vim.keymap.set({ 'n', 'v' }, '<leader>a', ':CopilotChatToggle<CR>', { desc = "[A]ssistant" })
 
 -- TODO: improve this usecase, maybe use a TMUX split in the future.
 vim.keymap.set(
