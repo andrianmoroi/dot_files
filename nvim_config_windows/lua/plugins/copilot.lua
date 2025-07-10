@@ -33,7 +33,13 @@ return {
         },
         opts = {
             mappings = {
-
+                complete = {
+                    insert = '',
+                },
+                submit_prompt = {
+                    normal = '<leader>s',
+                    insert = '<C-s>',
+                },
             }
         },
     },
