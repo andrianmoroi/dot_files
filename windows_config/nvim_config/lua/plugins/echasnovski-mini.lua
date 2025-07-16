@@ -89,9 +89,5 @@ return {
         status_line_setup()
 
         mini_files_setup()
-
-
-        -- ... and there is more!
-        --  Check out: https://github.com/echasnovski/mini.nvim
     end,
 }

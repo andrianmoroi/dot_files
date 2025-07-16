@@ -1,5 +1,5 @@
-tmux/plugins/*
-nvim_config/spell/*
-nvim_config_windows/spell/*
+linux_config/tmux/plugins/*
+linux_config/nvim_config/spell/*
+windows_config/nvim_config/spell/*
 
 build.sh
