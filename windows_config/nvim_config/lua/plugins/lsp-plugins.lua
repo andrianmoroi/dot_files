@@ -19,9 +19,9 @@ return {
                 "j-hui/fidget.nvim",
                 opts = {}
             },
-            "hrsh7th/cmp-nvim-lsp",
         },
         config = function()
+
             vim.api.nvim_create_autocmd("LspAttach", {
                 group = vim.api.nvim_create_augroup("kickstart-lsp-attach", { clear = true }),
                 callback = function(event)
@@ -92,12 +92,11 @@ return {
                 end,
             })
 
-            local capabilities = vim.lsp.protocol.make_client_capabilities()
-            capabilities = vim.tbl_deep_extend(
-                "force",
-                capabilities,
-                require("cmp_nvim_lsp").default_capabilities())
-
+            vim.api.nvim_create_autocmd('LspAttach', {
+                callback = function(args)
+                    vim.bo[args.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
+                end,
+            })
 
             vim.diagnostic.config({
                 severity_sort = true,
