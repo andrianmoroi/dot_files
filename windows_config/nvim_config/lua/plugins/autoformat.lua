@@ -29,25 +29,21 @@ return { -- Autoformat
 
             -- Conform will run multiple formatters sequentially
             python = { "autopep8", "black" },
-            -- You can customize some of the format options for the filetype (:help conform.format)
-            rust = { "rustfmt", lsp_format = "fallback" },
+
             -- Conform will run the first available formatter
             -- javascript = function()
             -- 	return { "prettier", "$FILENAME", "--tab-width", vim.opt.shiftwidth._value }
             -- end,
 
-            json = { "clang-format" },
-
             html = { "ast-grep", "prettierd" },
 
             javascript = { "clang-format" },
             js = { "clang-format" },
+            json = { "clang-format" },
 
             -- markdown = { "doctoc" },
             sql = { "sqlfmt" },
 
-
-            r = { "air" }
         },
     },
 }

@@ -23,7 +23,7 @@ vim.cmd("set expandtab") -- use spaces for identation instead of tabs.
 vim.opt.showmode = false
 
 vim.opt.breakindent = true -- Keep same indenting for a new line
-vim.opt.undofile = true -- save undo history in a file
+vim.opt.undofile = true    -- save undo history in a file
 
 -- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
 vim.opt.ignorecase = true

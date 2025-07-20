@@ -15,13 +15,11 @@ return {
             { "williamboman/mason.nvim", config = true }, -- NOTE: Must be loaded before dependants
             "williamboman/mason-lspconfig.nvim",
             "WhoIsSethDaniel/mason-tool-installer.nvim",
-            {
-                "j-hui/fidget.nvim",
-                opts = {}
-            },
+            { "j-hui/fidget.nvim",       opts = {} },
+
+            "saghen/blink.cmp"
         },
         config = function()
-
             vim.api.nvim_create_autocmd("LspAttach", {
                 group = vim.api.nvim_create_augroup("kickstart-lsp-attach", { clear = true }),
                 callback = function(event)
@@ -92,12 +90,6 @@ return {
                 end,
             })
 
-            vim.api.nvim_create_autocmd('LspAttach', {
-                callback = function(args)
-                    vim.bo[args.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
-                end,
-            })
-
             vim.diagnostic.config({
                 severity_sort = true,
                 float = { border = 'rounded', source = 'if_many' },
@@ -124,6 +116,8 @@ return {
                     end,
                 },
             })
+
+            local capabilities = require("blink.cmp").get_lsp_capabilities()
 
             local servers = {
                 lua_ls = {
@@ -157,29 +151,18 @@ return {
                 handlers = {
                     function(server_name)
                         local server = servers[server_name] or {}
-                        server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
+
+                        server.capabilities = vim.tbl_deep_extend(
+                            "force",
+                            {},
+                            capabilities,
+                            server.capabilities or {})
+
+
                         require("lspconfig")[server_name].setup(server)
                     end,
                 },
             })
-
-            --
-            -- local client = vim.lsp.start_client({
-            --     name = "lsp-test",
-            --     cmd = { "/mnt/c/Work/projects/LspTesting/LspTesting/bin/Debug/net8.0/LspTesting.exe" },
-            -- })
-            --
-            -- if not client then
-            --     vim.notify("the client is not working")
-            -- end
-            --
-            -- vim.api.nvim_create_autocmd("FileType", {
-            --
-            --     pattern = "yaml",
-            --     callback = function()
-            --         vim.lsp.buf_attach_client(0, client)
-            --     end
-            -- })
         end,
     },
 }
