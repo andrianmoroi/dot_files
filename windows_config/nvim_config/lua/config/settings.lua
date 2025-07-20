@@ -3,6 +3,8 @@
 -- import-- NOTE: You can change these options as you wish!
 --  For more options, you can see `:help option-list`
 
+vim.opt.shell = "powershell"
+
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 vim.opt.cmdheight = 0

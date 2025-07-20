@@ -6,10 +6,8 @@ require("config.keybindings.search")
 
 
 
-vim.opt.shell = "powershell"
 
 
--- vim.keymap.set("n", "<leader>z", "<cmd>ZenMode<CR>", { desc = "Zen Mode" })
 
 vim.keymap.set("n",
     "<leader>cx",
@@ -60,8 +58,9 @@ vim.keymap.set(
 --
 -- Views
 --
-vim.keymap.set("n", "<leader>vu", ":UndotreeToggle<CR>:UndotreeFocus<CR>", { desc = "[U]ndotree" })
-vim.keymap.set("n", "<leader>vd", ":DBUIToggle<CR>", { desc = "[D]atabase" })
+vim.keymap.set("n", "<leader>vz", "<cmd>ZenMode<CR>", { desc = "Zen Mode" })
+-- vim.keymap.set("n", "<leader>vu", ":UndotreeToggle<CR>:UndotreeFocus<CR>", { desc = "[U]ndotree" })
+-- vim.keymap.set("n", "<leader>vd", ":DBUIToggle<CR>", { desc = "[D]atabase" })
 
 
 
