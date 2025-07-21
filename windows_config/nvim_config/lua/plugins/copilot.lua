@@ -37,7 +37,7 @@ return {
                     insert = '',
                 },
                 submit_prompt = {
-                    normal = '<leader>s',
+                    normal = '<C-s>',
                     insert = '<C-s>',
                 },
             }
