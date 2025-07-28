@@ -83,7 +83,6 @@ function DisplayWithBytes ($num) {
 
         ("{0:N1} {1}" -f $t, $f)
     }
-
 }
 
 # Import the Chocolatey Profile that contains the necessary code to enable
@@ -184,10 +183,6 @@ Register-ArgumentCompleter -CommandName e -ParameterName bookmark -ScriptBlock {
 
 
 
-
-
-
-
 # Define the path to the dotnet projects file
 
 # Function to get the path from the bookmark name
@@ -196,15 +191,18 @@ function Get-ProjectPath
     param (
         [string]$bookmark
     )
+
     if (Test-Path $PROJECTS_FILE)
     {
         $line = Select-String -Path $PROJECTS_FILE -Pattern "^$bookmark\s" | Select-Object -First 1
+
         if ($line)
         {
             $fields = $line -split '\s+'
             return $fields[1]
         }
     }
+
     return $null
 }
 
@@ -247,7 +245,9 @@ function dw
     param(
         [string]$bookmark
     )
+
     $path = Get-ProjectPath $bookmark
+
     if ($path -and (Test-Path $path))
     {
         dotnet watch --project $path

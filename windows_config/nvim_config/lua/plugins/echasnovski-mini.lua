@@ -6,18 +6,23 @@ local status_line_setup = function()
         set_vim_settings = true,
         content = {
             active = function()
-                local mode, mode_hl = MiniStatusline.section_mode({ trunc_width = 1000000 })
-                local fileStatus    = vim.bo.modified and "*" or ""
-                local fileinfo      = MiniStatusline.section_fileinfo({ trunc_width = 1000000 })
-                -- local location      = '%P %l[%L]:%2v[%-2{virtcol("$") - 1}]'
-                local location      = '%P of %L'
-                local search        = MiniStatusline.section_searchcount({ trunc_width = 10 })
-                local lsp           = MiniStatusline.section_lsp({ trunc_width = 75 })
-                local diagnostics   = MiniStatusline.section_diagnostics({ trunc_width = 75 })
+                local fileformat_icon  = function()
+                    local icons = { unix = ' LF', dos = ' CRLF', mac = ' CR' }
+                    return icons[vim.bo.fileformat] or vim.bo.fileformat
+                end
 
-                local size          = vim.fn.getfsize(vim.fn.getreg('%'))
-                local sizeFormat    = ""
-                local spell    = vim.api.nvim_get_option_value("spell", {}) and " " or ""
+                local mode, mode_hl    = MiniStatusline.section_mode({ trunc_width = 1000000 })
+                local fileStatus       = vim.bo.modified and "*" or ""
+                local fileinfo         = MiniStatusline.section_fileinfo({ trunc_width = 1000000 })
+                -- local location      = '%P %l[%L]:%2v[%-2{virtcol("$") - 1}]'
+                local location         = '%P of %L'
+                local search           = MiniStatusline.section_searchcount({ trunc_width = 10 })
+                local lsp              = MiniStatusline.section_lsp({ trunc_width = 75 })
+                local diagnostics      = MiniStatusline.section_diagnostics({ trunc_width = 75 })
+
+                local size             = vim.fn.getfsize(vim.fn.getreg('%'))
+                local sizeFormat       = ""
+                local spell            = vim.api.nvim_get_option_value("spell", {}) and " " or ""
 
                 if size < 0 then
                     sizeFormat = ""
@@ -36,7 +41,7 @@ local status_line_setup = function()
                     { hl = 'MiniStatuslineFilename', strings = { "%{expand('%:~:.')}", fileStatus } },
                     '%=', -- End left alignment
                     { hl = 'MiniStatuslineDevinfo',  strings = { vim.fn.reg_recording() ~= "" and "Recording: " .. vim.fn.reg_recording() or "" } },
-                    { hl = 'MiniStatuslineFileinfo', strings = { fileinfo, sizeFormat } },
+                    { hl = 'MiniStatuslineFileinfo', strings = { fileinfo, sizeFormat, fileformat_icon() } },
                     '%<', -- Mark general truncate point
                     { hl = mode_hl, strings = { search, location } },
                 })
