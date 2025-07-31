@@ -1,6 +1,7 @@
 return {
     {
         "github/copilot.vim",
+        tag="v1.51.0",
         config = function()
             vim.api.nvim_create_autocmd('ColorScheme', {
                 pattern = 'solarized',
@@ -24,23 +25,5 @@ return {
                 ["chsarp"] = true,
             }
         end,
-    },
-    {
-        "CopilotC-Nvim/CopilotChat.nvim",
-        dependencies = {
-            { "github/copilot.vim" },
-            { "nvim-lua/plenary.nvim", branch = "master" }, -- for curl, log and async functions
-        },
-        opts = {
-            mappings = {
-                complete = {
-                    insert = '',
-                },
-                submit_prompt = {
-                    normal = '<C-s>',
-                    insert = '<C-s>',
-                },
-            }
-        },
-    },
+    }
 }
