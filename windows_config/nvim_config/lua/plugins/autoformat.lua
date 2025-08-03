@@ -17,6 +17,13 @@ return { -- Autoformat
 
     opts = {
         notify_on_error = false,
+
+        formatters = {
+            prettier = {
+                append_args = { "--tab-width", vim.opt.shiftwidth._value },
+            },
+        },
+
         formatters_by_ft = {
             lua = function() -- bufnr
                 local args = ""
@@ -35,9 +42,15 @@ return { -- Autoformat
             -- 	return { "prettier", "$FILENAME", "--tab-width", vim.opt.shiftwidth._value }
             -- end,
 
-            html = { "ast-grep", "prettierd" },
+            -- css = function()
+            --     return { "prettier", "$FILENAME", "--tab-width", vim.opt.shiftwidth }
+            -- end,
+            html = { "prettier" },
+            css = { "prettier" },
+            javascript = { "prettier" },
+            typescript = { "prettier" },
 
-            javascript = { "clang-format" },
+            -- javascript = { "clang-format" },
             js = { "clang-format" },
             json = { "clang-format" },
 
