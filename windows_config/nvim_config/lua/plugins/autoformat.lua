@@ -35,15 +35,16 @@ return { -- Autoformat
             -- 	return { "prettier", "$FILENAME", "--tab-width", vim.opt.shiftwidth._value }
             -- end,
 
+
             html = { "ast-grep", "prettierd" },
 
-            javascript = { "clang-format" },
-            js = { "clang-format" },
-            json = { "clang-format" },
+            javascript = { "prettierd" },
+            js = { "prettierd" },
+            json = { "prettierd" },
 
-            -- markdown = { "doctoc" },
             sql = { "sqlfmt" },
 
+            csharp = { "dotnet format style --include" },
         },
     },
 }

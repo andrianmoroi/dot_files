@@ -15,11 +15,47 @@ return {
             -- { "williamboman/mason.nvim", config = true }, -- NOTE: Must be loaded before dependants
             -- "williamboman/mason-lspconfig.nvim",
             -- "WhoIsSethDaniel/mason-tool-installer.nvim",
-            { "j-hui/fidget.nvim",       opts = {} },
+            { "j-hui/fidget.nvim", opts = {} },
 
             "saghen/blink.cmp"
         },
+
         config = function()
+            require("lspconfig").lua_ls.setup({
+                cmd = {
+                    os.getenv("LUA_LANGUAGE_SERVER")
+                },
+                settings = {
+                    Lua = {
+                        completion = {
+                            callSnippet = "Replace",
+                        },
+                        diagnostics = {
+                            globals = {
+                                "vim",
+                            },
+                        },
+                    },
+                },
+            })
+
+
+            require("lspconfig").csharp_ls.setup({
+                cmd = { 'csharp-ls' },
+                root_dir = require("lspconfig.util").root_pattern("*.sln", "*.csproj", ".git"),
+                filetypes = { 'cs' },
+                init_options = {
+                    AutomaticWorkspaceInit = true,
+                },
+            })
+
+
+
+
+
+
+
+
             vim.api.nvim_create_autocmd("LspAttach", {
                 group = vim.api.nvim_create_augroup("kickstart-lsp-attach", { clear = true }),
                 callback = function(event)
