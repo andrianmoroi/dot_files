@@ -111,9 +111,6 @@ require("lazy").setup({
                 palette = {},
                 theme = { wave = {}, lotus = {}, dragon = {}, all = {} },
             },
-            overrides = function(colors) -- add/modify highlights
-                return {}
-            end,
             theme = "wave",    -- Load "wave" theme
             background = {     -- map the value of 'background' option to a theme
                 dark = "wave", -- try "dragon" !
@@ -132,6 +129,7 @@ require("lazy").setup({
 
     { "echasnovski/mini.icons",      opts = {} },
     { "nvim-tree/nvim-web-devicons", opts = {} },
+
     {
         "echasnovski/mini.files",
         version = '*',
@@ -172,19 +170,21 @@ require("lazy").setup({
             set_vim_settings = true,
             content = {
                 active = function()
+                    local miniStatusLine = require("mini.statusline")
+
                     local fileformat_icon = function()
                         local icons = { unix = ' LF', dos = ' CRLF', mac = ' CR' }
                         return icons[vim.bo.fileformat] or vim.bo.fileformat
                     end
 
-                    local mode, mode_hl   = MiniStatusline.section_mode({ trunc_width = 1000000 })
+                    local mode, mode_hl   = miniStatusLine.section_mode({ trunc_width = 1000000 })
                     local fileStatus      = vim.bo.modified and "*" or ""
-                    local fileinfo        = MiniStatusline.section_fileinfo({ trunc_width = 1000000 })
+                    local fileinfo        = miniStatusLine.section_fileinfo({ trunc_width = 1000000 })
                     -- local location      = '%P %l[%L]:%2v[%-2{virtcol("$") - 1}]'
                     local location        = '%P of %L'
-                    local search          = MiniStatusline.section_searchcount({ trunc_width = 10 })
-                    local lsp             = MiniStatusline.section_lsp({ trunc_width = 75 })
-                    local diagnostics     = MiniStatusline.section_diagnostics({ trunc_width = 75 })
+                    local search          = miniStatusLine.section_searchcount({ trunc_width = 10 })
+                    local lsp             = miniStatusLine.section_lsp({ trunc_width = 75 })
+                    local diagnostics     = miniStatusLine.section_diagnostics({ trunc_width = 75 })
 
                     local size            = vim.fn.getfsize(vim.fn.getreg('%'))
                     local sizeFormat      = ""
@@ -200,7 +200,7 @@ require("lazy").setup({
                         sizeFormat = string.format('%.2f MiB', size / 1048576)
                     end
 
-                    return MiniStatusline.combine_groups({
+                    return miniStatusLine.combine_groups({
                         { hl = mode_hl,                  strings = { mode } },
                         '%<', -- Mark general truncate point
                         { hl = 'MiniStatuslineDevinfo',  strings = { diagnostics, spell, lsp } },
@@ -219,24 +219,6 @@ require("lazy").setup({
         }
     },
 
-    {
-        "j-hui/fidget.nvim",
-        opts = {
-            notification = {
-                window = {
-                    winblend = 0
-                }
-            }
-        },
-        config = function(_, opts)
-            local fidget = require("fidget")
-
-            fidget.setup(opts)
-
-            vim.notify = fidget.notify
-        end
-    },
-
     { "lewis6991/gitsigns.nvim", opts = {} },
     {
         "folke/which-key.nvim",
@@ -245,6 +227,7 @@ require("lazy").setup({
             preset = "helix",
         },
     },
+
     { "folke/zen-mode.nvim", opts = {} },
 
     {
@@ -281,6 +264,9 @@ map('n', "<leader>dq", function() vim.diagnostic.setqflist() end, "Send diagnost
 map('n', "<leader>dn", function() vim.diagnostic.goto_next() end, "Go to next diagnostic.")
 map('n', "<leader>dp", function() vim.diagnostic.goto_prev() end, "Go to previous diagnostic.")
 
+map('n', "<leader>r", ":%s/\\v", "Replace.")
+map({'x', 'v'}, "<leader>r", ":s/\\v", "Replace.")
+
 map('i', "<S-Tab>", "<C-V><Tab>", "Insert tab character.")
 
 map('t', "<Esc><Esc>", "<C-\\><C-n>", "Exit terminal mode.")
@@ -289,10 +275,10 @@ map({ 'n', 'x' }, "<leader>y", "\"+y", "Copy to clipboard.")
 map({ 'n', 'x' }, "<leader>p", "\"+p", "Paste from clipboard.")
 map({ 'n', 'x' }, "<leader>P", "\"+P", "Paste from clipboard.")
 
-map('n', "<C-e>", function() MiniFiles.open() end, "Open file explorer.")
-map('n', "<C-p>", function() MiniPick.builtin.files() end, "Search by file names.")
-map('n', "<leader>sg", function() MiniPick.builtin.grep_live() end, "Search in files.")
-map('n', "<leader>sh", function() MiniPick.builtin.help() end, "Search healp.")
+map('n', "<C-e>", function() require("mini.files").open() end, "Open file explorer.")
+map('n', "<C-p>", function() require("mini.pick").builtin.files() end, "Search by file names.")
+map('n', "<leader>sg", function() require("mini.pick").builtin.grep_live() end, "Search in files.")
+map('n', "<leader>sh", function() require("mini.pick").builtin.help() end, "Search healp.")
 
 --------------------------------------------------------------------------------
 --- Highlight yanked text
@@ -357,4 +343,3 @@ require 'nvim-treesitter.configs'.setup {
         additional_vim_regex_highlighting = false,
     },
 }
-
