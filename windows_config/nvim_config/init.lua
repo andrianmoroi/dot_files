@@ -16,7 +16,7 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
     if vim.v.shell_error ~= 0 then
         vim.api.nvim_echo({
             { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
-            { out, "WarningMsg" },
+            { out,                            "WarningMsg" },
             { "\nPress any key to exit..." },
         }, true, {})
         vim.fn.getchar()
@@ -33,6 +33,7 @@ vim.opt.rtp:prepend(lazypath)
 vim.o.winborder = "rounded"
 
 vim.opt.shell = "powershell"
+vim.opt.shellcmdflag = "-c"
 vim.opt.cmdheight = 0
 
 vim.g.have_nerd_font = true
@@ -94,31 +95,30 @@ require("lazy").setup({
     {
         "rebelot/kanagawa.nvim",
         opts = {
-            compile = false,             -- enable compiling the colorscheme
-            undercurl = true,            -- enable undercurls
+            compile = false,  -- enable compiling the colorscheme
+            undercurl = true, -- enable undercurls
             commentStyle = { italic = true },
             functionStyle = {},
-            keywordStyle = { italic = true},
+            keywordStyle = { italic = true },
             statementStyle = { bold = true },
             typeStyle = {},
-            transparent = false,         -- do not set background color
-            dimInactive = false,         -- dim inactive window `:h hl-NormalNC`
-            terminalColors = true,       -- define vim.g.terminal_color_{0,17}
-            colors = {                   -- add/modify theme and palette colors
+            transparent = true,    -- do not set background color
+            dimInactive = false,   -- dim inactive window `:h hl-NormalNC`
+            terminalColors = true, -- define vim.g.terminal_color_{0,17}
+            colors = {             -- add/modify theme and palette colors
                 palette = {},
                 theme = { wave = {}, lotus = {}, dragon = {}, all = {} },
             },
             overrides = function(colors) -- add/modify highlights
                 return {}
             end,
-            theme = "wave",              -- Load "wave" theme
-            background = {               -- map the value of 'background' option to a theme
-                dark = "wave",           -- try "dragon" !
+            theme = "wave",    -- Load "wave" theme
+            background = {     -- map the value of 'background' option to a theme
+                dark = "wave", -- try "dragon" !
                 light = "lotus"
             },
         },
         config = function(_, opts)
-
             require("kanagawa").setup(opts)
 
             vim.cmd("colorscheme kanagawa")
@@ -128,6 +128,7 @@ require("lazy").setup({
         end
     },
 
+    { "echasnovski/mini.icons",      opts = {} },
     { "nvim-tree/nvim-web-devicons", opts = {} },
     {
         "echasnovski/mini.files",
@@ -143,22 +144,22 @@ require("lazy").setup({
             },
         }
     },
-    { "echasnovski/mini.pick", opts = {} },
+    { "echasnovski/mini.pick",   opts = {} },
     {
         "echasnovski/mini.surround",
         opts = {
             -- Module mappings. Use `''` (empty string) to disable one.
             mappings = {
-                add = 'sa', -- Add surrounding in Normal and Visual modes
-                delete = 'sd', -- Delete surrounding
-                find = 'sf', -- Find surrounding (to the right)
-                find_left = 'sF', -- Find surrounding (to the left)
-                highlight = 'sh', -- Highlight surrounding
-                replace = 'sr', -- Replace surrounding
+                add = 'sa',            -- Add surrounding in Normal and Visual modes
+                delete = 'sd',         -- Delete surrounding
+                find = 'sf',           -- Find surrounding (to the right)
+                find_left = 'sF',      -- Find surrounding (to the left)
+                highlight = 'sh',      -- Highlight surrounding
+                replace = 'sr',        -- Replace surrounding
                 update_n_lines = 'sn', -- Update `n_lines`
 
-                suffix_last = 'l', -- Suffix to search with "prev" method
-                suffix_next = 'n', -- Suffix to search with "next" method
+                suffix_last = 'l',     -- Suffix to search with "prev" method
+                suffix_next = 'n',     -- Suffix to search with "next" method
             },
         }
     },
@@ -169,23 +170,23 @@ require("lazy").setup({
             set_vim_settings = true,
             content = {
                 active = function()
-                    local fileformat_icon  = function()
+                    local fileformat_icon = function()
                         local icons = { unix = ' LF', dos = ' CRLF', mac = ' CR' }
                         return icons[vim.bo.fileformat] or vim.bo.fileformat
                     end
 
-                    local mode, mode_hl    = MiniStatusline.section_mode({ trunc_width = 1000000 })
-                    local fileStatus       = vim.bo.modified and "*" or ""
-                    local fileinfo         = MiniStatusline.section_fileinfo({ trunc_width = 1000000 })
+                    local mode, mode_hl   = MiniStatusline.section_mode({ trunc_width = 1000000 })
+                    local fileStatus      = vim.bo.modified and "*" or ""
+                    local fileinfo        = MiniStatusline.section_fileinfo({ trunc_width = 1000000 })
                     -- local location      = '%P %l[%L]:%2v[%-2{virtcol("$") - 1}]'
-                    local location         = '%P of %L'
-                    local search           = MiniStatusline.section_searchcount({ trunc_width = 10 })
-                    local lsp              = MiniStatusline.section_lsp({ trunc_width = 75 })
-                    local diagnostics      = MiniStatusline.section_diagnostics({ trunc_width = 75 })
+                    local location        = '%P of %L'
+                    local search          = MiniStatusline.section_searchcount({ trunc_width = 10 })
+                    local lsp             = MiniStatusline.section_lsp({ trunc_width = 75 })
+                    local diagnostics     = MiniStatusline.section_diagnostics({ trunc_width = 75 })
 
-                    local size             = vim.fn.getfsize(vim.fn.getreg('%'))
-                    local sizeFormat       = ""
-                    local spell            = vim.api.nvim_get_option_value("spell", {}) and " " or ""
+                    local size            = vim.fn.getfsize(vim.fn.getreg('%'))
+                    local sizeFormat      = ""
+                    local spell           = vim.api.nvim_get_option_value("spell", {}) and " " or ""
 
                     if size < 0 then
                         sizeFormat = ""
@@ -244,11 +245,12 @@ require("lazy").setup({
     },
     { "folke/zen-mode.nvim", opts = {} },
 
-    -- gitsign
-    --
-    -- lsp
-    -- treessiter
-    -- format
+    {
+        "nvim-treesitter/nvim-treesitter",
+        branch = 'master',
+        lazy = false,
+        build = ":TSUpdate"
+    },
 
 })
 
@@ -258,7 +260,7 @@ require("lazy").setup({
 --------------------------------------------------------------------------------
 
 local map = function(mode, key, action, description)
-    vim.keymap.set(mode, key, action, { desc = description})
+    vim.keymap.set(mode, key, action, { desc = description })
 end
 
 map('n', "<leader>w", ":w!<CR>", "Save file.")
@@ -272,13 +274,15 @@ map('n', "<C-w>n", ":vnew<CR>", "New vertical empty buffer.")
 map('n', "<C-j>", ":cnext<CR>", "Next quickfix bookmark.")
 map('n', "<C-k>", ":cprevious<CR>", "Previous quickfix bookmark.")
 
+map('n', "<leader>cf", function() vim.lsp.buf.format() end, "Format code.")
+
 map('i', "<S-Tab>", "<C-V><Tab>", "Insert tab character.")
 
 map('t', "<Esc><Esc>", "<C-\\><C-n>", "Exit terminal mode.")
 
-map({'n', 'x'}, "<leader>y", "\"+y", "Copy to clipboard.")
-map({'n', 'x'}, "<leader>p", "\"+p", "Paste from clipboard.")
-map({'n', 'x'}, "<leader>P", "\"+P", "Paste from clipboard.")
+map({ 'n', 'x' }, "<leader>y", "\"+y", "Copy to clipboard.")
+map({ 'n', 'x' }, "<leader>p", "\"+p", "Paste from clipboard.")
+map({ 'n', 'x' }, "<leader>P", "\"+P", "Paste from clipboard.")
 
 map('n', "<C-e>", function() MiniFiles.open() end, "Open file explorer.")
 map('n', "<C-p>", function() MiniPick.builtin.files() end, "Search by file names.")
@@ -295,4 +299,58 @@ vim.api.nvim_create_autocmd("TextYankPost", {
         vim.highlight.on_yank()
     end,
 })
+
+
+--------------------------------------------------------------------------------
+--- LSP
+--------------------------------------------------------------------------------
+
+-- lua-language-server
+vim.lsp.config['luals'] = {
+    cmd = { os.getenv("LUA_LANGUAGE_SERVER") or "lua-language-server.exe" },
+    filetypes = { 'lua' },
+    root_markers = { '.luarc.json', '.luarc.jsonc' },
+    settings = {
+        Lua = {
+            diagnostics = {
+                globals = { "vim" },
+            },
+            runtime = {
+                version = 'LuaJIT',
+            }
+        }
+    }
+}
+vim.lsp.enable('luals')
+
+-- csharp
+vim.lsp.config['csharpls'] = {
+    cmd = { 'csharp-ls' },
+    filetypes = { 'cs' },
+    init_options = {
+        AutomaticWorkspaceInit = true,
+    },
+}
+vim.lsp.enable('csharpls')
+
+
+--------------------------------------------------------------------------------
+--- Treesitter
+--------------------------------------------------------------------------------
+
+require 'nvim-treesitter.configs'.setup {
+    ensure_installed = { "lua", "c_sharp" },
+    sync_install = false,
+    auto_install = true,
+    highlight = {
+        enable = true,
+
+        -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
+        -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
+        -- Using this option may slow down your editor, and you may see some duplicate highlights.
+        -- Instead of true it can also be a list of languages
+        additional_vim_regex_highlighting = false,
+    },
+}
+
 
