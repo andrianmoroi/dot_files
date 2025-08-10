@@ -87,6 +87,8 @@ vim.opt.scrolloff = 18
 
 vim.opt.colorcolumn = "80"
 
+vim.opt.completeopt = "menu,menuone,noinsert,noselect"
+
 --------------------------------------------------------------------------------
 --- Setup lazy
 --------------------------------------------------------------------------------
@@ -273,8 +275,11 @@ map('n', "<C-n>", ":enew<CR>", "New empty buffer.")
 map('n', "<C-w>n", ":vnew<CR>", "New vertical empty buffer.")
 map('n', "<C-j>", ":cnext<CR>", "Next quickfix bookmark.")
 map('n', "<C-k>", ":cprevious<CR>", "Previous quickfix bookmark.")
-
 map('n', "<leader>cf", function() vim.lsp.buf.format() end, "Format code.")
+map('n', "<leader>do", function() vim.diagnostic.open_float() end, "Open diagnostics window.")
+map('n', "<leader>dq", function() vim.diagnostic.setqflist() end, "Send diagnostics to quick fix list.")
+map('n', "<leader>dn", function() vim.diagnostic.goto_next() end, "Go to next diagnostic.")
+map('n', "<leader>dp", function() vim.diagnostic.goto_prev() end, "Go to previous diagnostic.")
 
 map('i', "<S-Tab>", "<C-V><Tab>", "Insert tab character.")
 
@@ -339,7 +344,7 @@ vim.lsp.enable('csharpls')
 --------------------------------------------------------------------------------
 
 require 'nvim-treesitter.configs'.setup {
-    ensure_installed = { "lua", "c_sharp" },
+    ensure_installed = { "lua" },
     sync_install = false,
     auto_install = true,
     highlight = {
@@ -352,5 +357,4 @@ require 'nvim-treesitter.configs'.setup {
         additional_vim_regex_highlighting = false,
     },
 }
-
 
