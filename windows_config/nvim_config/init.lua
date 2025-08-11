@@ -144,7 +144,14 @@ require("lazy").setup({
             },
         }
     },
-    { "echasnovski/mini.pick",   opts = {} },
+    {
+        "echasnovski/mini.pick",
+        opts = {
+            mappings ={
+                choose_marked = "<C-q>",
+            }
+        }
+    },
     {
         "echasnovski/mini.surround",
         opts = {
@@ -161,6 +168,7 @@ require("lazy").setup({
                 suffix_last = 'l',     -- Suffix to search with "prev" method
                 suffix_next = 'n',     -- Suffix to search with "next" method
             },
+            n_lines = 100,
         }
     },
     {
@@ -170,7 +178,7 @@ require("lazy").setup({
             set_vim_settings = true,
             content = {
                 active = function()
-                    local miniStatusLine = require("mini.statusline")
+                    local miniStatusLine  = require("mini.statusline")
 
                     local fileformat_icon = function()
                         local icons = { unix = ' LF', dos = ' CRLF', mac = ' CR' }
@@ -228,7 +236,7 @@ require("lazy").setup({
         },
     },
 
-    { "folke/zen-mode.nvim", opts = {} },
+    { "folke/zen-mode.nvim",     opts = {} },
 
     {
         "nvim-treesitter/nvim-treesitter",
@@ -266,7 +274,7 @@ map('n', "<leader>dn", function() vim.diagnostic.goto_next() end, "Go to next di
 map('n', "<leader>dp", function() vim.diagnostic.goto_prev() end, "Go to previous diagnostic.")
 
 map('n', "<leader>r", ":%s/\\v", "Replace.")
-map({'x', 'v'}, "<leader>r", ":s/\\v", "Replace.")
+map({ 'x', 'v' }, "<leader>r", ":s/\\v", "Replace.")
 
 map('i', "<S-Tab>", "<C-V><Tab>", "Insert tab character.")
 
