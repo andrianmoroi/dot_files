@@ -147,7 +147,7 @@ require("lazy").setup({
     {
         "echasnovski/mini.pick",
         opts = {
-            mappings ={
+            mappings = {
                 choose_marked = "<C-q>",
             }
         }
@@ -305,7 +305,9 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 --- LSP
 --------------------------------------------------------------------------------
 
--- lua-language-server
+-- To install run:
+-- scoop install lua-language-server
+
 vim.lsp.config['luals'] = {
     cmd = { os.getenv("LUA_LANGUAGE_SERVER") or "lua-language-server.exe" },
     filetypes = { 'lua' },
@@ -323,7 +325,10 @@ vim.lsp.config['luals'] = {
 }
 vim.lsp.enable('luals')
 
--- csharp
+
+-- To install run:
+-- dotnet tool install --global csharp-ls
+
 vim.lsp.config['csharpls'] = {
     cmd = { 'csharp-ls' },
     filetypes = { 'cs' },
@@ -332,6 +337,32 @@ vim.lsp.config['csharpls'] = {
     },
 }
 vim.lsp.enable('csharpls')
+
+
+-- To install run:
+-- npm i -g vscode-langservers-extracted
+
+vim.lsp.config["html"] = {
+    cmd = { 'vscode-html-language-server', '--stdio' },
+    filetypes = { 'html', 'templ', 'xml' },
+    root_markers = { 'package.json', '.git' },
+    init_options = {
+        provideFormatter = true,
+        embeddedLanguages = { css = true, javascript = true },
+        configurationSection = { 'html', 'css', 'javascript' },
+    },
+    settings = {
+        html = {
+            format = {
+                wrapAttributes = "force-expand-multiline",
+                -- you can also set max line width if needed
+                wrapLineLength = 60,
+            }
+        }
+    }
+}
+
+vim.lsp.enable("html")
 
 
 --------------------------------------------------------------------------------
