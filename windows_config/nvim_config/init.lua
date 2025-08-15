@@ -87,7 +87,7 @@ vim.opt.scrolloff = 18
 
 vim.opt.colorcolumn = "80"
 
-vim.opt.completeopt = "menu,menuone,noinsert,noselect"
+-- vim.opt.completeopt = "menu,menuone,noinsert,noselect"
 
 --------------------------------------------------------------------------------
 --- Setup lazy
@@ -236,7 +236,7 @@ require("lazy").setup({
         },
     },
 
-    { "folke/zen-mode.nvim",     opts = {} },
+    -- { "folke/zen-mode.nvim",     opts = {} },
 
     {
         "nvim-treesitter/nvim-treesitter",
@@ -245,6 +245,11 @@ require("lazy").setup({
         build = ":TSUpdate"
     },
 
+    {
+        'echasnovski/mini.completion',
+        version = '*',
+        opts = {}
+    },
 })
 
 
