@@ -135,7 +135,6 @@ require("lazy").setup({
         version = '*',
         opts = {
             mappings = {
-                -- close = '<C-e>'
                 go_in_plus = "<Enter>"
             },
             windows = {
@@ -149,6 +148,12 @@ require("lazy").setup({
         opts = {
             mappings = {
                 choose_marked = "<C-q>",
+            },
+
+            window = {
+                config = {
+                    width = 500
+                }
             }
         }
     },
@@ -248,7 +253,9 @@ require("lazy").setup({
     {
         'echasnovski/mini.completion',
         version = '*',
-        opts = {}
+        opts = {
+            lsp_completion = { source_func = 'omnifunc', auto_setup = true }
+        },
     },
 })
 
@@ -289,8 +296,25 @@ map({ 'n', 'x' }, "<leader>y", "\"+y", "Copy to clipboard.")
 map({ 'n', 'x' }, "<leader>p", "\"+p", "Paste from clipboard.")
 map({ 'n', 'x' }, "<leader>P", "\"+P", "Paste from clipboard.")
 
+map('n', "<C-p>", function()
+    local MiniPick = require("mini.pick")
+
+    local show_with_icons = function(buf_id, items, query)
+        MiniPick.default_show(buf_id, items, query, { show_icons = true })
+    end
+
+    local opts = {
+        source = {
+            name = "Files:",
+            show = show_with_icons
+        }
+    }
+
+    MiniPick.builtin.cli({
+        command = { 'rg', '--files', '--hidden', '--no-follow', '--color=never' },
+    }, opts)
+end, "Search by file names.")
 map('n', "<C-e>", function() require("mini.files").open() end, "Open file explorer.")
-map('n', "<C-p>", function() require("mini.pick").builtin.files() end, "Search by file names.")
 map('n', "<leader>sg", function() require("mini.pick").builtin.grep_live() end, "Search in files.")
 map('n', "<leader>sh", function() require("mini.pick").builtin.help() end, "Search healp.")
 
@@ -324,6 +348,9 @@ vim.lsp.config['luals'] = {
             },
             runtime = {
                 version = 'LuaJIT',
+            },
+            telemetry = {
+                enable = false
             }
         }
     }
