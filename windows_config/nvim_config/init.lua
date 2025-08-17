@@ -314,9 +314,10 @@ map('n', "<C-p>", function()
         command = { "rg", "--files", "--hidden", "--no-follow", "--no-ignore-vcs", "--color=never" },
     }, opts)
 end, "Search by file names.")
-map('n', "<C-e>", function() require("mini.files").open() end, "Open file explorer.")
-map('n', "<leader>sg", function() require("mini.pick").builtin.grep_live() end, "Search in files.")
-map('n', "<leader>sh", function() require("mini.pick").builtin.help() end, "Search healp.")
+map('n', "<C-e>", require("mini.files").open, "Open file explorer.")
+map('n', "<leader>sg", require("mini.pick").builtin.grep_live, "Search in files.")
+map('n', "<leader>sh", require("mini.pick").builtin.help, "Search healp.")
+map('n', "<leader>sb", require("mini.pick").builtin.buffers, "Search healp.")
 
 --------------------------------------------------------------------------------
 --- Highlight yanked text
