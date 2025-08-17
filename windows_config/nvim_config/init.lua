@@ -311,7 +311,7 @@ map('n', "<C-p>", function()
     }
 
     MiniPick.builtin.cli({
-        command = { "rg", "--files", "--hidden", "--no-follow", "--no-ignore", "--color=never" },
+        command = { "rg", "--files", "--hidden", "--no-follow", "--no-ignore-vcs", "--color=never" },
     }, opts)
 end, "Search by file names.")
 map('n', "<C-e>", function() require("mini.files").open() end, "Open file explorer.")
