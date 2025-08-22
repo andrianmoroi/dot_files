@@ -83,7 +83,18 @@ vim.opt.inccommand = "split"
 vim.opt.cursorline = false
 
 -- Minimal number of screen lines to keep above and below the cursor.
-vim.opt.scrolloff = 18
+
+local default_scrolloff = 18
+local center_screlloff = 1000
+
+local toggle_center_scroll = function()
+    local total = default_scrolloff + center_screlloff
+    local current = vim.opt.scrolloff._value
+
+    vim.opt.scrolloff = total - current
+end
+
+vim.opt.scrolloff = default_scrolloff
 
 vim.opt.colorcolumn = "80"
 
@@ -280,6 +291,8 @@ map('n', "<C-w>n", ":vnew<CR>", "New vertical empty buffer.")
 map('n', "<C-j>", ":cnext<CR>", "Next quickfix bookmark.")
 map('n', "<C-k>", ":cprevious<CR>", "Previous quickfix bookmark.")
 map('n', "<leader>cf", function() vim.lsp.buf.format() end, "Format code.")
+map('n', "<leader>cs", ":set spell<CR>", "Set spell checking.")
+map('n', "<leader>vct", function() toggle_center_scroll() end, "Toggle center scroll.")
 map('n', "gd", function() vim.lsp.buf.definition() end, "Go to definition.")
 map('n', "<leader>do", function() vim.diagnostic.open_float() end, "Open diagnostics window.")
 map('n', "<leader>dq", function() vim.diagnostic.setqflist() end, "Send diagnostics to quick fix list.")
