@@ -98,7 +98,16 @@ vim.opt.scrolloff = default_scrolloff
 
 vim.opt.colorcolumn = "80"
 
--- vim.opt.completeopt = "menu,menuone,noinsert,noselect"
+
+--------------------------------------------------------------------------------
+--- Disable nvim providers
+--------------------------------------------------------------------------------
+
+vim.g.loaded_node_provider = 0
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_python3_provider = 0
+vim.g.loaded_ruby_provider = 0
+
 
 --------------------------------------------------------------------------------
 --- Setup lazy
@@ -268,7 +277,7 @@ require("lazy").setup({
             lsp_completion = { source_func = 'omnifunc', auto_setup = true }
         },
     },
-})
+}, { rocks = { enabled = false } })
 
 
 --------------------------------------------------------------------------------
