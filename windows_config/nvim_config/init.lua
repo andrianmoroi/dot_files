@@ -495,10 +495,23 @@ vim.lsp.enable("html")
 vim.lsp.enable("typescript")
 vim.lsp.enable("csharpls")
 
+--------------------------------------------------------------------------------
+--- Diagnostic
+--------------------------------------------------------------------------------
+
 vim.diagnostic.config({
     virtual_lines = {
         current_line = false,
         severity = vim.diagnostic.severity.ERROR
+    },
+    severity_sort = true,
+    signs = {
+        text = {
+            [vim.diagnostic.severity.ERROR] = "",
+            [vim.diagnostic.severity.WARN] = "",
+            [vim.diagnostic.severity.INFO] = "",
+            [vim.diagnostic.severity.HINT] = "",
+        }
     }
 })
 
