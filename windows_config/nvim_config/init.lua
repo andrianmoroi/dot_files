@@ -501,7 +501,7 @@ vim.lsp.enable("csharpls")
 
 vim.diagnostic.config({
     virtual_lines = {
-        current_line = false,
+        current_line = true,
         severity = vim.diagnostic.severity.ERROR
     },
     severity_sort = true,
