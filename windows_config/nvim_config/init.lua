@@ -486,6 +486,12 @@ vim.lsp.enable("html")
 vim.lsp.enable("typescript")
 vim.lsp.enable("csharpls")
 
+vim.diagnostic.config({
+    virtual_lines = {
+        current_line = false,
+        severity = vim.diagnostic.severity.ERROR
+    }
+})
 
 --------------------------------------------------------------------------------
 --- Treesitter
