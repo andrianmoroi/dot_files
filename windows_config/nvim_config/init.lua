@@ -289,7 +289,7 @@ local map = function(mode, key, action, description)
 end
 
 map('n', "<leader>w", ":w!<CR>", "Save file.")
-map('n', "<M-q>", ":q<CR>", "Close window.")
+map('n', "<M-q>", ":close<CR>", "Close window.")
 map('n', "<Esc>", ":nohlsearch<CR>", "Disable highlight search.")
 map('n', "<Tab>", ":bnext<CR>", "Switch to next buffer.")
 map('n', "<S-Tab>", ":bprevious<CR>", "Switch to previous buffer.")
