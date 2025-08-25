@@ -85,16 +85,16 @@ vim.opt.cursorline = false
 -- Minimal number of screen lines to keep above and below the cursor.
 
 local default_scrolloff = 18
-local center_screlloff = 1000
+local center_scrolloff = 1000
 
 local toggle_center_scroll = function()
-    local total = default_scrolloff + center_screlloff
+    local total = default_scrolloff + center_scrolloff
     local current = vim.opt.scrolloff._value
 
     vim.opt.scrolloff = total - current
 end
 
-vim.opt.scrolloff = default_scrolloff
+vim.opt.scrolloff = center_scrolloff
 
 vim.opt.colorcolumn = "80"
 
