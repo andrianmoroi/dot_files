@@ -303,10 +303,12 @@ map('n', "<leader>cf", function() vim.lsp.buf.format() end, "Format code.")
 map('n', "<leader>cs", ":set spell!<CR>", "Toggle spell checking.")
 map('n', "<leader>vct", function() toggle_center_scroll() end, "Toggle center scroll.")
 map('n', "gd", function() vim.lsp.buf.definition() end, "Go to definition.")
+
 map('n', "<leader>do", function() vim.diagnostic.open_float() end, "Open diagnostics window.")
 map('n', "<leader>dq", function() vim.diagnostic.setqflist() end, "Send diagnostics to quick fix list.")
 map('n', "<leader>dn", function() vim.diagnostic.goto_next() end, "Go to next diagnostic.")
 map('n', "<leader>dp", function() vim.diagnostic.goto_prev() end, "Go to previous diagnostic.")
+map('n', "<leader>dw", ":DotnetLoadErrors<CR>", "Load diagnostics from `dotnet watch` command.")
 
 map('n', "<leader>r", ":%s/\\v", "Replace.")
 map({ 'x', 'v' }, "<leader>r", ":s/\\v", "Replace.")
@@ -334,7 +336,7 @@ map('n', "<C-p>", function()
     }
 
     MiniPick.builtin.cli({
-        command = { "rg", "--files", "--hidden", "--no-follow", "--no-ignore-vcs", "--color=never" },
+        command = { "rg", "--files", "--hidden", "--no-follow", "--no-ignore-vcs", "--color=never", "--ignore-case" },
     }, opts)
 end, "Search by file names.")
 map('n', "<C-e>", require("mini.files").open, "Open file explorer.")
@@ -533,3 +535,80 @@ require 'nvim-treesitter.configs'.setup {
         additional_vim_regex_highlighting = false,
     },
 }
+
+
+
+--------------------------------------------------------------------------------
+--- Dotnet load errors and warnings from watch to QuickFixList
+--------------------------------------------------------------------------------
+local uv = vim.loop
+
+local function is_dir(path)
+    local stat = uv.fs_stat(path)
+
+    return stat and stat.type == "directory"
+end
+
+local function find_vs_folder(path)
+    local vs_path = path .. "\\.vs"
+
+    if is_dir(vs_path) then
+        return vs_path
+    end
+
+    local parent = path:match("^(.*)/[^/]+$")
+    if not parent or parent == path then
+        return nil
+    end
+
+    return find_vs_folder(parent)
+end
+
+local function load_erros_and_warnings_to_qfl(logfile)
+    local quickfix_items = {}
+
+    vim.fn.setqflist({}, 'r')
+
+    for line in io.lines(logfile) do
+        -- 1. Remove ANSI color codes
+        line = line:gsub("\27%[[%d;]*[A-Za-z]", "")
+
+        -- 2. Normalize Windows paths to forward slashes
+        line = line:gsub("\\", "/")
+
+        -- 3. Match only lines you care about
+        -- Example: errors, warnings, exceptions
+        if line:match("error CS%d+") or line:match("warning CS%d+") or line:match("Exception") then
+            -- Try to parse file/line/col/message
+            local file, lnum, col, msg = line:match("([%w%p]+%.%w+)%((%d+),?(%d*)%)[:]?%s*(.*)")
+            lnum = tonumber(lnum) or 0
+            col = tonumber(col) or 0
+            msg = msg or line
+
+            table.insert(quickfix_items, {
+                filename = file or "",
+                lnum = lnum,
+                col = col,
+                text = msg
+            })
+        end
+    end
+
+    -- Populate Neovim quickfix
+    vim.fn.setqflist({}, ' ', { title = 'Dotnet Watch', items = quickfix_items })
+    vim.cmd("copen")
+end
+
+vim.api.nvim_create_user_command("DotnetLoadErrors", function()
+    local current_path = vim.fn.getcwd()
+    local vs_path = find_vs_folder(current_path)
+
+    if vs_path then
+        local log_file_name = "dotnet_log_file.txt" -- vim.fn.getenv("DOTNET_LOG_FILE_NAME")
+        local log_file = vs_path .. "\\" .. log_file_name
+
+        load_erros_and_warnings_to_qfl(log_file)
+    else
+        vim.api.nvim_err_writeln("VS folder not found.")
+    end
+end, {})
