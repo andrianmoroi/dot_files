@@ -230,7 +230,9 @@ function dr
     param(
         [string]$bookmark
     )
+
     $path = Get-ProjectPath $bookmark
+
     if ($path -and (Test-Path $path))
     {
         dotnet run --project $path
@@ -268,5 +270,49 @@ Register-ArgumentCompleter -CommandName dw -ParameterName bookmark -ScriptBlock 
 
     Complete-Project $wordToComplete $commandAst $null
 }
+
+
+function Watch-AndTee {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)]
+        [string]$File,
+
+        [string]$Trigger,
+
+        [Parameter(ValueFromPipeline = $true)]
+        $InputObject
+    )
+
+    begin {
+        $oldEncoding = [Console]::OutputEncoding
+        [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+        $OutputEncoding = [System.Text.Encoding]::UTF8
+
+        Clear-Content -Path $File -ErrorAction SilentlyContinue
+    }
+
+
+    process {
+        $line = $InputObject
+
+        if ($Trigger -and ($line -like $Trigger)) {
+            Clear-Content -Path $File -ErrorAction SilentlyContinue
+
+            Write-Host $InputObject
+        }
+        else {
+            Write-Host $InputObject
+
+            Add-Content -Path $File -Value $line
+        }
+    }
+    end {
+        # Restore original encoding
+        [Console]::OutputEncoding = $oldEncoding
+        $OutputEncoding = $oldEncoding
+    }
+}
+
 
 
