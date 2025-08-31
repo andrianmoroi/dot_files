@@ -24,7 +24,7 @@ local function on_init_project(client, project_files)
 end
 
 local function roslyn_handlers()
-    return {
+    local result = {
         ['workspace/projectInitializationComplete'] = function(_, _, ctx)
             vim.notify('Roslyn project initialization complete', vim.log.levels.INFO, { title = 'roslyn_ls' })
 
@@ -59,17 +59,13 @@ local function roslyn_handlers()
 
             return vim.NIL
         end,
-        ['razor/provideDynamicFileInfo'] = function(_, _, _)
-            vim.notify(
-                'Razor is not supported.\nPlease use https://github.com/tris203/rzls.nvim',
-                vim.log.levels.WARN,
-                { title = 'roslyn_ls' }
-            )
-            return vim.NIL
-        end,
     }
+
+    return result
 end
 
+local code_analisys_path = vim.fs.joinpath(os.getenv("MicrosoftCodeAnalysisLanguageServer"),
+    'Microsoft.CodeAnalysis.LanguageServer.dll')
 
 ---@type vim.lsp.Config
 vim.lsp.config['roslyn'] = {
@@ -77,12 +73,10 @@ vim.lsp.config['roslyn'] = {
     offset_encoding = 'utf-8',
     cmd = {
         'dotnet',
-        os.getenv("MicrosoftCodeAnalysisLanguageServer") .. 'Microsoft.CodeAnalysis.LanguageServer.dll',
-        '--logLevel',
-        'Information',
-        '--extensionLogDirectory',
-        fs.joinpath(uv.os_tmpdir(), 'roslyn_ls/logs'),
+        code_analisys_path,
+        '--logLevel=Information',
         '--stdio',
+        '--extensionLogDirectory=' .. vim.fs.dirname(vim.lsp.get_log_path()),
     },
     filetypes = { 'cs' },
     handlers = roslyn_handlers(),
@@ -255,3 +249,4 @@ vim.api.nvim_create_user_command("DotnetLoadErrors", function()
         vim.api.nvim_err_writeln("VS folder not found.")
     end
 end, {})
+

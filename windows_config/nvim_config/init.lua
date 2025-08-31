@@ -282,9 +282,7 @@ require("lazy").setup({
         "seblyng/roslyn.nvim",
         ---@module 'roslyn.config'
         ---@type RoslynNvimConfig
-        opts = {
-            -- your configuration comes here; leave empty for default settings
-        },
+        opts = {},
     }
 
 }, { rocks = { enabled = false } })
@@ -393,16 +391,11 @@ vim.lsp.config['luals'] = {
 }
 
 
--- -- To install run:
--- -- dotnet tool install --global csharp-ls
---
--- vim.lsp.config['csharpls'] = {
---     cmd = { 'csharp-ls' },
---     filetypes = { 'cs' },
---     init_options = {
---         AutomaticWorkspaceInit = true,
---     },
--- }
+-- To install run:
+-- Go to
+-- https://dev.azure.com/azure-public/vside/_artifacts/feed/vs-impl/NuGet/Microsoft.CodeAnalysis.LanguageServer.<platform>/overview
+-- replace <platform> with one of the following linux-x64, osx-x64, win-x64, neutral.
+-- Download and extract it (nuget's are zip files).
 
 require("dotnetLspRoslyn")
 
@@ -548,6 +541,3 @@ require 'nvim-treesitter.configs'.setup {
         additional_vim_regex_highlighting = false,
     },
 }
-
-
-
