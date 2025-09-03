@@ -508,10 +508,11 @@ vim.lsp.enable("typescript")
 --------------------------------------------------------------------------------
 
 vim.diagnostic.config({
-    virtual_lines = {
-        current_line = true,
-        severity = vim.diagnostic.severity.ERROR
-    },
+    virtual_text = true,
+    -- virtual_lines = {
+    --     current_line = false,
+    --     severity = vim.diagnostic.severity.ERROR
+    -- },
     severity_sort = true,
     signs = {
         text = {
