@@ -498,10 +498,19 @@ vim.lsp.config["typescript"] = {
 }
 
 
+vim.lsp.config["json"] = {
+    cmd = { 'vscode-json-language-server', '--stdio' },
+    filetypes = { 'json', 'jsonc' },
+    init_options = {
+        provideFormatter = true,
+    },
+    root_markers = { '.git' },
+}
+
 vim.lsp.enable("luals")
 vim.lsp.enable("html")
 vim.lsp.enable("typescript")
--- vim.lsp.enable("csharpls")
+vim.lsp.enable("json")
 
 --------------------------------------------------------------------------------
 --- Diagnostic
