@@ -10,7 +10,7 @@ function Get-BookmarkPath
 
         if ($line)
         {
-            $fields = $line -split '\s+'
+            $fields = $line.Line -split '\s+', 2
 
             return $fields[1]
         }

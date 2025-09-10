@@ -236,7 +236,8 @@ require("lazy").setup({
                     return miniStatusLine.combine_groups({
                         { hl = mode_hl,                  strings = { mode } },
                         '%<', -- Mark general truncate point
-                        { hl = 'MiniStatuslineDevinfo',  strings = { diagnostics, spell, lsp } },
+                        { hl = 'MiniStatuslineDevinfo',  strings = { spell } },
+                        -- { hl = 'MiniStatuslineDevinfo',  strings = { diagnostics, spell, lsp } },
                         { hl = 'MiniStatuslineFilename', strings = { "%{expand('%:~:.')}", fileStatus } },
                         '%=', -- End left alignment
                         { hl = 'MiniStatuslineDevinfo',  strings = { vim.fn.reg_recording() ~= "" and "Recording: " .. vim.fn.reg_recording() or "" } },
@@ -351,6 +352,9 @@ map('n', "<C-e>", require("mini.files").open, "Open file explorer.")
 map('n', "<leader>sg", require("mini.pick").builtin.grep_live, "Search in files.")
 map('n', "<leader>sh", require("mini.pick").builtin.help, "Search healp.")
 map('n', "<leader>sb", require("mini.pick").builtin.buffers, "Search healp.")
+
+map('n', "<leader>gd", require("gitsigns").diffthis, "Gitt diff this.")
+map('n', "<leader>ga", require("gitsigns").stage_hunk, "Gitt stage hunk.")
 
 --------------------------------------------------------------------------------
 --- Highlight yanked text
