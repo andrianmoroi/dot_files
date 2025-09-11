@@ -216,7 +216,9 @@ require("lazy").setup({
 
                     local mode, mode_hl   = miniStatusLine.section_mode({ trunc_width = 1000000 })
                     local fileStatus      = vim.bo.modified and "*" or ""
-                    local fileinfo        = miniStatusLine.section_fileinfo({ trunc_width = 1000000 })
+                    local fileinfo        = require("mini.icons").get("filetype", vim.bo.filetype)
+                    -- local fileinfo        = miniStatusLine.section_fileinfo({ trunc_width = 1000000 })
+
                     -- local location      = '%P %l[%L]:%2v[%-2{virtcol("$") - 1}]'
                     local location        = '%P of %L'
                     local search          = miniStatusLine.section_searchcount({ trunc_width = 10 })
