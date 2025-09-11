@@ -96,8 +96,10 @@ end
 
 vim.opt.scrolloff = center_scrolloff
 
--- vim.opt.colorcolumn = "80"
-vim.opt.colorcolumn = "100"
+
+local text_width = 100
+vim.opt.colorcolumn = tostring(text_width)
+vim.opt.textwidth = text_width
 
 
 --------------------------------------------------------------------------------
