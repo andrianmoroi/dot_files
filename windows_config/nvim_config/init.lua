@@ -96,7 +96,8 @@ end
 
 vim.opt.scrolloff = center_scrolloff
 
-vim.opt.colorcolumn = "80"
+-- vim.opt.colorcolumn = "80"
+vim.opt.colorcolumn = "100"
 
 
 --------------------------------------------------------------------------------
@@ -353,8 +354,13 @@ map('n', "<leader>sg", require("mini.pick").builtin.grep_live, "Search in files.
 map('n', "<leader>sh", require("mini.pick").builtin.help, "Search healp.")
 map('n', "<leader>sb", require("mini.pick").builtin.buffers, "Search healp.")
 
-map('n', "<leader>gd", require("gitsigns").diffthis, "Gitt diff this.")
-map('n', "<leader>ga", require("gitsigns").stage_hunk, "Gitt stage hunk.")
+map('n', "<leader>gd", require("gitsigns").diffthis, "Git diff this.")
+map('n', "<leader>ga", require("gitsigns").stage_hunk, "Git stage hunk.")
+map('n', "<leader>gq", require("gitsigns").setqflist, "Git move all hunks to quickfix list.")
+map('n', "<leader>gb", require("gitsigns").blame, "Blame this file.")
+
+map('n', "<leader>tn", ":tabNext<CR>", "Move to next tab.")
+map('n', "<leader>tq", ":tabclose<CR>", "Close tab.")
 
 --------------------------------------------------------------------------------
 --- Highlight yanked text
