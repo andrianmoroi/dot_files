@@ -156,7 +156,8 @@ require("lazy").setup({
         version = '*',
         opts = {
             mappings = {
-                go_in_plus = "<Enter>"
+                go_in_plus = "<Enter>",
+                close = "<C-E>",
             },
             windows = {
                 preview = true,
