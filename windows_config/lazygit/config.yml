@@ -1,0 +1,4 @@
+notARepository: skip
+keybinding:
+  universal:
+    quit: <C-q>
