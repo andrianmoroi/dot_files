@@ -360,7 +360,8 @@ map('n', "<leader>sh", require("mini.pick").builtin.help, "Search help.")
 map('n', "<leader>sb", require("mini.pick").builtin.buffers, "Search buffers.")
 
 map('n', "<leader>gd", require("gitsigns").diffthis, "Git diff this.")
-map('n', "<leader>ga", require("gitsigns").stage_hunk, "Git stage hunk.")
+map('n', "<leader>gh", require("gitsigns").stage_hunk, "Git stage hunk.")
+map('n', "<leader>ga", require("gitsigns").stage_buffer, "Git stage entire buffer.")
 map('n', "<leader>gq", require("gitsigns").setqflist, "Git move all hunks to quickfix list.")
 map('n', "<leader>gb", require("gitsigns").blame, "Blame this file.")
 
