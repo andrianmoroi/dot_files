@@ -159,7 +159,7 @@ require("lazy").setup({
         opts = {
             mappings = {
                 go_in_plus = "<Enter>",
-                close = "<C-E>",
+                close = "<M-e>",
             },
             windows = {
                 preview = true,
@@ -336,7 +336,7 @@ map({ 'n', 'x' }, "<leader>y", "\"+y", "Copy to clipboard.")
 map({ 'n', 'x' }, "<leader>p", "\"+p", "Paste from clipboard.")
 map({ 'n', 'x' }, "<leader>P", "\"+P", "Paste from clipboard.")
 
-map('n', "<C-p>", function()
+map('n', "<M-p>", function()
     local MiniPick = require("mini.pick")
 
     local show_with_icons = function(buf_id, items, query)
@@ -354,7 +354,7 @@ map('n', "<C-p>", function()
         command = { "rg", "--files", "--hidden", "--no-follow", "--no-ignore-vcs", "--color=never", "--ignore-case" },
     }, opts)
 end, "Search by file names.")
-map('n', "<C-e>", require("mini.files").open, "Open file explorer.")
+map('n', "<M-e>", require("mini.files").open, "Open file explorer.")
 map('n', "<leader>sg", require("mini.pick").builtin.grep_live, "Search in files.")
 map('n', "<leader>sh", require("mini.pick").builtin.help, "Search help.")
 map('n', "<leader>sb", require("mini.pick").builtin.buffers, "Search buffers.")
