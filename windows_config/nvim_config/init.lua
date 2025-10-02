@@ -99,7 +99,7 @@ vim.opt.scrolloff = center_scrolloff
 
 local text_width = 100
 vim.opt.colorcolumn = tostring(text_width)
-vim.opt.textwidth = text_width
+-- vim.opt.textwidth = text_width
 
 
 --------------------------------------------------------------------------------
@@ -523,10 +523,23 @@ vim.lsp.config["json"] = {
     root_markers = { '.git' },
 }
 
+vim.lsp.config["cssls"] = {
+    cmd = { 'vscode-css-language-server', '--stdio' },
+    filetypes = { 'css', 'scss', 'less' },
+    init_options = { provideFormatter = true }, -- needed to enable formatting capabilities
+    root_markers = { 'package.json', '.git' },
+    settings = {
+        css = { validate = true },
+        scss = { validate = true },
+        less = { validate = true },
+    },
+}
+
 vim.lsp.enable("luals")
 vim.lsp.enable("html")
 vim.lsp.enable("typescript")
 vim.lsp.enable("json")
+vim.lsp.enable("cssls")
 
 --------------------------------------------------------------------------------
 --- Diagnostic
