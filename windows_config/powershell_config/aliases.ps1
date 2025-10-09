@@ -10,6 +10,7 @@ function git_log()
 }
 
 Set-Alias n nvim
+Set-Alias f firefox.exe
 Set-Alias gs git_status
 Set-Alias gll git_log
 

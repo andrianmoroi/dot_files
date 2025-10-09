@@ -84,7 +84,7 @@ vim.opt.cursorline = false
 
 -- Minimal number of screen lines to keep above and below the cursor.
 
-local default_scrolloff = 18
+local default_scrolloff = 3
 local center_scrolloff = 1000
 
 local toggle_center_scroll = function()
@@ -94,7 +94,7 @@ local toggle_center_scroll = function()
     vim.opt.scrolloff = total - current
 end
 
-vim.opt.scrolloff = center_scrolloff
+vim.opt.scrolloff = default_scrolloff
 
 
 local text_width = 100
@@ -580,3 +580,47 @@ require 'nvim-treesitter.configs'.setup {
         additional_vim_regex_highlighting = false,
     },
 }
+
+--------------------------------------------------------------------------------
+--- Loremipsum
+--------------------------------------------------------------------------------
+
+vim.api.nvim_create_user_command("Lorem", function(opts)
+    local lorem_words = {
+        "Lorem", "ipsum", "dolor", "sit", "amet", "consectetur", "adipiscing", "elit", "quisque", "faucibus", "ex",
+        "sapien", "vitae", "pellentesque", "sem", "placerat", "in", "id", "cursus", "mi", "pretium", "tellus", "duis",
+        "convallis", "tempus", "leo", "eu", "aenean", "sed", "diam", "urna", "tempor", "pulvinar", "vivamus", "fringilla",
+        "lacus", "nec", "metus", "bibendum", "egestas", "iaculis", "massa", "nisl", "malesuada", "lacinia", "integer",
+        "nunc", "posuere", "ut", "hendrerit", "semper", "vel", "class", "aptent", "taciti", "sociosqu", "ad", "litora",
+        "torquent", "per", "conubia", "nostra", "inceptos", "himenaeos", "orci", "varius", "natoque", "penatibus", "et",
+        "magnis", "dis", "parturient", "montes", "nascetur", "ridiculus", "mus", "donec", "rhoncus", "eros", "lobortis",
+        "nulla", "molestie", "mattis", "scelerisque", "maximus", "eget", "fermentum", "odio", "phasellus", "non", "purus",
+        "est", "efficitur", "laoreet", "mauris", "pharetra", "vestibulum", "fusce", "dictum", "risus", "blandit", "quis",
+        "suspendisse", "aliquet", "nisi", "sodales", "consequat", "magna", "ante", "condimentum", "neque", "at", "luctus",
+        "nibh", "finibus", "facilisis", "dapibus", "etiam", "interdum", "tortor", "ligula", "congue", "sollicitudin",
+        "erat", "viverra", "ac", "tincidunt", "nam", "porta", "elementum", "a", "enim", "euismod", "quam", "justo",
+        "lectus", "commodo", "augue", "arcu", "dignissim", "velit", "aliquam", "imperdiet", "mollis", "nullam",
+        "volutpat", "porttitor", "ullamcorper", "rutrum", "gravida", "cras", "eleifend", "turpis", "fames", "primis",
+        "vulputate", "ornare", "sagittis", "vehicula", "praesent", "dui", "felis", "venenatis", "ultrices", "proin",
+        "libero", "feugiat", "tristique", "accumsan", "maecenas", "potenti", "ultricies", "habitant", "morbi", "senectus",
+        "netus", "suscipit", "auctor", "curabitur", "facilisi", "cubilia", "curae", "hac", "habitasse", "platea",
+        "dictumst", "lorem", "ipsum", "dolor", "sit", "amet", "consectetur", "adipiscing", "elit", "quisque", "faucibus",
+        "ex", "sapien", "vitae", "pellentesque"
+    }
+
+    local n = tonumber(opts.args) or 20 -- default: 20 words if no param
+    local result = {}
+
+    for i = 1, n do
+        table.insert(result, lorem_words[((i - 1) % #lorem_words) + 1])
+    end
+
+    local text = table.concat(result, " ")
+    -- Capitalize the first word
+    text = text:gsub("^%l", string.upper) .. "."
+
+    vim.api.nvim_put({ text }, "c", true, true)
+end, {
+    nargs = "?",       -- optional argument
+    complete = "file", -- makes command-line completion happy
+})
