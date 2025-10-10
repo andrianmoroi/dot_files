@@ -35,7 +35,34 @@ function g
     }
 }
 
+function o
+{
+    param(
+        [string]$bookmark
+    )
+
+    g $bookmark
+    n
+}
+
 Register-ArgumentCompleter -CommandName g -ParameterName bookmark -ScriptBlock {
+    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+
+    if (Test-Path $BOOKMARKS_FILE)
+    {
+        $bookmarks = Get-Content $BOOKMARKS_FILE | ForEach-Object {
+            ($_ -split '\s+')[0]
+        }
+
+        $matches_bookmarks = $bookmarks | Where-Object { $_ -and $_ -like "$wordToComplete*" }
+
+        $matches_bookmarks | ForEach-Object {
+            [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
+        }
+    }
+}
+
+Register-ArgumentCompleter -CommandName o -ParameterName bookmark -ScriptBlock {
     param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
 
     if (Test-Path $BOOKMARKS_FILE)
