@@ -25,13 +25,19 @@ function g
         [string]$bookmark
     )
 
-    $path = Get-BookmarkPath $bookmark
+    if (-not [string]::IsNullOrWhiteSpace($bookmark)) {
+        $path = Get-BookmarkPath $bookmark
 
-    if ($path -and (Test-Path $path))
-    {
-        Set-Location $path
-    } else {
-        Write-Error "Bookmark '$bookmark' not found or path does not exist."
+        if ($path -and (Test-Path $path))
+        {
+            Set-Location $path
+        } else {
+            Write-Error "Bookmark '$bookmark' not found or path does not exist."
+        }
+
+        $name = Split-Path -Path (Get-Location) -Leaf
+
+        Write-Host "`e]2;$name`a"
     }
 }
 
@@ -42,6 +48,7 @@ function o
     )
 
     g $bookmark
+
     n
 }
 
