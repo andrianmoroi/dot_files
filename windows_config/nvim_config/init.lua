@@ -306,8 +306,8 @@ end
 map('n', "<leader>w", ":w!<CR>", "Save file.")
 map('n', "<M-q>", ":close<CR>", "Close window.")
 map('n', "<Esc>", ":nohlsearch<CR>", "Disable highlight search.")
-map('n', "<Tab>", ":bnext<CR>", "Switch to next buffer.")
-map('n', "<S-Tab>", ":bprevious<CR>", "Switch to previous buffer.")
+map('n', "<Tab>", ":bprevious<CR>", "Switch to next buffer.")
+map('n', "<S-Tab>", ":bnext<CR>", "Switch to previous buffer.")
 map('n', "<leader>q", ":bprev<bar>bdelete #<CR>", "Close buffer.")
 map('n', "<leader>Q", ":bdelete!<CR>", "Close buffer.")
 map('n', "<C-n>", ":enew<CR>", "New empty buffer.")
@@ -325,8 +325,8 @@ map('n', "<leader>dn", function() vim.diagnostic.goto_next() end, "Go to next di
 map('n', "<leader>dp", function() vim.diagnostic.goto_prev() end, "Go to previous diagnostic.")
 map('n', "<leader>dw", ":DotnetLoadErrors<CR>", "Load diagnostics from `dotnet watch` command.")
 
-map('n', "<leader>r", ":%s/\\v", "Replace.")
-map({ 'x', 'v' }, "<leader>r", ":s/\\v", "Replace.")
+map('n', "<leader>r", ":%s/", "Replace.")
+map({ 'x', 'v' }, "<leader>r", ":s/", "Replace.")
 
 map('i', "<S-Tab>", "<C-V><Tab>", "Insert tab character.")
 
@@ -356,6 +356,7 @@ map('n', "<M-p>", function()
 end, "Search by file names.")
 map('n', "<M-e>", require("mini.files").open, "Open file explorer.")
 map('n', "<leader>sg", require("mini.pick").builtin.grep_live, "Search in files.")
+-- map('n', "<leader>sg", require("mini.pick").builtin.grep_live, "Search in files.")
 map('n', "<leader>sh", require("mini.pick").builtin.help, "Search help.")
 map('n', "<leader>sb", require("mini.pick").builtin.buffers, "Search buffers.")
 
