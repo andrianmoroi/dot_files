@@ -653,3 +653,21 @@ end, {
     nargs = "?",       -- optional argument
     complete = "file", -- makes command-line completion happy
 })
+
+
+--------------------------------------------------------------------------------
+--- Create an autocmd group for quickfix settings
+--------------------------------------------------------------------------------
+vim.api.nvim_create_augroup("QuickfixSettings", { clear = true })
+
+vim.api.nvim_create_autocmd("FileType", {
+  group = "QuickfixSettings",
+  pattern = "qf",
+  callback = function()
+    vim.opt_local.wrap = false
+  end,
+})
+
+
+
+
