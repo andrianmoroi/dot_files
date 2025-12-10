@@ -30,26 +30,26 @@ end
 vim.opt.rtp:prepend(lazypath)
 --
 -- Use pwsh if available, otherwise fallback to powershell
-vim.o.shell = vim.fn.executable('pwsh') == 1 and 'pwsh' or 'powershell'
+vim.o.shell        = vim.fn.executable('pwsh') == 1 and 'pwsh' or 'powershell'
 
 -- Set shell command flags
 vim.o.shellcmdflag = table.concat({
-  '-NoLogo',
-  '-NonInteractive',
-  '-ExecutionPolicy RemoteSigned',
-  '-Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.UTF8Encoding]::new();',
-  "$PSDefaultParameterValues['Out-File:Encoding']='utf8';",
-  "$PSStyle.OutputRendering='plaintext';",
-  'Remove-Alias -Force -ErrorAction SilentlyContinue tee;'
+    '-NoLogo',
+    '-NonInteractive',
+    '-ExecutionPolicy RemoteSigned',
+    '-Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.UTF8Encoding]::new();',
+    "$PSDefaultParameterValues['Out-File:Encoding']='utf8';",
+    "$PSStyle.OutputRendering='plaintext';",
+    'Remove-Alias -Force -ErrorAction SilentlyContinue tee;'
 }, ' ')
 
 -- Set shell redirection
-vim.o.shellredir  = '2>&1 | %{{ "$_" }} | Out-File %s; exit $LastExitCode'
-vim.o.shellpipe   = '2>&1 | %{{ "$_" }} | tee %s; exit $LastExitCode'
+vim.o.shellredir   = '2>&1 | %{{ "$_" }} | Out-File %s; exit $LastExitCode'
+vim.o.shellpipe    = '2>&1 | %{{ "$_" }} | tee %s; exit $LastExitCode'
 
 -- Disable shell quoting
-vim.o.shellquote  = ''
-vim.o.shellxquote = ''
+vim.o.shellquote   = ''
+vim.o.shellxquote  = ''
 
 -- vim.env.TMP = vim.fn.expand("~/nvim-temp/")
 -- vim.env.TEMP = vim.fn.expand("~/nvim-temp/")
@@ -127,7 +127,7 @@ vim.opt.scrolloff = default_scrolloff
 
 local text_width = 100
 vim.opt.colorcolumn = tostring(text_width)
--- vim.opt.textwidth = text_width
+vim.opt.textwidth = text_width
 
 
 --------------------------------------------------------------------------------
@@ -245,6 +245,7 @@ require("lazy").setup({
                     local mode, mode_hl   = miniStatusLine.section_mode({ trunc_width = 1000000 })
                     local fileStatus      = vim.bo.modified and "*" or ""
                     local fileinfo        = require("mini.icons").get("filetype", vim.bo.filetype)
+                    local git             = miniStatusLine.section_git({ trunc_width = 40 })
                     -- local fileinfo        = miniStatusLine.section_fileinfo({ trunc_width = 1000000 })
 
                     -- local location      = '%P %l[%L]:%2v[%-2{virtcol("$") - 1}]'
@@ -270,7 +271,7 @@ require("lazy").setup({
                     return miniStatusLine.combine_groups({
                         { hl = mode_hl,                  strings = { mode } },
                         '%<', -- Mark general truncate point
-                        { hl = 'MiniStatuslineDevinfo',  strings = { spell } },
+                        { hl = 'MiniStatuslineDevinfo',  strings = { git, spell } },
                         -- { hl = 'MiniStatuslineDevinfo',  strings = { diagnostics, spell, lsp } },
                         { hl = 'MiniStatuslineFilename', strings = { "%{expand('%:~:.')}", fileStatus } },
                         '%=', -- End left alignment
@@ -296,7 +297,7 @@ require("lazy").setup({
         },
     },
 
-    -- { "folke/zen-mode.nvim",     opts = {} },
+    { "folke/zen-mode.nvim",     opts = {} },
 
     {
         "nvim-treesitter/nvim-treesitter",
@@ -336,7 +337,8 @@ map('n', "<M-q>", ":close<CR>", "Close window.")
 map('n', "<Esc>", ":nohlsearch<CR>", "Disable highlight search.")
 map('n', "<Tab>", ":bprevious<CR>", "Switch to next buffer.")
 map('n', "<S-Tab>", ":bnext<CR>", "Switch to previous buffer.")
-map('n', "<leader>q", ":bprev<bar>bdelete #<CR>", "Close buffer.")
+map('n', "<leader>q", ":bdelete<CR>", "Close buffer.")
+-- map('n', "<leader>q", ":bprev<bar>bdelete #<CR>", "Close buffer.")
 map('n', "<leader>Q", ":bdelete!<CR>", "Close buffer.")
 map('n', "<C-n>", ":enew<CR>", "New empty buffer.")
 map('n', "<C-w>n", ":vnew<CR>", "New vertical empty buffer.")
@@ -396,6 +398,10 @@ map('n', "<leader>gb", require("gitsigns").blame, "Blame this file.")
 
 map('n', "<leader>tn", ":tabNext<CR>", "Move to next tab.")
 map('n', "<leader>tq", ":tabclose<CR>", "Close tab.")
+
+
+
+map({ 'n', 'v' }, "grx", ":LspTypescriptSourceAction<CR>", "Close tab.")
 
 --------------------------------------------------------------------------------
 --- Highlight yanked text
@@ -661,13 +667,9 @@ end, {
 vim.api.nvim_create_augroup("QuickfixSettings", { clear = true })
 
 vim.api.nvim_create_autocmd("FileType", {
-  group = "QuickfixSettings",
-  pattern = "qf",
-  callback = function()
-    vim.opt_local.wrap = false
-  end,
+    group = "QuickfixSettings",
+    pattern = "qf",
+    callback = function()
+        vim.opt_local.wrap = false
+    end,
 })
-
-
-
-
