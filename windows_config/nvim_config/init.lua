@@ -225,7 +225,7 @@ require("lazy").setup({
                 suffix_last = 'l',     -- Suffix to search with "prev" method
                 suffix_next = 'n',     -- Suffix to search with "next" method
             },
-            n_lines = 100,
+            n_lines = 1000,
         }
     },
     {
