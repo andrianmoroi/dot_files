@@ -250,10 +250,35 @@ local function load_erros_and_warnings_to_qfl(logfile)
         end
     end
 
+    local function distinct_quickfix(items)
+        local seen = {}
+        local result = {}
+
+        for _, item in ipairs(items) do
+            -- Use a combination of filename, line, column, text, and type as the key
+            local key = string.format("%s|%d|%d|%s|%s",
+                item.filename or "",
+                item.lnum or 0,
+                item.col or 0,
+                item.text or "",
+                item.type or ""
+            )
+
+            if not seen[key] then
+                table.insert(result, item)
+                seen[key] = true
+            end
+        end
+
+        return result
+    end
+
     -- Populate Neovim quickfix
-    vim.fn.setqflist({}, ' ', { title = 'Dotnet Watch', items = quickfix_items })
+    vim.fn.setqflist({}, ' ', { title = 'Dotnet Watch', items = distinct_quickfix(quickfix_items) })
     vim.cmd("copen")
 end
+
+
 
 vim.api.nvim_create_user_command("DotnetLoadErrors", function()
     local current_path = vim.fn.getcwd()

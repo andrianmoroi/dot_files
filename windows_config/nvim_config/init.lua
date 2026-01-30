@@ -673,3 +673,29 @@ vim.api.nvim_create_autocmd("FileType", {
         vim.opt_local.wrap = false
     end,
 })
+
+
+--------------------------------------------------------------------------------
+--- Display only errors in quick fix
+--------------------------------------------------------------------------------
+
+function ShowOnlyErrors()
+    local qflist = vim.fn.getqflist()
+    local errors = {}
+    local any = false
+
+    for _, item in ipairs(qflist) do
+        if item.type == "E" then
+            table.insert(errors, item)
+            any = true
+        end
+    end
+
+    if any then
+        vim.fn.setqflist({}, 'r', { items = errors })
+        vim.cmd("copen")
+    end
+end
+
+map('n', "<leader>de", ":lua ShowOnlyErrors()<CR>", "Show only error items in quickfix.")
+
