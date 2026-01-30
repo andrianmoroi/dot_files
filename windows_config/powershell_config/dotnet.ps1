@@ -111,7 +111,17 @@ function dw
 {
     param([string]$bookmark)
 
-    Dotnet-Command $bookmark watch
+    $path = Get-ProjectPath $bookmark
+    $vsPath = Find-VsFolderRecursive $path
+
+    if ($path -and (Test-Path $path) -and $vsPath)
+    {
+        $logFile = Join-Path $vsPath $DOTNET_LOG_FILE_NAME
+
+        dotnet watch run --project $path 2>&1 | Watch-AndTee -File $logFile -Trigger "File updated:|Restart requested.|Building.*\.\.\."
+    } else {
+        Write-Error "Project '$bookmark' not found or path does not exist."
+    }
 }
 
 function Complete-Project
