@@ -395,6 +395,7 @@ map('n', "<leader>gh", require("gitsigns").stage_hunk, "Git stage hunk.")
 map('n', "<leader>ga", require("gitsigns").stage_buffer, "Git stage entire buffer.")
 map('n', "<leader>gq", require("gitsigns").setqflist, "Git move all hunks to quickfix list.")
 map('n', "<leader>gb", require("gitsigns").blame, "Blame this file.")
+map('n', "<leader>gr", require("gitsigns").reset_hunk, "Git reset hunk.")
 
 map('n', "<leader>tn", ":tabNext<CR>", "Move to next tab.")
 map('n', "<leader>tq", ":tabclose<CR>", "Close tab.")

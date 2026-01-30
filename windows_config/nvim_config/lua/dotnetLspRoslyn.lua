@@ -232,7 +232,9 @@ local function load_erros_and_warnings_to_qfl(logfile)
             msg = msg or line
 
             local qf_type = nil
-            if type:lower():match("^error") then
+            if type == nil then
+
+            elseif type:lower():match("^error") then
                 qf_type = "E"
             elseif type:lower():match("^warn") then
                 qf_type = "W"
