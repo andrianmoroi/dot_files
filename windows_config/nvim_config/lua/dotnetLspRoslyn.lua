@@ -217,16 +217,35 @@ local function load_erros_and_warnings_to_qfl(logfile)
         -- Example: errors, warnings, exceptions
         if line:match("error CS%d+") or line:match("warning CS%d+") or line:match("Exception") then
             -- Try to parse file/line/col/message
-            local file, lnum, col, msg = line:match("([%w%p]+%.%w+)%((%d+),?(%d*)%)[:]?%s*(.*)")
+            local file, lnum, col, type, msg = line:match(
+                "([%w%p]+%.%w+)"    -- file path
+                .. "%s*[%(:]?%s*"   -- optional '(' or ':' after file
+                .. "(%d*)"          -- optional line number
+                .. ",?(%d*)[%)]?"   -- optional column number, optional ')'
+                .. "[:]?%s*"        -- optional ':' after line/col
+                .. "(%a+)%s*%w+[:]" -- type: warning / error
+                .. "(.*)%[.*%]"     -- message
+            )
+
             lnum = tonumber(lnum) or 0
             col = tonumber(col) or 0
             msg = msg or line
+
+            local qf_type = nil
+            if type:lower():match("^error") then
+                qf_type = "E"
+            elseif type:lower():match("^warn") then
+                qf_type = "W"
+            else
+                qf_type = "I" -- info or unknown
+            end
 
             table.insert(quickfix_items, {
                 filename = file or "",
                 lnum = lnum,
                 col = col,
-                text = msg
+                text = msg:gsub("^%s+", ""):gsub("%s+$", ""),
+                type = qf_type
             })
         end
     end
@@ -249,4 +268,3 @@ vim.api.nvim_create_user_command("DotnetLoadErrors", function()
         vim.api.nvim_err_writeln("VS folder not found.")
     end
 end, {})
-
