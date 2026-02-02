@@ -319,7 +319,12 @@ require("lazy").setup({
         ---@module 'roslyn.config'
         ---@type RoslynNvimConfig
         opts = {},
+    },
+
+    {
+        "jlcrochet/vim-razor"
     }
+
 
 }, { rocks = { enabled = false } })
 
@@ -699,4 +704,3 @@ function ShowOnlyErrors()
 end
 
 map('n', "<leader>de", ":lua ShowOnlyErrors()<CR>", "Show only error items in quickfix.")
-
