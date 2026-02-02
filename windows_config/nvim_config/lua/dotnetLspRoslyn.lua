@@ -218,13 +218,13 @@ local function load_erros_and_warnings_to_qfl(logfile)
         if line:match("error CS%d+") or line:match("warning CS%d+") or line:match("Exception") then
             -- Try to parse file/line/col/message
             local file, lnum, col, type, msg = line:match(
-                "([%w%p]+%.%w+)"    -- file path
-                .. "%s*[%(:]?%s*"   -- optional '(' or ':' after file
-                .. "(%d*)"          -- optional line number
-                .. ",?(%d*)[%)]?"   -- optional column number, optional ')'
-                .. "[:]?%s*"        -- optional ':' after line/col
+                "([%w%p]+%.%w+)" -- file path
+                .. "%s*[%(:]?%s*" -- optional '(' or ':' after file
+                .. "(%d*)"  -- optional line number
+                .. ",?(%d*)[%)]?" -- optional column number, optional ')'
+                .. "[:]?%s*" -- optional ':' after line/col
                 .. "(%a+)%s*%w+[:]" -- type: warning / error
-                .. "(.*)%[.*%]"     -- message
+                .. "(.*)%[?%w*%]?$" -- message
             )
 
             lnum = tonumber(lnum) or 0
