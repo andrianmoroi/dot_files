@@ -88,6 +88,7 @@ vim.opt.smartcase = true
 vim.opt.signcolumn = "yes" -- Keep signcolumn on by default
 
 -- waiting milliseconds(after last typed characters) to write the swap file to disk.
+vim.opt.swapfile = false
 vim.opt.updatetime = 250
 
 -- Displays which-key popup sooner
@@ -463,7 +464,7 @@ require("dotnetLspRoslyn")
 
 vim.lsp.config["html"] = {
     cmd = { 'vscode-html-language-server', '--stdio' },
-    filetypes = { 'html', 'templ', 'xml' },
+    filetypes = { 'html', 'xml' },
     root_markers = { 'package.json', '.git' },
     init_options = {
         provideFormatter = true,
@@ -490,10 +491,10 @@ vim.lsp.config["typescript"] = {
     filetypes = {
         'javascript',
         'javascriptreact',
-        'javascript.jsx',
+        -- 'javascript.jsx',
         'typescript',
         'typescriptreact',
-        'typescript.tsx',
+        -- 'typescript.tsx',
     },
     root_markers = { 'tsconfig.json', 'jsconfig.json', 'package.json', '.git' },
     handlers = {
