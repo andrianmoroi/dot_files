@@ -705,3 +705,46 @@ function ShowOnlyErrors()
 end
 
 map('n', "<leader>de", ":lua ShowOnlyErrors()<CR>", "Show only error items in quickfix.")
+
+
+--------------------------------------------------------------------------------
+--- Overide gx by open the file in neovim
+--------------------------------------------------------------------------------
+local function smart_gx()
+    local cfile = vim.fn.expand("<cfile>")
+
+    -- Absolute or relative path that exists
+    if vim.fn.filereadable(cfile) == 1 then
+        vim.cmd("edit " .. vim.fn.fnameescape(cfile))
+        return
+    end
+
+    -- Try resolving relative to current file's directory
+    -- local current_dir = vim.fn.expand("%:p:h")
+
+    local filepath = vim.api.nvim_buf_get_name(0)
+
+    if filepath == "" then
+        return nil -- unsaved buffer
+    end
+
+    local current_dir = vim.fn.fnamemodify(filepath, ":h")
+    local full_path = vim.fs.joinpath(current_dir, cfile)
+
+    if vim.fn.filereadable(full_path) == 1 then
+        vim.cmd("edit " .. vim.fn.fnameescape(full_path))
+        return
+    end
+
+    -- Fallback to default gx behavior
+    vim.cmd("normal! gx")
+end
+
+vim.keymap.set('n', 'gx', smart_gx, { silent = true })
+
+--------------------------------------------------------------------------------
+--- Markdown settings
+--------------------------------------------------------------------------------
+local markdown = require("markdown")
+
+map("n", '<leader>ml', markdown.insert_markdown_link, "Create new markdown link.")
