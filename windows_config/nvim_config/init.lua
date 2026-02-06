@@ -737,7 +737,7 @@ local function smart_gx()
     end
 
     -- Fallback to default gx behavior
-    vim.cmd("normal! gx")
+    vim.ui.open(cfile)
 end
 
 vim.keymap.set('n', 'gx', smart_gx, { silent = true })
