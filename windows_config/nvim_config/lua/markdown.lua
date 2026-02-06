@@ -10,6 +10,12 @@ function M.insert_markdown_link()
     local linkRelativePath = vim.fs.joinpath(linkName .. ".md")
     local linkFullPath = vim.fs.joinpath(dir, linkName .. ".md")
 
+    if vim.endswith(linkName, "/index") then
+        linkName = linkName:sub(1, #linkName - #"/index")
+    end
+
+    linkName = linkName:sub(1, 1):upper() .. linkName:sub(2)
+
     -- 2. Create the file if it doesn't exist
     local linkDir = vim.fn.fnamemodify(linkFullPath, ":h")
     if linkDir ~= "." then
