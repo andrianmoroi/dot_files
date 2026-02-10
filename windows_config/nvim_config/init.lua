@@ -488,6 +488,24 @@ vim.lsp.config["html"] = {
 vim.lsp.config["typescript"] = {
     init_options = { hostInfo = 'neovim' },
     cmd = { 'typescript-language-server', '--stdio' },
+
+    settings = {
+        typescript = {
+            format = {
+                tabSize = 2,
+                indentSize = 2,
+                convertTabsToSpaces = true,
+            },
+        },
+        javascript = {
+            format = {
+                tabSize = 2,
+                indentSize = 2,
+                convertTabsToSpaces = true,
+            },
+        },
+    },
+
     filetypes = {
         'javascript',
         'javascriptreact',
@@ -539,9 +557,6 @@ vim.lsp.config["typescript"] = {
         end,
     },
     on_attach = function(client, bufnr)
-        vim.opt.tabstop = 2
-        vim.opt.shiftwidth = 2
-
         -- ts_ls provides `source.*` code actions that apply to the whole file. These only appear in
         -- `vim.lsp.buf.code_action()` if specified in `context.only`.
         vim.api.nvim_buf_create_user_command(bufnr, 'LspTypescriptSourceAction', function()
