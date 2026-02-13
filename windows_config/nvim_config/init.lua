@@ -250,7 +250,7 @@ require("lazy").setup({
                     -- local fileinfo        = miniStatusLine.section_fileinfo({ trunc_width = 1000000 })
 
                     -- local location      = '%P %l[%L]:%2v[%-2{virtcol("$") - 1}]'
-                    local location        = '%P of %L'
+                    local location        = '%P of %L [%2v:%-2{virtcol("$") - 1}]'
                     local search          = miniStatusLine.section_searchcount({ trunc_width = 10 })
                     local lsp             = miniStatusLine.section_lsp({ trunc_width = 75 })
                     local diagnostics     = miniStatusLine.section_diagnostics({ trunc_width = 75 })
@@ -400,7 +400,7 @@ map('n', "<leader>gd", require("gitsigns").diffthis, "Git diff this.")
 map('n', "<leader>gh", require("gitsigns").stage_hunk, "Git stage hunk.")
 map('n', "<leader>ga", require("gitsigns").stage_buffer, "Git stage entire buffer.")
 map('n', "<leader>gq", require("gitsigns").setqflist, "Git move all hunks to quickfix list.")
-map('n', "<leader>gb", require("gitsigns").blame, "Blame this file.")
+map('n', "<leader>gb", require("gitsigns").blame, "Git blame this file.")
 map('n', "<leader>gr", require("gitsigns").reset_hunk, "Git reset hunk.")
 
 map('n', "<leader>tn", ":tabNext<CR>", "Move to next tab.")
