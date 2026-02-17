@@ -290,6 +290,21 @@ require("lazy").setup({
     },
 
     { "lewis6991/gitsigns.nvim", opts = {} },
+    { "sindrets/diffview.nvim",  opts = {} },
+    {
+        "NeogitOrg/neogit",
+        lazy = true,
+        dependencies = {
+            "nvim-lua/plenary.nvim", -- required
+            "sindrets/diffview.nvim", -- optional
+            "nvim-mini/mini.pick",   -- optional
+        },
+        cmd = "Neogit",
+        keys = {
+            { "<leader>gg", "<cmd>Neogit<cr>", desc = "Show Neogit UI" }
+        }
+    },
+
     {
         "folke/which-key.nvim",
         event = "VeryLazy",
@@ -298,7 +313,7 @@ require("lazy").setup({
         },
     },
 
-    { "folke/zen-mode.nvim",     opts = {} },
+    { "folke/zen-mode.nvim", opts = {} },
 
     {
         "nvim-treesitter/nvim-treesitter",
@@ -766,3 +781,4 @@ vim.keymap.set('n', 'gx', smart_gx, { silent = true })
 local markdown = require("markdown")
 
 map("n", '<leader>ml', markdown.insert_markdown_link, "Create new markdown link.")
+
