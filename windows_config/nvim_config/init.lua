@@ -200,17 +200,23 @@ require("lazy").setup({
     },
     {
         "echasnovski/mini.pick",
-        opts = {
-            mappings = {
-                choose_marked = "<C-q>",
-            },
+        config = function()
+            require("mini.pick").setup({
+                mappings = {
+                    choose_marked = "<C-q>",
+                },
 
-            window = {
-                config = {
-                    width = 500
+                window = {
+                    config = {
+                        width = 500,
+                        height = 10
+                    }
                 }
-            }
-        }
+            })
+
+            -- Make LSP and other UI selectors use mini.pick
+            vim.ui.select = MiniPick.ui_select
+        end,
     },
     {
         "echasnovski/mini.surround",
@@ -422,6 +428,9 @@ map('n', "<M-p>", function()
         source = {
             name = "Files:",
             show = show_with_icons
+        },
+        window = {
+            config = { height = 35 }
         }
     }
 
