@@ -5,6 +5,8 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
+vim.keymap.set("i", "jk", "<Esc>", { desc = "Exist insert mode." })
+
 --------------------------------------------------------------------------------
 --- Load lazy.nvim
 --------------------------------------------------------------------------------
@@ -295,13 +297,35 @@ require("lazy").setup({
         "NeogitOrg/neogit",
         lazy = true,
         dependencies = {
-            "nvim-lua/plenary.nvim", -- required
+            "nvim-lua/plenary.nvim",  -- required
             "sindrets/diffview.nvim", -- optional
-            "nvim-mini/mini.pick",   -- optional
+            "nvim-mini/mini.pick",    -- optional
         },
         cmd = "Neogit",
         keys = {
             { "<leader>gg", "<cmd>Neogit<cr>", desc = "Show Neogit UI" }
+        },
+        opts = {
+            graph_style = "ascii",
+
+            auto_refresh = true,
+            filewatcher = {
+                interval = 100,
+                enabled = true,
+            },
+
+            integrations = {
+                -- Neogit only provides inline diffs. If you want a more traditional way to look at diffs, you can use `diffview`.
+                -- The diffview integration enables the diff popup.
+                --
+                -- Requires you to have `sindrets/diffview.nvim` installed.
+                diffview = true,
+
+                -- If enabled, uses mini.pick for menu selection. If the telescope integration
+                -- is also selected then telescope is used instead
+                -- Requires you to have `echasnovski/mini.pick` installed.
+                mini_pick = true,
+            },
         }
     },
 
@@ -745,4 +769,3 @@ map('n', "<leader>de", ":lua ShowOnlyErrors()<CR>", "Show only error items in qu
 local markdown = require("markdown")
 
 map("n", '<leader>ml', markdown.insert_markdown_link, "Create new markdown link.")
-
