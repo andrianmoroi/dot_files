@@ -331,6 +331,8 @@ require("lazy").setup({
                 -- is also selected then telescope is used instead
                 -- Requires you to have `echasnovski/mini.pick` installed.
                 mini_pick = true,
+
+                github = true,
             },
         }
     },
@@ -445,7 +447,7 @@ map('n', "<leader>sb", require("mini.pick").builtin.buffers, "Search buffers.")
 
 map('n', "<leader>gd", require("gitsigns").diffthis, "Git diff this.")
 map('n', "<leader>gh", require("gitsigns").stage_hunk, "Git stage hunk.")
--- map('n', "<leader>ga", require("gitsigns").stage_buffer, "Git stage entire buffer.")
+map('n', "<leader>ga", require("gitsigns").stage_buffer, "Git stage entire buffer.")
 map('n', "<leader>gq", require("gitsigns").setqflist, "Git move all hunks to quickfix list.")
 map('n', "<leader>gb", require("gitsigns").blame, "Git blame this file.")
 map('n', "<leader>gr", require("gitsigns").reset_hunk, "Git reset hunk.")
