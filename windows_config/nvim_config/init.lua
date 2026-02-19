@@ -457,9 +457,9 @@ map('n', "<leader>gp", require("gitsigns").preview_hunk, "Git show hunk.")
 map('n', "<leader>tn", ":tabNext<CR>", "Move to next tab.")
 map('n', "<leader>tq", ":tabclose<CR>", "Close tab.")
 
+map('n', "<leader>bq", ":bufdo bdelete<CR>", "Close all buffers.")
 
-
-map({ 'n', 'v' }, "grx", ":LspTypescriptSourceAction<CR>", "Close tab.")
+map({ 'n', 'v' }, "grx", ":LspTypescriptSourceAction<CR>", "Typescript specific actions.")
 
 --------------------------------------------------------------------------------
 --- Highlight yanked text

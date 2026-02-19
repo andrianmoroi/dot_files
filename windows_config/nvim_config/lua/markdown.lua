@@ -46,4 +46,14 @@ function M.insert_markdown_link()
     vim.api.nvim_win_set_cursor(0, { row, col + #link })
 end
 
+local spell_group = vim.api.nvim_create_augroup("MarkdownSpell", { clear = true })
+
+vim.api.nvim_create_autocmd("FileType", {
+  group = spell_group,
+  pattern = "markdown",
+  callback = function()
+    vim.opt_local.spell = true
+  end,
+})
+
 return M
