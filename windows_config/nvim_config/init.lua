@@ -525,9 +525,9 @@ vim.lsp.config["html"] = {
     settings = {
         html = {
             format = {
-                wrapAttributes = "force-expand-multiline",
+                wrapAttributes = "auto",
                 -- you can also set max line width if needed
-                wrapLineLength = 60,
+                wrapLineLength = 120,
             }
         }
     }
