@@ -299,43 +299,6 @@ require("lazy").setup({
 
     { "lewis6991/gitsigns.nvim", opts = {} },
     { "sindrets/diffview.nvim",  opts = {} },
-    {
-        "NeogitOrg/neogit",
-        lazy = true,
-        dependencies = {
-            "nvim-lua/plenary.nvim",  -- required
-            "sindrets/diffview.nvim", -- optional
-            "nvim-mini/mini.pick",    -- optional
-        },
-        cmd = "Neogit",
-        keys = {
-            { "<leader>gg", "<cmd>Neogit<cr>", desc = "Show Neogit UI" }
-        },
-        opts = {
-            graph_style = "ascii",
-
-            auto_refresh = true,
-            filewatcher = {
-                interval = 100,
-                enabled = true,
-            },
-
-            integrations = {
-                -- Neogit only provides inline diffs. If you want a more traditional way to look at diffs, you can use `diffview`.
-                -- The diffview integration enables the diff popup.
-                --
-                -- Requires you to have `sindrets/diffview.nvim` installed.
-                diffview = true,
-
-                -- If enabled, uses mini.pick for menu selection. If the telescope integration
-                -- is also selected then telescope is used instead
-                -- Requires you to have `echasnovski/mini.pick` installed.
-                mini_pick = true,
-
-                github = true,
-            },
-        }
-    },
 
     {
         "folke/which-key.nvim",
@@ -419,6 +382,9 @@ map({ 'n', 'x' }, "<leader>y", "\"+y", "Copy to clipboard.")
 map({ 'n', 'x' }, "<leader>p", "\"+p", "Paste from clipboard.")
 map({ 'n', 'x' }, "<leader>P", "\"+P", "Paste from clipboard.")
 
+map({ 'n' }, "<leader>ct", "A  //TODO[AM]: ", "Apped a todo comment at the end of the line.")
+map({ 'n' }, "<leader>cT", "O//TODO[AM]: ", "Add a todo comment one line above.")
+
 map('n', "<M-p>", function()
     local MiniPick = require("mini.pick")
 
@@ -445,13 +411,14 @@ map('n', "<leader>sg", require("mini.pick").builtin.grep_live, "Search in files.
 map('n', "<leader>sh", require("mini.pick").builtin.help, "Search help.")
 map('n', "<leader>sb", require("mini.pick").builtin.buffers, "Search buffers.")
 
-map('n', "<leader>gd", require("gitsigns").diffthis, "Git diff this.")
-map('n', "<leader>gh", require("gitsigns").stage_hunk, "Git stage hunk.")
+map('n', "<leader>gd", ":DiffviewOpen<CR>", "Git diff all changes.")
+map('n', "<leader>gs", require("gitsigns").stage_hunk, "Git stage hunk.")
 map('n', "<leader>ga", require("gitsigns").stage_buffer, "Git stage entire buffer.")
 map('n', "<leader>gq", require("gitsigns").setqflist, "Git move all hunks to quickfix list.")
 map('n', "<leader>gb", require("gitsigns").blame, "Git blame this file.")
 map('n', "<leader>gr", require("gitsigns").reset_hunk, "Git reset hunk.")
 map('n', "<leader>gn", require("gitsigns").next_hunk, "Git move to next hunk.")
+map('n', "<leader>gN", require("gitsigns").prev_hunk, "Git move to previous hunk.")
 map('n', "<leader>gp", require("gitsigns").preview_hunk, "Git show hunk.")
 
 map('n', "<leader>tn", ":tabNext<CR>", "Move to next tab.")
