@@ -748,3 +748,46 @@ map('n', "<leader>de", ":lua ShowOnlyErrors()<CR>", "Show only error items in qu
 local markdown = require("markdown")
 
 map("n", '<leader>ml', markdown.insert_markdown_link, "Create new markdown link.")
+
+
+--------------------------------------------------------------------------------
+--- Git mode
+--------------------------------------------------------------------------------
+
+function EnableGitMode()
+    -- local table storing active keymaps
+    local active_maps = {}
+
+    -- helper to register + track keymaps
+    local localMap = function(mode, lhs, rhs, desc)
+        local opts = { desc = desc, buffer = true }
+
+        vim.keymap.set(mode, lhs, rhs, opts)
+
+        table.insert(active_maps, {
+            mode = mode,
+            lhs = lhs,
+            opts = { buffer = true },
+        })
+    end
+
+    local exit_mode = function()
+        for _, m in ipairs(active_maps) do
+            pcall(vim.keymap.del, m.mode, m.lhs, m.opts)
+        end
+
+        print("Exited Git mode.")
+    end
+
+    print("Git mode active — press q to exit")
+
+    localMap("n", "j", require("gitsigns").next_hunk, "Next hunk.")
+    localMap("n", "k", require("gitsigns").prev_hunk, "Previous hunk.")
+    localMap("n", "p", require("gitsigns").preview_hunk, "Previous hunk.")
+    localMap("n", "r", require("gitsigns").reset_hunk, "Reset hunk.")
+    localMap("n", "s", require("gitsigns").stage_hunk, "Stage hunk.")
+    localMap("n", "q", exit_mode, "Exit Git mode.")
+    localMap("n", "<Esc>", exit_mode, "Exit Git mode.")
+end
+
+map("n", '<leader>mg', EnableGitMode, "Enable git mode.")
