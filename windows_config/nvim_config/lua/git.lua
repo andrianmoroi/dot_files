@@ -63,13 +63,12 @@ end
 --- Preview hunk
 ----------------------------------------
 
+local previewId = 'hunk'
 local showPreview = false
 
 local function close_gitsigns_preview()
-    local id = 'hunk'
-
     for _, winid in ipairs(vim.api.nvim_list_wins()) do
-        if vim.w[winid].gitsigns_preview == id then
+        if vim.w[winid].gitsigns_preview == previewId then
             pcall(vim.api.nvim_win_close, winid, true)
         end
     end
@@ -108,6 +107,7 @@ function M.enable_git_mode()
 
     enable_mode()
 
+    gs.next_hunk()
     M.enable_preview_hunk()
 
     local_map("n", "j", gs.next_hunk, "Next hunk.")
