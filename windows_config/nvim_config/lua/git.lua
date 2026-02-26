@@ -4,10 +4,8 @@ local M = {}
 --- Git mode
 ----------------------------------------
 
-local GIT_MODE = false
-
 local function set_mode_enabled(isEnabled)
-    GIT_MODE = isEnabled
+    vim.b.git_mode = isEnabled
 
     vim.api.nvim_command("redrawstatus")
 end
@@ -18,6 +16,10 @@ end
 
 local function disable_mode()
     set_mode_enabled(false)
+end
+
+function M.is_mode_enabled()
+    return vim.b.git_mode
 end
 
 ----------------------------------------
@@ -66,6 +68,18 @@ end
 local previewId = 'hunk'
 local showPreview = false
 
+local function update_preview_state()
+    showPreview = false
+
+    for _, winid in ipairs(vim.api.nvim_list_wins()) do
+        if vim.w[winid].gitsigns_preview == previewId then
+            showPreview = true
+        end
+    end
+
+    vim.print(showPreview)
+end
+
 local function close_gitsigns_preview()
     for _, winid in ipairs(vim.api.nvim_list_wins()) do
         if vim.w[winid].gitsigns_preview == previewId then
@@ -93,6 +107,24 @@ function M.enable_preview_hunk()
 end
 
 ----------------------------------------
+--- Git actions
+----------------------------------------
+
+local function reset_hunk()
+    local gs = load_gitsigns()
+
+    gs.reset_hunk()
+    gs.next_hunk()
+end
+
+local function stage_hunk()
+    local gs = load_gitsigns()
+
+    gs.stage_hunk()
+    gs.next_hunk()
+end
+
+----------------------------------------
 --- Setup git mode
 ----------------------------------------
 
@@ -105,24 +137,20 @@ function M.enable_git_mode()
         disable_mode()
     end
 
+    update_preview_state()
     enable_mode()
 
     gs.next_hunk()
-    M.enable_preview_hunk()
 
     local_map("n", "j", gs.next_hunk, "Next hunk.")
     local_map("n", "k", gs.prev_hunk, "Previous hunk.")
     local_map("n", "p", M.toggle_preview_hunk, "Previous hunk.")
-    local_map("n", "r", gs.reset_hunk, "Reset hunk.")
-    local_map("n", "s", gs.stage_hunk, "Stage hunk.")
+    local_map("n", "r", reset_hunk, "Reset hunk.")
+    local_map("n", "s", stage_hunk, "Stage hunk.")
     local_map("n", "d", gs.diffthis, "Diff this file.")
 
     local_map("n", "q", exit_mode, "Exit Git mode.")
     local_map("n", "<Esc>", exit_mode, "Exit Git mode.")
-end
-
-function M.is_mode_enabled()
-    return GIT_MODE
 end
 
 return M
