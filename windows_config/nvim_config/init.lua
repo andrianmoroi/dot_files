@@ -1,15 +1,15 @@
---------------------------------------------------------------------------------
+-------------------------------------------------------
 --- Leader key
---------------------------------------------------------------------------------
+-------------------------------------------------------
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
 vim.keymap.set("i", "jk", "<Esc>", { desc = "Exist insert mode." })
 
---------------------------------------------------------------------------------
+-------------------------------------------------------
 --- Load lazy.nvim
---------------------------------------------------------------------------------
+-------------------------------------------------------
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
@@ -26,9 +26,9 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
     end
 end
 
---------------------------------------------------------------------------------
+-------------------------------------------------------
 --- Shell option
---------------------------------------------------------------------------------
+-------------------------------------------------------
 vim.opt.rtp:prepend(lazypath)
 --
 -- Use pwsh if available, otherwise fallback to powershell
@@ -57,9 +57,9 @@ vim.o.shellxquote  = ''
 -- vim.env.TEMP = vim.fn.expand("~/nvim-temp/")
 
 
---------------------------------------------------------------------------------
+-------------------------------------------------------
 --- Options
---------------------------------------------------------------------------------
+-------------------------------------------------------
 
 vim.o.winborder = "rounded"
 
@@ -133,9 +133,9 @@ vim.opt.colorcolumn = tostring(text_width)
 vim.opt.textwidth = text_width
 
 
---------------------------------------------------------------------------------
+-------------------------------------------------------
 --- Disable nvim providers
---------------------------------------------------------------------------------
+-------------------------------------------------------
 
 vim.g.loaded_node_provider = 0
 vim.g.loaded_perl_provider = 0
@@ -143,9 +143,9 @@ vim.g.loaded_python3_provider = 0
 vim.g.loaded_ruby_provider = 0
 
 
---------------------------------------------------------------------------------
+-------------------------------------------------------
 --- Setup lazy
---------------------------------------------------------------------------------
+-------------------------------------------------------
 require("lazy").setup({
 
     {
@@ -245,6 +245,7 @@ require("lazy").setup({
             content = {
                 active = function()
                     local miniStatusLine  = require("mini.statusline")
+                    local git_module      = require("git")
 
                     local fileformat_icon = function()
                         local icons = { unix = ' LF', dos = ' CRLF', mac = ' CR' }
@@ -252,6 +253,7 @@ require("lazy").setup({
                     end
 
                     local mode, mode_hl   = miniStatusLine.section_mode({ trunc_width = 1000000 })
+                    mode                  = git_module.is_mode_enabled() and "" or mode
                     local fileStatus      = vim.bo.modified and "*" or ""
                     local fileinfo        = require("mini.icons").get("filetype", vim.bo.filetype)
                     local git             = miniStatusLine.section_git({ trunc_width = 40 })
@@ -340,9 +342,9 @@ require("lazy").setup({
 }, { rocks = { enabled = false } })
 
 
---------------------------------------------------------------------------------
+-------------------------------------------------------
 --- Keymaps
---------------------------------------------------------------------------------
+-------------------------------------------------------
 
 local map = function(mode, key, action, description)
     vim.keymap.set(mode, key, action, { desc = description })
@@ -419,7 +421,7 @@ map('n', "<leader>gb", require("gitsigns").blame, "Git blame this file.")
 map('n', "<leader>gr", require("gitsigns").reset_hunk, "Git reset hunk.")
 map('n', "<leader>gn", require("gitsigns").next_hunk, "Git move to next hunk.")
 map('n', "<leader>gN", require("gitsigns").prev_hunk, "Git move to previous hunk.")
-map('n', "<leader>gp", require("gitsigns").preview_hunk, "Git show hunk.")
+map('n', "<leader>gp", require("git").toggle_preview_hunk, "Git toggle preview hunk.")
 
 map('n', "<leader>tn", ":tabNext<CR>", "Move to next tab.")
 map('n', "<leader>tq", ":tabclose<CR>", "Close tab.")
@@ -428,9 +430,9 @@ map('n', "<leader>bq", ":bufdo bdelete<CR>", "Close all buffers.")
 
 map({ 'n', 'v' }, "grx", ":LspTypescriptSourceAction<CR>", "Typescript specific actions.")
 
---------------------------------------------------------------------------------
+-------------------------------------------------------
 --- Highlight yanked text
---------------------------------------------------------------------------------
+-------------------------------------------------------
 vim.api.nvim_create_autocmd("TextYankPost", {
     desc = "Highlight when yanking (copying) text",
     group = vim.api.nvim_create_augroup("kickstart-highlight-yank", { clear = true }),
@@ -440,9 +442,9 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 })
 
 
---------------------------------------------------------------------------------
+-------------------------------------------------------
 --- LSP
---------------------------------------------------------------------------------
+-------------------------------------------------------
 
 -- To install run:
 -- scoop install lua-language-server
@@ -619,9 +621,9 @@ vim.lsp.enable("typescript")
 vim.lsp.enable("json")
 vim.lsp.enable("cssls")
 
---------------------------------------------------------------------------------
+-------------------------------------------------------
 --- Diagnostic
---------------------------------------------------------------------------------
+-------------------------------------------------------
 
 vim.diagnostic.config({
     virtual_text = true,
@@ -640,9 +642,9 @@ vim.diagnostic.config({
     }
 })
 
---------------------------------------------------------------------------------
+-------------------------------------------------------
 --- Treesitter
---------------------------------------------------------------------------------
+-------------------------------------------------------
 
 require 'nvim-treesitter.configs'.setup {
     ensure_installed = { "lua" },
@@ -659,9 +661,9 @@ require 'nvim-treesitter.configs'.setup {
     },
 }
 
---------------------------------------------------------------------------------
+-------------------------------------------------------
 --- Loremipsum
---------------------------------------------------------------------------------
+-------------------------------------------------------
 
 vim.api.nvim_create_user_command("Lorem", function(opts)
     local lorem_words = {
@@ -704,9 +706,9 @@ end, {
 })
 
 
---------------------------------------------------------------------------------
+-------------------------------------------------------
 --- Create an autocmd group for quickfix settings
---------------------------------------------------------------------------------
+-------------------------------------------------------
 vim.api.nvim_create_augroup("QuickfixSettings", { clear = true })
 
 vim.api.nvim_create_autocmd("FileType", {
@@ -718,9 +720,9 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 
---------------------------------------------------------------------------------
+-------------------------------------------------------
 --- Display only errors in quick fix
---------------------------------------------------------------------------------
+-------------------------------------------------------
 
 function ShowOnlyErrors()
     local qflist = vim.fn.getqflist()
@@ -742,52 +744,17 @@ end
 
 map('n', "<leader>de", ":lua ShowOnlyErrors()<CR>", "Show only error items in quickfix.")
 
---------------------------------------------------------------------------------
+-------------------------------------------------------
 --- Markdown settings
---------------------------------------------------------------------------------
+-------------------------------------------------------
 local markdown = require("markdown")
 
 map("n", '<leader>ml', markdown.insert_markdown_link, "Create new markdown link.")
 
 
---------------------------------------------------------------------------------
+-------------------------------------------------------
 --- Git mode
---------------------------------------------------------------------------------
+-------------------------------------------------------
+local git = require("git")
 
-function EnableGitMode()
-    -- local table storing active keymaps
-    local active_maps = {}
-
-    -- helper to register + track keymaps
-    local localMap = function(mode, lhs, rhs, desc)
-        local opts = { desc = desc, buffer = true }
-
-        vim.keymap.set(mode, lhs, rhs, opts)
-
-        table.insert(active_maps, {
-            mode = mode,
-            lhs = lhs,
-            opts = { buffer = true },
-        })
-    end
-
-    local exit_mode = function()
-        for _, m in ipairs(active_maps) do
-            pcall(vim.keymap.del, m.mode, m.lhs, m.opts)
-        end
-
-        print("Exited Git mode.")
-    end
-
-    print("Git mode active — press q to exit")
-
-    localMap("n", "j", require("gitsigns").next_hunk, "Next hunk.")
-    localMap("n", "k", require("gitsigns").prev_hunk, "Previous hunk.")
-    localMap("n", "p", require("gitsigns").preview_hunk, "Previous hunk.")
-    localMap("n", "r", require("gitsigns").reset_hunk, "Reset hunk.")
-    localMap("n", "s", require("gitsigns").stage_hunk, "Stage hunk.")
-    localMap("n", "q", exit_mode, "Exit Git mode.")
-    localMap("n", "<Esc>", exit_mode, "Exit Git mode.")
-end
-
-map("n", '<leader>mg', EnableGitMode, "Enable git mode.")
+map("n", '<leader>mg', git.enable_git_mode, "Enable git mode.")
