@@ -384,8 +384,8 @@ map({ 'n', 'x' }, "<leader>y", "\"+y", "Copy to clipboard.")
 map({ 'n', 'x' }, "<leader>p", "\"+p", "Paste from clipboard.")
 map({ 'n', 'x' }, "<leader>P", "\"+P", "Paste from clipboard.")
 
-map({ 'n' }, "<leader>ct", "A  //TODO[AM]: ", "Apped a todo comment at the end of the line.")
-map({ 'n' }, "<leader>cT", "O//TODO[AM]: ", "Add a todo comment one line above.")
+map({ 'n' }, "<leader>ct", "A  // TODO[AM]: ", "Apped a todo comment at the end of the line.")
+map({ 'n' }, "<leader>cT", "O// TODO[AM]: ", "Add a todo comment one line above.")
 
 map('n', "<M-p>", function()
     local MiniPick = require("mini.pick")
