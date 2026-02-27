@@ -422,6 +422,7 @@ map('n', "<leader>gr", require("gitsigns").reset_hunk, "Git reset hunk.")
 map('n', "<leader>gn", require("gitsigns").next_hunk, "Git move to next hunk.")
 map('n', "<leader>gN", require("gitsigns").prev_hunk, "Git move to previous hunk.")
 map('n', "<leader>gp", require("git").toggle_preview_hunk, "Git toggle preview hunk.")
+map('n', "<leader>gg", require("gitstatus").open_page, "Git toggle preview hunk.")
 
 map('n', "<leader>tn", ":tabNext<CR>", "Move to next tab.")
 map('n', "<leader>tq", ":tabclose<CR>", "Close tab.")
