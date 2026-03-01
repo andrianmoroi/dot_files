@@ -470,7 +470,11 @@ vim.lsp.config['luals'] = {
             },
             telemetry = {
                 enable = false
-            }
+            },
+            workspace = {
+                library = vim.api.nvim_get_runtime_file("", true), -- include all runtime files
+                checkThirdParty = false,
+            },
         }
     }
 }
@@ -634,10 +638,6 @@ vim.lsp.enable("cssls")
 
 vim.diagnostic.config({
     virtual_text = true,
-    -- virtual_lines = {
-    --     current_line = false,
-    --     severity = vim.diagnostic.severity.ERROR
-    -- },
     severity_sort = true,
     signs = {
         text = {
