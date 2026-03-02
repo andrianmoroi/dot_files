@@ -424,6 +424,11 @@ map('n', "<leader>gN", require("gitsigns").prev_hunk, "Git move to previous hunk
 map('n', "<leader>gp", require("git").toggle_preview_hunk, "Git toggle preview hunk.")
 map('n', "<leader>gg", function()
     package.loaded["gitstatus"] = nil
+    package.loaded["gitstatus.helper"] = nil
+    package.loaded["gitstatus.renderer"] = nil
+    package.loaded["gitstatus.repo_state"] = nil
+    package.loaded["gitstatus.shell"] = nil
+    package.loaded["gitstatus.types"] = nil
 
     require("gitstatus").open_page()
 end
