@@ -412,6 +412,34 @@ map('n', "<M-e>", require("mini.files").open, "Open file explorer.")
 map('n', "<leader>sg", require("mini.pick").builtin.grep_live, "Search in files.")
 map('n', "<leader>sh", require("mini.pick").builtin.help, "Search help.")
 map('n', "<leader>sb", require("mini.pick").builtin.buffers, "Search buffers.")
+map('n', "<leader>st", function()
+    vim.cmd("copen")
+    vim.print("Searching all todos...")
+    local current_cwd = vim.fn.getcwd()
+
+    vim.system({
+            "rg", "--vimgrep", "--hidden", "--no-follow", "--no-ignore-vcs", "--color=never", "--ignore-case",
+            "TODO\\[AM\\]"
+        }, { text = true, cwd = current_cwd },
+        function(result)
+            if result.code ~= 0 then
+                vim.print("Failed to retrieve todos.")
+
+                return
+            end
+
+            local results = vim.split(vim.trim(result.stdout), "\n")
+
+            vim.schedule(function()
+                vim.fn.setqflist({}, " ", {
+                    title = "Ripgrep TODO.AM",
+                    lines = results,
+                    efm = "%f:%l:%c:%m"
+                })
+            end)
+        end
+    )
+end, "Search buffers.")
 
 map('n', "<leader>gd", ":DiffviewOpen<CR>", "Git diff all changes.")
 map('n', "<leader>gs", require("gitsigns").stage_hunk, "Git stage hunk.")
