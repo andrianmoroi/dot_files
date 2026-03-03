@@ -12,10 +12,19 @@
 ---@field on_change fun(repo: RepoState): nil
 ---@field branch string | nil
 ---@field remotes table<string, Remote>
+---@field status string[]
+---@field commits GitCommit[]
 
 ---@class UpdateRepoState
 ---@field branch string | nil
 ---@field remotes table<string, Remote> | nil
 ---@field on_change nil | fun(repo: RepoState): nil
+---@field status string[] | nil
+
+---@class GitCommit
+---@field hash string
+---@field author string
+---@field message string
+---@field date string
 
 return {}

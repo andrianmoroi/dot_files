@@ -26,6 +26,8 @@ end
 function M.run_async(cmd, cwd, callback)
     local cmd_table = vim.split(cmd, " ")
 
+    vim.print(cmd_table)
+
     vim.system(cmd_table, { text = true, cwd = cwd },
         function(result)
             if result.code ~= 0 then

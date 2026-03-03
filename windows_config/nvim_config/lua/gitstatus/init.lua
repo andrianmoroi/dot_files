@@ -1,12 +1,10 @@
 local M = {}
 
-require("gitstatus.types")
-
-
 local helper = require("gitstatus.helper")
 local repo_state = require("gitstatus.repo_state")
 local shell = require("gitstatus.shell")
 local renderer = require("gitstatus.renderer")
+local git_wrapper = require("gitstatus.git_wrapper")
 
 ----------------------------------------
 --- Initializing module
@@ -24,11 +22,12 @@ local function initialize_module()
         return
     end
 
-    local initialized_repo = repo_state.initialize_current_repo(repo_folder, function(repo, props)
+    local initialized_repo = repo_state.initialize_current_repo_if_missing(repo_folder, function(repo, props)
         vim.schedule(function()
             renderer.render_buffer(repo, vim.tbl_keys(props))
         end)
     end)
+
 
     if initialized_repo == nil then
         helper.error("Failed to initiliaze the repo.")
@@ -38,12 +37,24 @@ local function initialize_module()
 
     renderer.initialize_buffer()
 
-    shell.run_async(
-        "git branch --show-current",
-        initialized_repo.path,
-        function(data)
-            repo_state.update_current_repo({ branch = data })
-        end)
+    local path = initialized_repo.path
+
+    git_wrapper.update_branch(path, function(branch_name)
+        repo_state.update_current_repo({ branch = branch_name })
+    end)
+
+    git_wrapper.update_git_status(path, function(status)
+        repo_state.update_current_repo({ status = status })
+    end)
+
+    git_wrapper.update_git_last_commits(path, 10, function(commits)
+        repo_state.update_current_repo({ commits = commits })
+    end)
+
+    if initialized_repo ~= nil then
+        renderer.render_buffer(initialized_repo, vim.tbl_keys(initialized_repo))
+    end
+
 
     shell.run_async("git remote -v", initialized_repo.path, function(data)
         local lines = vim.split(data, "\n")

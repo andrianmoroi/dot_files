@@ -4,82 +4,63 @@ require("gitstatus.types")
 
 local helper = require("gitstatus.helper")
 
+
 ----------------------------------------
 --- Render buffer
 ----------------------------------------
 
-local ns = vim.api.nvim_create_namespace("git_dashboard")
-
----@class DrawArea
----@field header {startLine: number, endLine: number}|nil
 
 ---@type number
-local DrawBufferId = nil
+local DrawBufferId = -1
 
----@type DrawArea
-local DrawArea = {
-    header = nil,
-}
-
+local DISPLAY_BUFFER_NAME = "Gitstatus"
+local NS = vim.api.nvim_create_namespace("git_dashboard")
 
 ---@param repo RepoState
 local function render_if_changed(repo, updated_props)
-    -- Added                fg=b3f6c0 bg=nil
-    -- Removed              fg=ffc0b9 bg=nil
-    -- Tag                  fg=7fb4ca bg=nil
-    -- Title                fg=7e9cd8 bg=nil
-
-
-    if not helper.any_props_updated(
-            { 'name', 'branch', 'path' },
-            updated_props) then
+    if not helper.any_props_updated({ 'name', 'branch', 'path', 'status', 'commits' }, updated_props) then
         return
     end
 
-    local headerArea = DrawArea.header
-    local startLine = headerArea and headerArea.startLine or 0
-    local endLine = headerArea and headerArea.endLine or 0
-
-    if headerArea ~= nil then
-        vim.api.nvim_buf_clear_namespace(DrawBufferId, ns, startLine, endLine)
-    end
 
     local content = {
-        "    " .. repo.name,
-        "    " .. (repo.branch or "...initializing"),
-        "    " .. repo.path,
+        "",
+        "    Repository:            " .. repo.name,
+        "    Reference branch:      " .. (repo.branch or "...initializing"),
+        "    Repository local path: " .. repo.path,
+        "",
+        "   --------------------",
+        -- "   Git status:",
+        -- "",
+        -- "   --------------------",
+        -- "   Last commits:",
+        -- "",
+        -- "   --------------------",
     }
 
+    content[#content + 1] = "    Git stauts:"
 
-    vim.api.nvim_buf_set_lines(DrawBufferId, startLine, endLine, false, content)
+    if repo.status then
+        for _, line in ipairs(repo.status) do
+            content[#content + 1] = line
+        end
+    end
 
-    -- vim.print(DrawBufferId)
-    -- vim.api.nvim_buf_set_extmark(DrawBufferId - 1, ns, startLine + 1, 0, { hl_group = "Title", hl_eol = true })
-    --
-    -- vim.api.nvim_buf_set_extmark(DrawBufferId - 1, ns, 0, 0, {
-    --     hl_group = "Error",
-    --     hl_eol = true,
-    -- })
-    --
-    -- vim.api.nvim_buf_add_highlight(DrawBufferId, ns, "Tag", startLine, 5, -1)
-    -- vim.api.nvim_buf_add_highlight(DrawBufferId, ns, "Title", startLine + 1, 5, -1)
-    -- vim.api.nvim_buf_add_highlight(DrawBufferId, ns, "Added", startLine + 2, 5, -1)
+    content[#content + 1] = "   --------------------"
+    content[#content + 1] = "    Last commits:"
 
+    if repo.commits then
+        for _, c in ipairs(repo.commits) do
+            content[#content + 1] = c.hash .. " - " .. c.message
+        end
+    end
+
+    vim.api.nvim_buf_set_lines(DrawBufferId, 0, -1, false, content)
 
     -- 📝 Last 3 commits:
     --   ├─ 9f8a7b1 • Fix bug in authentication
     --   ├─ 3c4d2e9 • Update README and docs
     --   └─ a1b2c3d • Initial project setup
-
-    -- return {
-    --     "",
-    --     "    " .. name,
-    --     "    " .. (branch or ""),
-    --     "    " .. path,
-    --     "",
-    --     "    " .. remotes,
-    --     "",
-    -- }
 end
 
 
@@ -132,18 +113,22 @@ function M.render_buffer(repo, updated_props)
 end
 
 function M.initialize_buffer()
-    vim.cmd("tabnew")
+    DrawBufferId = vim.fn.bufnr(DISPLAY_BUFFER_NAME)
 
-    local buf = vim.api.nvim_create_buf(false, true)
-    vim.api.nvim_win_set_buf(0, buf)
-    vim.api.nvim_buf_set_name(buf, "Gitstatus")
+    if DrawBufferId == -1 then
+        vim.cmd("tabnew")
 
-    vim.bo[buf].buftype = "nofile"
-    vim.bo[buf].bufhidden = "wipe"
-    vim.bo[buf].swapfile = false
-    vim.bo[buf].filetype = "my_page"
+        local buf = vim.api.nvim_create_buf(false, true)
+        vim.api.nvim_win_set_buf(0, buf)
+        vim.api.nvim_buf_set_name(buf, DISPLAY_BUFFER_NAME)
 
-    DrawBufferId = buf
+        vim.bo[buf].buftype = "nofile"
+        vim.bo[buf].bufhidden = "wipe"
+        vim.bo[buf].swapfile = false
+        vim.bo[buf].filetype = "my_page"
+
+        DrawBufferId = buf
+    end
 end
 
 function M.get_buffer_id()
