@@ -457,6 +457,7 @@ map('n', "<leader>gg", function()
     package.loaded["gitstatus.repo_state"] = nil
     package.loaded["gitstatus.shell"] = nil
     package.loaded["gitstatus.types"] = nil
+    package.loaded["gitstatus.git_wrapper"] = nil
 
     require("gitstatus").open_page()
 end

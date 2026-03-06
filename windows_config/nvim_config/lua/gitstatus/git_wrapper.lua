@@ -28,16 +28,18 @@ function M.update_git_last_commits(path, limit, on_update)
         "git log -n " .. tostring(limit) .. " --pretty=format:\"%h|%an|%ar|%s\"", path, function(data)
             local result = {}
 
-            for _, line in ipairs(vim.split(data, '\n')) do
-                local hash, author, date, message = line:match("([^|]+)|([^|]+)|([^|]+)|([^|]+)")
+            if data ~= nil and #data > 0 then
+                for _, line in ipairs(vim.split(data, '\n')) do
+                    local hash, author, date, message = line:match("([^|]+)|([^|]+)|([^|]+)|([^|]+)")
 
-                if hash then
-                    table.insert(result, {
-                        hash = hash,
-                        author = author,
-                        date = date,
-                        message = message,
-                    })
+                    if hash then
+                        table.insert(result, {
+                            hash = hash,
+                            author = author,
+                            date = date,
+                            message = message,
+                        })
+                    end
                 end
             end
 
