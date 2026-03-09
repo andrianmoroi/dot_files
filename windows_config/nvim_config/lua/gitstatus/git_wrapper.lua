@@ -11,12 +11,18 @@ function M.update_branch(path, on_update)
 end
 
 ---@param path string
----@param on_update fun(lines: string[]): nil
+---@param on_update fun(lines: FileStatus[]): nil
 function M.update_git_status(path, on_update)
     shell.run_async("git status --porcelain", path, function(data)
         local lines = vim.split(data, '\n')
 
-        on_update(lines)
+        local files = vim.tbl_map(function(v)
+
+            vim.print(v)
+            return { file_path = v }
+        end, lines)
+
+        on_update(files)
     end)
 end
 

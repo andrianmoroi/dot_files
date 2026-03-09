@@ -76,8 +76,6 @@ local function update_preview_state()
             showPreview = true
         end
     end
-
-    vim.print(showPreview)
 end
 
 local function close_gitsigns_preview()

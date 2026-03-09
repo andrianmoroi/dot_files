@@ -13,7 +13,7 @@ local helper = require("gitstatus.helper")
 ---@type number
 local DrawBufferId = -1
 
-local DISPLAY_BUFFER_NAME = "Gitstatus"
+local DISPLAY_BUFFER_NAME = "Gitstatus_buffer"
 local NS = vim.api.nvim_create_namespace("git_dashboard")
 
 ---@param repo RepoState
@@ -42,7 +42,7 @@ local function render_if_changed(repo, updated_props)
 
     if repo.status then
         for _, line in ipairs(repo.status) do
-            content[#content + 1] = line
+            content[#content + 1] = line.file_path
         end
     end
 
@@ -113,7 +113,7 @@ function M.render_buffer(repo, updated_props)
 end
 
 function M.initialize_buffer()
-    DrawBufferId = vim.fn.bufnr(DISPLAY_BUFFER_NAME)
+    DrawBufferId = vim.fn.bufnr(DISPLAY_BUFFER_NAME, false)
 
     if DrawBufferId == -1 then
         vim.cmd("tabnew")

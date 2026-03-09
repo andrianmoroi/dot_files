@@ -14,7 +14,7 @@ local function initialize_module()
     vim.print("Initializing git status module.")
 
     local current_cwd = vim.fn.getcwd()
-    local repo_folder = shell.run_sync("git rev-parse --show-toplevel", current_cwd)
+    local repo_folder = vim.trim(shell.run_sync("git rev-parse --show-toplevel", current_cwd))
 
     if repo_folder == nil then
         helper.error("Cannot determine the repo folder.")
@@ -40,7 +40,7 @@ local function initialize_module()
     local path = initialized_repo.path
 
     git_wrapper.update_branch(path, function(branch_name)
-        repo_state.update_current_repo({ branch = branch_name })
+        repo_state.update_current_repo({ branch = vim.trim(branch_name) })
     end)
 
     git_wrapper.update_git_status(path, function(status)

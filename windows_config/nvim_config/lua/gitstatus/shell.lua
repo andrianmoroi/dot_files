@@ -9,33 +9,31 @@ local M = {}
 ---@return string | nil
 function M.run_sync(cmd, cwd)
     local cmd_table = vim.split(cmd, " ")
-    local result = vim.system(cmd_table, { text = true, cwd = cwd })
+    local result = vim.system(cmd_table, { text = true, cwd = vim.trim(cwd) })
         :wait()
 
     if result.code ~= 0 then
         return nil
     end
 
-    return vim.trim(result.stdout)
+    return result.stdout
 end
 
 ---@param cmd string
 ---@param cwd string
----@param callback function
+---@param callback fun(stdout: string|nil)
 ---@return nil
 function M.run_async(cmd, cwd, callback)
     local cmd_table = vim.split(cmd, " ")
 
-    vim.print(cmd_table)
-
-    vim.system(cmd_table, { text = true, cwd = cwd },
+    vim.system(cmd_table, { text = true, cwd = vim.trim(cwd) },
         function(result)
             if result.code ~= 0 then
                 callback(nil)
                 return
             end
 
-            callback(vim.trim(result.stdout))
+            callback(result.stdout)
         end
     )
 end

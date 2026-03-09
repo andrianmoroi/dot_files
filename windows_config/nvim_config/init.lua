@@ -416,7 +416,6 @@ map('n', "<leader>sh", require("mini.pick").builtin.help, "Search help.")
 map('n', "<leader>sb", require("mini.pick").builtin.buffers, "Search buffers.")
 map('n', "<leader>st", function()
     vim.cmd("copen")
-    vim.print("Searching all todos...")
     local current_cwd = vim.fn.getcwd()
 
     vim.system({
