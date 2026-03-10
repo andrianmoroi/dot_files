@@ -225,16 +225,16 @@ require("lazy").setup({
         opts = {
             -- Module mappings. Use `''` (empty string) to disable one.
             mappings = {
-                add = 'sa',            -- Add surrounding in Normal and Visual modes
-                delete = 'sd',         -- Delete surrounding
-                find = 'sf',           -- Find surrounding (to the right)
-                find_left = 'sF',      -- Find surrounding (to the left)
-                highlight = 'sh',      -- Highlight surrounding
-                replace = 'sr',        -- Replace surrounding
-                update_n_lines = 'sn', -- Update `n_lines`
+                add = 'sa',       -- Add surrounding in Normal and Visual modes
+                delete = 'sd',    -- Delete surrounding
+                highlight = 'sh', -- Highlight surrounding
+                replace = 'sr',   -- Replace surrounding
+                -- find = 'sf',           -- Find surrounding (to the right)
+                -- find_left = 'sF',      -- Find surrounding (to the left)
+                -- update_n_lines = 'sn', -- Update `n_lines`
 
-                suffix_last = 'l',     -- Suffix to search with "prev" method
-                suffix_next = 'n',     -- Suffix to search with "next" method
+                -- suffix_last = 'l',     -- Suffix to search with "prev" method
+                -- suffix_next = 'n',     -- Suffix to search with "next" method
             },
             n_lines = 1000,
         }
@@ -389,6 +389,8 @@ map({ 'n', 'x' }, "<leader>P", "\"+P", "Paste from clipboard.")
 map({ 'n' }, "<leader>ct", "A  // TODO[AM]: ", "Apped a todo comment at the end of the line.")
 map({ 'n' }, "<leader>cT", "O// TODO[AM]: ", "Add a todo comment one line above.")
 
+map('n', "<M-e>", require("mini.files").open, "Open file explorer.")
+
 map('n', "<M-p>", function()
     local MiniPick = require("mini.pick")
 
@@ -512,6 +514,7 @@ vim.lsp.config['luals'] = {
                 library = {
                     vim.fn.expand("$VIMRUNTIME/lua"),
                     vim.fn.stdpath("config") .. "/lua",
+                    vim.fn.stdpath("data") .. "/lazy",
                 },
                 checkThirdParty = false,
             },
