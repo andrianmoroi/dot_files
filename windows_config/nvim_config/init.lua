@@ -507,7 +507,12 @@ vim.lsp.config['luals'] = {
                 enable = false
             },
             workspace = {
-                library = vim.api.nvim_get_runtime_file("", true), -- include all runtime files
+
+                -- Only include the Lua stdlib and Neovim API types, not all runtime files
+                library = {
+                    vim.fn.expand("$VIMRUNTIME/lua"),
+                    vim.fn.stdpath("config") .. "/lua",
+                },
                 checkThirdParty = false,
             },
         }
