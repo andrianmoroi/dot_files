@@ -7,7 +7,8 @@
 ---@field push string
 
 ---@class FileStatus
----@field file_path string
+---@field full_path string
+---@field relative_cwd string
 
 ---@class RepoState
 ---@field name string

@@ -39,28 +39,25 @@ local function render_if_changed(repo, updated_props)
     }
 
     content[#content + 1] = "    Git stauts:"
+    content[#content + 1] = ""
 
     if repo.status then
         for _, line in ipairs(repo.status) do
-            content[#content + 1] = line.file_path
+            content[#content + 1] = line.relative_cwd
         end
     end
 
-    content[#content + 1] = "   --------------------"
-    content[#content + 1] = "    Last commits:"
-
-    if repo.commits then
-        for _, c in ipairs(repo.commits) do
-            content[#content + 1] = c.hash .. " - " .. c.message
-        end
-    end
+    -- content[#content + 1] = "   --------------------"
+    -- content[#content + 1] = "    Last commits:"
+    --
+    -- if repo.commits then
+    --     for _, c in ipairs(repo.commits) do
+    --         content[#content + 1] = c.hash .. " - " .. c.message
+    --     end
+    -- end
 
     vim.api.nvim_buf_set_lines(DrawBufferId, 0, -1, false, content)
 
-    -- 📝 Last 3 commits:
-    --   ├─ 9f8a7b1 • Fix bug in authentication
-    --   ├─ 3c4d2e9 • Update README and docs
-    --   └─ a1b2c3d • Initial project setup
 end
 
 

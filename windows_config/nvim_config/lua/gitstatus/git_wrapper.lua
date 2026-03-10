@@ -3,7 +3,7 @@ local M = {}
 local shell = require("gitstatus.shell")
 
 ---@param path string
----@param on_update fun(branch_name: string): nil
+---@param on_update fun(branch_name: string|nil): nil
 function M.update_branch(path, on_update)
     shell.run_async("git branch --show-current", path, function(data)
         on_update(data)
@@ -14,15 +14,39 @@ end
 ---@param on_update fun(lines: FileStatus[]): nil
 function M.update_git_status(path, on_update)
     shell.run_async("git status --porcelain", path, function(data)
-        local lines = vim.split(data, '\n')
+        ---@type FileStatus[]
+        local result = {}
 
-        local files = vim.tbl_map(function(v)
+        if data ~= nil then
+            local lines = vim.split(data, '\n')
 
-            vim.print(v)
-            return { file_path = v }
-        end, lines)
+            local temp = vim.tbl_map(function(line)
+                if line ~= "" then
+                    local status, file_path = line:match("^(..)%s(.+)$")
 
-        on_update(files)
+                    local sep = package.config:sub(1, 1)
+                    local full_path = path .. sep .. file_path
+                    full_path = full_path:gsub("[/\\]", sep)
+                    local current_path = vim.fn.fnamemodify(full_path, ":~:.")
+
+
+                    ---@type FileStatus
+                    return {
+                        full_path = full_path,
+                        relative_cwd = current_path
+                    }
+                end
+
+                return nil
+            end, lines)
+
+
+            result = vim.tbl_filter(function(v)
+                return v ~= nil
+            end, temp)
+        end
+
+        on_update(result)
     end)
 end
 
