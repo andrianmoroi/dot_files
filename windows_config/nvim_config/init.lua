@@ -404,7 +404,7 @@ map('n', "<M-p>", function()
             show = show_with_icons
         },
         window = {
-            config = { height = 35 }
+            config = { height = 25 }
         }
     }
 
