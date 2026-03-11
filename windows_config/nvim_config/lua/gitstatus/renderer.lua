@@ -1,7 +1,5 @@
 local M = {}
 
-require("gitstatus.types")
-
 local helper = require("gitstatus.helper")
 
 
@@ -16,12 +14,11 @@ local DrawBufferId = -1
 local DISPLAY_BUFFER_NAME = "Gitstatus_buffer"
 local NS = vim.api.nvim_create_namespace("git_dashboard")
 
----@param repo RepoState
+---@param repo gitstatus.RepoState
 local function render_if_changed(repo, updated_props)
     if not helper.any_props_updated({ 'name', 'branch', 'path', 'status', 'commits' }, updated_props) then
         return
     end
-
 
     local content = {
         "",
@@ -29,21 +26,18 @@ local function render_if_changed(repo, updated_props)
         "    Reference branch:      " .. (repo.branch or "...initializing"),
         "    Repository local path: " .. repo.path,
         "",
-        "   --------------------",
-        -- "   Git status:",
-        -- "",
-        -- "   --------------------",
-        -- "   Last commits:",
-        -- "",
-        -- "   --------------------",
     }
 
-    content[#content + 1] = "    Git stauts:"
+    content[#content + 1] = "    Git diffs:"
     content[#content + 1] = ""
 
     if repo.status then
-        for _, line in ipairs(repo.status) do
-            content[#content + 1] = line.relative_cwd
+        for _, file_state in ipairs(repo.status) do
+            content[#content + 1] = file_state.relative_cwd_path .. " - " .. #file_state.diffs
+
+            for _, diff in ipairs(file_state.diffs) do
+                vim.list_extend(content, diff.new_content)
+            end
         end
     end
 
@@ -57,7 +51,6 @@ local function render_if_changed(repo, updated_props)
     -- end
 
     vim.api.nvim_buf_set_lines(DrawBufferId, 0, -1, false, content)
-
 end
 
 
