@@ -35,7 +35,7 @@ end
 function M.update_git_diff_file(path, file_path, on_update)
     shell.run_async("git diff --no-color --diff-algorithm=histogram -- " .. file_path, path, function(data)
         ---@type gitstatus.Diff[]
-        local result = git_parser.get_diff_file_parsed(data, file_path)
+        local result = git_parser.get_diff_file_parsed(data)
 
         on_update(result)
     end)
