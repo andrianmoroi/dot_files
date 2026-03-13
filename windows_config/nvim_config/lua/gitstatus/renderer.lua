@@ -13,27 +13,31 @@ local types = require("gitstatus.types")
 ---@field ADD string
 ---@field REMOVE string
 ---@field CHANGE string
+---@field TITLE string
+---@field TAG string
+---@field EMPTY string
 local HL = {
     TITLE = "Title",
     TAG = "Tag",
-    EMPY = "Whitespace",
+    EMPTY = "Whitespace",
+
+    -- ADD = "Added",
+    -- REMOVE = "Removed",
+    -- CHANGE = "Changed"
+
     ADD = "@diff.plus",
     REMOVE = "@diff.minus",
     CHANGE = "@diff.delta"
+
 }
 
-
--- @diff.delta          fg=dca561 bg=nil
--- @diff.minus          fg=c34043 bg=nil
--- @diff.plus           fg=76946a bg=nil
--- vim.api.nvim_set_hl(0, "Gitstatus_Green", { fg = "#FFFFFF", bg = "#5f00ff", bold = true })
--- vim.api.nvim_set_hl(0, "Gitstatus_Ged", { fg = "#FFFFFF", bg = "#5f00ff", bold = true })
 
 ---@type number
 local DRAW_BUFFER_ID = -1
 
 local DISPLAY_BUFFER_NAME = "Gitstatus_buffer"
 local NS = vim.api.nvim_create_namespace("git_dashboard")
+
 
 ---@class gitstatus.Highlight
 ---@field start_row number
@@ -42,19 +46,43 @@ local NS = vim.api.nvim_create_namespace("git_dashboard")
 ---@field end_column number
 ---@field hl_group string
 
+---@type gitstatus.Highlight[]
+local HIGHLIHTS = {}
 
----@param highlight gitstatus.Highlight
-local function set_highlight(highlight)
+
+local function clear_all_highligts()
+    vim.api.nvim_buf_clear_namespace(DRAW_BUFFER_ID, NS, 0, -1)
+    HIGHLIHTS = {}
+end
+
+---@param line number
+---@param start_column number
+---@param length number
+---@param hl_group string
+local function add_highlight(line, start_column, length, hl_group)
+    HIGHLIHTS[#HIGHLIHTS + 1] = {
+        start_row = line,
+        end_row = line,
+        start_column = start_column,
+        end_column = start_column + length,
+        hl_group = hl_group
+    }
+end
+
+
+local function update_all_highlights()
     if DRAW_BUFFER_ID > -1 then
-        vim.api.nvim_buf_set_extmark(DRAW_BUFFER_ID,
-            NS,
-            highlight.start_row,
-            highlight.start_column,
-            {
-                end_row = highlight.end_row,
-                end_col = highlight.end_column,
-                hl_group = highlight.hl_group
-            })
+        for _, h in ipairs(HIGHLIHTS) do
+            vim.api.nvim_buf_set_extmark(DRAW_BUFFER_ID,
+                NS,
+                h.start_row,
+                h.start_column,
+                {
+                    end_row = h.end_row,
+                    end_col = h.end_column,
+                    hl_group = h.hl_group
+                })
+        end
     end
 end
 
@@ -65,8 +93,7 @@ local function render_if_changed(repo, updated_props)
     end
 
     ---@type gitstatus.Highlight[]
-    local highlights = {}
-    vim.api.nvim_buf_clear_namespace(DRAW_BUFFER_ID, NS, 0, -1)
+    clear_all_highligts()
 
     local content = {
         "",
@@ -76,47 +103,12 @@ local function render_if_changed(repo, updated_props)
         "",
     }
 
-    highlights[#highlights + 1] = {
-        start_column = 30,
-        start_row = 1,
-        end_column = 30 + #repo.name,
-        end_row = 1,
-        hl_group = HL.TITLE
-    }
-
-    highlights[#highlights + 1] = {
-        start_column = 30,
-        start_row = 2,
-        end_column = 30 + #(repo.branch or "...initializing"),
-        end_row = 2,
-        hl_group = HL.TAG
-    }
-
-    highlights[#highlights + 1] = {
-        start_column = 30,
-        start_row = 3,
-        end_column = 30 + #repo.path,
-        end_row = 3,
-        hl_group = HL.TITLE
-    }
+    add_highlight(1, 30, #repo.name, HL.TITLE)
+    add_highlight(2, 30, #(repo.branch or "...initializing"), HL.TAG)
+    add_highlight(3, 30, #repo.path, HL.TITLE)
 
     content[#content + 1] = "    Git diffs:"
     content[#content + 1] = ""
-
-    -- Example usage
-    -- local a = "--- Compute LCS, DP table, and produce edit opcodes"
-    -- local b = "+--- Compute LCS, DP table, and produce edit opcodes"
-    -- local ops = line_diff.lcs_with_ops(a, b)
-    -- content[#content + 1] = a
-    -- content[#content + 1] = b
-    --
-    -- content[#content + 1] = "Ops:"
-    --
-    -- for _, o in ipairs(ops) do
-    --     content[#content + 1] = o.op .. string.format("%q", o.a) .. "→" .. string.format("%q", o.b)
-    -- end
-
-
 
     if repo.status then
         for _, file_state in ipairs(repo.status) do
@@ -124,45 +116,26 @@ local function render_if_changed(repo, updated_props)
 
             for _, hunk in ipairs(file_state.hunks) do
                 for _, line in ipairs(hunk.content) do
-                    content[#content + 1] = line.line
+                    local l = line.line == "" and line.state ~= types.LINE_STATE.UNCHANGED and "" or line.line
+                    content[#content + 1] = l
 
                     if line.state == types.LINE_STATE.REMOVE then
-                        highlights[#highlights + 1] = {
-                            start_row = #content - 1,
-                            start_column = 0,
-                            end_row = #content,
-                            end_column = #line,
-                            hl_group = HL.REMOVE,
-                            -- hl_group = "@diff.minus",
-                        }
+                        add_highlight(#content - 1, 0, #l, HL.REMOVE)
                     elseif line.state == types.LINE_STATE.ADD then
-                        highlights[#highlights + 1] = {
-                            start_row = #content - 1,
-                            start_column = 0,
-                            end_row = #content,
-                            end_column = #line,
-                            hl_group = HL.ADD,
-                        }
+                        add_highlight(#content - 1, 0, #l, HL.ADD)
                     end
                 end
 
                 content[#content + 1] = "----"
-                highlights[#highlights + 1] = {
-                    start_row = #content - 1,
-                    start_column = 0,
-                    end_row = #content - 1,
-                    end_column = 4,
-                    hl_group = HL.EMPY,
-                }
+
+                add_highlight(#content - 1, 0, #"----", HL.EMPTY)
             end
         end
     end
 
     vim.api.nvim_buf_set_lines(DRAW_BUFFER_ID, 0, -1, false, content)
 
-    for _, h in ipairs(highlights) do
-        set_highlight(h)
-    end
+    update_all_highlights()
 end
 
 

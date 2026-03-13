@@ -11,8 +11,6 @@ local git_wrapper = require("gitstatus.git_wrapper")
 ----------------------------------------
 
 local function initialize_module()
-    vim.print("Initializing git status module.")
-
     local current_cwd = vim.fn.getcwd()
     local repo_folder = vim.trim(shell.run_sync("git rev-parse --show-toplevel", current_cwd))
 

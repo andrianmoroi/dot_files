@@ -20,11 +20,18 @@ M.LINE_STATE = {
 ---@field line string
 ---@field state number
 
+---@class gitstatus.HunkDetails
+---@field file_a string
+---@field file_b string
+---@field commit_old string
+---@field commit_new string
+---@field file_mode string
+---@field function_context string
+
 ---@class gitstatus.Hunk
 ---@field start_line number
 ---@field content gitstatus.Line[]
----@field old_content string[]
----@field new_content string[]
+---@field details gitstatus.HunkDetails
 
 ---@class gitstatus.Diff
 ---@field start_old_line number
