@@ -1,14 +1,28 @@
+local M = {}
 ----------------------------------------
 --- Types
 ----------------------------------------
+
+M.LINE_STATE = {
+    UNDEFINED = 0,
+    UNCHANGED = 1,
+    REMOVE = 2,
+    ADD = 3,
+}
+
 
 ---@class gitstatus.Path
 ---@field git_path string
 ---@field full_path string
 ---@field cwd_relative_path string
 
+---@class gitstatus.Line
+---@field line string
+---@field state number
+
 ---@class gitstatus.Hunk
 ---@field start_line number
+---@field content gitstatus.Line[]
 ---@field old_content string[]
 ---@field new_content string[]
 
@@ -52,4 +66,4 @@
 ---@field status gitstatus.FileStatus[] | nil
 ---@field commits gitstatus.GitCommit[] | nil
 
-return {}
+return M

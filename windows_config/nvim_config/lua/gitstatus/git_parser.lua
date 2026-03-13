@@ -1,9 +1,11 @@
 local M = {}
 
+local types = require("gitstatus.types")
+
 ---@param repo_path string
 ---@param file_relative_path string
 ---@return gitstatus.Path
-function get_path(repo_path, file_relative_path)
+local function get_path(repo_path, file_relative_path)
     local sep = package.config:sub(1, 1)
 
     repo_path = repo_path:gsub("[/\\]", sep)
@@ -57,13 +59,10 @@ function M.get_parsed_git_status(repo_path, content)
 end
 
 ---@param content string | nil
----@param file_path string
 ---@return gitstatus.Hunk[]
-function M.get_diff_file_parsed(content, file_path)
+function M.get_diff_file_parsed(content)
     ---@type gitstatus.Hunk[]
     local result = {}
-    local display = string.find(file_path, "git_wrapper", 1, true) ~= nil
-    vim.print(display)
 
     if content ~= nil then
         -- if content:match("Binary files") then
@@ -86,6 +85,7 @@ function M.get_diff_file_parsed(content, file_path)
                         start_line = num_a,
                         new_content = {},
                         old_content = {},
+                        content = {},
                     }
 
                     table.insert(result, current_hunk)
@@ -93,16 +93,30 @@ function M.get_diff_file_parsed(content, file_path)
             else
                 if current_hunk then
                     local first = line:sub(1, 1)
+                    local lineState = types.LINE_STATE.UNDEFINED
 
                     if first == ' ' then
                         table.insert(current_hunk.old_content, line:sub(2))
                         table.insert(current_hunk.new_content, line:sub(2))
+
+                        lineState = types.LINE_STATE.UNCHANGED
                     elseif first == '-' then
                         table.insert(current_hunk.old_content, line:sub(2))
+
+                        lineState = types.LINE_STATE.REMOVE
                     elseif first == '+' then
                         table.insert(current_hunk.new_content, line:sub(2))
+                        lineState = types.LINE_STATE.ADD
                     else
                     end
+
+                    ---@type gitstatus.Line
+                    local temp = {
+                        line = line:sub(2),
+                        state = lineState
+                    }
+
+                    table.insert(current_hunk.content, temp)
                 end
             end
         end

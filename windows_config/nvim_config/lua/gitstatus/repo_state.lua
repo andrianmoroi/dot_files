@@ -6,12 +6,12 @@ local helper = require("gitstatus.helper")
 --- Git repo state
 ----------------------------------------
 
----@type table<string, RepoState>
+---@type table<string, gitstatus.RepoState>
 local GitReposState = {}
 
 ---@param repo_path string
----@param on_change_callback fun(RepoState): nil
----@return RepoState
+---@param on_change_callback fun(gitstatus.RepoState): nil
+---@return gitstatus.RepoState
 local function get_new_repo_state(repo_path, on_change_callback)
     local name = vim.fs.basename(repo_path)
 
@@ -23,7 +23,7 @@ local function get_new_repo_state(repo_path, on_change_callback)
 end
 
 ---@param repo_name string | nil
----@return RepoState | nil
+---@return gitstatus.RepoState | nil
 local function get_repo_state(repo_name)
     if repo_name == nil then
         return nil
@@ -35,8 +35,8 @@ end
 local HEAD = nil
 
 ---@param repo_path string
----@param on_change_callback fun(repo: RepoState, props: UpdateRepoState): nil
----@return RepoState
+---@param on_change_callback fun(repo: gitstatus.RepoState, props: gitstatus.UpdateRepoState): nil
+---@return gitstatus.RepoState
 function M.initialize_current_repo(repo_path, on_change_callback)
     local repo_state = get_new_repo_state(repo_path, on_change_callback)
 
@@ -47,15 +47,15 @@ function M.initialize_current_repo(repo_path, on_change_callback)
 end
 
 
----@return RepoState | nil
+---@return gitstatus.RepoState | nil
 function M.get_current_repo()
     return get_repo_state(HEAD)
 end
 
 
 ---@param repo_path string
----@param on_change_callback fun(repo: RepoState, props: UpdateRepoState): nil
----@return RepoState | nil
+---@param on_change_callback fun(repo: gitstatus.RepoState, props: gitstatus.UpdateRepoState): nil
+---@return gitstatus.RepoState | nil
 function M.initialize_current_repo_if_missing(repo_path, on_change_callback)
     if HEAD == nil then
         M.initialize_current_repo(repo_path, on_change_callback)
@@ -65,9 +65,9 @@ function M.initialize_current_repo_if_missing(repo_path, on_change_callback)
 end
 
 
----@param repo RepoState
----@param props UpdateRepoState
----@return RepoState
+---@param repo gitstatus.RepoState
+---@param props gitstatus.UpdateRepoState
+---@return gitstatus.RepoState
 function M.update_repo(repo, props)
 
     local updated_repo = vim.tbl_extend("force", repo, props)
