@@ -1,6 +1,7 @@
 -------------------------------------------------------
 --- Leader key
 -------------------------------------------------------
+---
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
@@ -149,6 +150,8 @@ vim.g.loaded_ruby_provider = 0
 --- Setup lazy
 -------------------------------------------------------
 require("lazy").setup({
+
+    { "uga-rosa/utf8.nvim" },
 
     {
         "rebelot/kanagawa.nvim",
@@ -461,6 +464,8 @@ map('n', "<leader>gg", function()
     package.loaded["gitstatus.shell"] = nil
     package.loaded["gitstatus.types"] = nil
     package.loaded["gitstatus.git_wrapper"] = nil
+    package.loaded["gitstatus.git_parser"] = nil
+    package.loaded["gitstatus.line_diff"] = nil
 
     require("gitstatus").open_page()
 end

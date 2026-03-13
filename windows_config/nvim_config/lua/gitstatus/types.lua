@@ -2,9 +2,15 @@
 --- Types
 ----------------------------------------
 
----@class gitstatus.Remote
----@field fetch string
----@field push string
+---@class gitstatus.Path
+---@field git_path string
+---@field full_path string
+---@field cwd_relative_path string
+
+---@class gitstatus.Hunk
+---@field start_line number
+---@field old_content string[]
+---@field new_content string[]
 
 ---@class gitstatus.Diff
 ---@field start_old_line number
@@ -15,11 +21,14 @@
 ---@field new_content string[]
 
 ---@class gitstatus.FileStatus
----@field full_path string
----@field git_path string
----@field relative_cwd_path string
+---@field path gitstatus.Path
 ---@field status string
 ---@field diffs gitstatus.Diff[]
+---@field hunks gitstatus.Hunk[]
+
+---@class gitstatus.Remote
+---@field fetch string
+---@field push string
 
 ---@class gitstatus.GitCommit
 ---@field hash string

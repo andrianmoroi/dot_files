@@ -1,6 +1,7 @@
 local M = {}
 
 local helper = require("gitstatus.helper")
+local line_diff = require("gitstatus.line_diff")
 
 
 ----------------------------------------
@@ -31,15 +32,31 @@ local function render_if_changed(repo, updated_props)
     content[#content + 1] = "    Git diffs:"
     content[#content + 1] = ""
 
-    if repo.status then
-        for _, file_state in ipairs(repo.status) do
-            content[#content + 1] = file_state.relative_cwd_path .. " - " .. #file_state.diffs
+    -- Example usage
+    local a = "abcあいうxyz"
+    local b = "abあいcxyz"
+    local lcs_str, lcs_len, dp, ops = line_diff.lcs_with_ops(a, b)
+    content[#content + 1] = a
+    content[#content + 1] = b
 
-            for _, diff in ipairs(file_state.diffs) do
-                vim.list_extend(content, diff.new_content)
-            end
-        end
+    content[#content + 1] = "Ops:"
+
+    for _, o in ipairs(ops) do
+        content[#content + 1] = o.op .. string.format("%q", o.a) .. "→" .. string.format("%q", o.b)
     end
+
+
+
+    -- if repo.status then
+    --     for _, file_state in ipairs(repo.status) do
+    --         content[#content + 1] = ">>>" .. file_state.path.cwd_relative_path .. " - " .. #file_state.hunks
+    --
+    --         for _, hunk in ipairs(file_state.hunks) do
+    --             vim.list_extend(content, hunk.new_content)
+    --             content[#content + 1] = "          --------"
+    --         end
+    --     end
+    -- end
 
     -- content[#content + 1] = "   --------------------"
     -- content[#content + 1] = "    Last commits:"
