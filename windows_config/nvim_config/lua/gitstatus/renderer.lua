@@ -16,6 +16,7 @@ local types = require("gitstatus.types")
 local HL = {
     TITLE = "Title",
     TAG = "Tag",
+    EMPY = "Whitespace",
     ADD = "@diff.plus",
     REMOVE = "@diff.minus",
     CHANGE = "@diff.delta"
@@ -75,7 +76,7 @@ local function render_if_changed(repo, updated_props)
         "",
     }
 
-    highlights[#highlights+1] ={
+    highlights[#highlights + 1] = {
         start_column = 30,
         start_row = 1,
         end_column = 30 + #repo.name,
@@ -83,7 +84,7 @@ local function render_if_changed(repo, updated_props)
         hl_group = HL.TITLE
     }
 
-    highlights[#highlights+1] ={
+    highlights[#highlights + 1] = {
         start_column = 30,
         start_row = 2,
         end_column = 30 + #(repo.branch or "...initializing"),
@@ -91,7 +92,7 @@ local function render_if_changed(repo, updated_props)
         hl_group = HL.TAG
     }
 
-    highlights[#highlights+1] ={
+    highlights[#highlights + 1] = {
         start_column = 30,
         start_row = 3,
         end_column = 30 + #repo.path,
@@ -144,6 +145,15 @@ local function render_if_changed(repo, updated_props)
                         }
                     end
                 end
+
+                content[#content + 1] = "----"
+                highlights[#highlights + 1] = {
+                    start_row = #content - 1,
+                    start_column = 0,
+                    end_row = #content - 1,
+                    end_column = 4,
+                    hl_group = HL.EMPY,
+                }
             end
         end
     end
