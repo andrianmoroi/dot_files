@@ -18,7 +18,8 @@ function M.update_git_status(path, on_update)
         local result = git_parser.get_parsed_git_status(path, data)
 
         for _, file_status in ipairs(result) do
-            M.update_git_diff_file(path, file_status.path.git_path, function(hunks)
+            M.update_git_diff_file(path, file_status.path, function(hunks)
+                vim.print(file_status.path.git_path)
                 file_status.hunks = hunks
 
                 on_update(result)
@@ -30,12 +31,12 @@ function M.update_git_status(path, on_update)
 end
 
 ---@param path string
----@param file_path string
+---@param file_path gitstatus.Path
 ---@param on_update fun(hunks: gitstatus.Hunk[]): nil
 function M.update_git_diff_file(path, file_path, on_update)
-    shell.run_async("git diff --no-color --diff-algorithm=histogram -- " .. file_path, path, function(data)
+    shell.run_async("git diff --no-color --diff-algorithm=histogram -- " .. file_path.git_path, path, function(data)
         ---@type gitstatus.Diff[]
-        local result = git_parser.get_diff_file_parsed(data)
+        local result = git_parser.get_diff_file_parsed(data, file_path)
 
         on_update(result)
     end)

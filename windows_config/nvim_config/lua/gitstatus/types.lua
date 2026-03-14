@@ -29,22 +29,22 @@ M.LINE_STATE = {
 ---@field function_context string
 
 ---@class gitstatus.Hunk
+---@field path gitstatus.Path
 ---@field start_line number
 ---@field content gitstatus.Line[]
 ---@field details gitstatus.HunkDetails
 
----@class gitstatus.Diff
----@field start_old_line number
----@field end_old_line number
----@field start_new_line number
----@field end_new_line number
----@field old_content string[]
----@field new_content string[]
+-- ---@class gitstatus.Diff
+-- ---@field start_old_line number
+-- ---@field end_old_line number
+-- ---@field start_new_line number
+-- ---@field end_new_line number
+-- ---@field old_content string[]
+-- ---@field new_content string[]
 
 ---@class gitstatus.FileStatus
 ---@field path gitstatus.Path
 ---@field status string
----@field diffs gitstatus.Diff[]
 ---@field hunks gitstatus.Hunk[]
 
 ---@class gitstatus.Remote

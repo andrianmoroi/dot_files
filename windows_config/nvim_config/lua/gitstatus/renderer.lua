@@ -69,7 +69,6 @@ local function add_highlight(line, start_column, length, hl_group)
     }
 end
 
-
 local function update_all_highlights()
     if DRAW_BUFFER_ID > -1 then
         for _, h in ipairs(HIGHLIHTS) do
@@ -115,6 +114,7 @@ local function render_if_changed(repo, updated_props)
             content[#content + 1] = ">>>" .. file_state.path.cwd_relative_path .. " - " .. #file_state.hunks
 
             for _, hunk in ipairs(file_state.hunks) do
+                content[#content + 1] = "" .. hunk.start_line
                 for _, line in ipairs(hunk.content) do
                     local l = line.line == "" and line.state ~= types.LINE_STATE.UNCHANGED and "" or line.line
                     content[#content + 1] = l

@@ -41,7 +41,6 @@ function M.get_parsed_git_status(repo_path, content)
                 return {
                     path = path,
                     status = status,
-                    diffs = {},
                     hunks = {}
                 }
             end
@@ -94,8 +93,9 @@ end
 
 
 ---@param lines string[]
+---@param file_path gitstatus.Path
 ---@return gitstatus.Hunk[] | nil
-local function parse_diff(lines)
+local function parse_diff(lines, file_path)
     ---@type gitstatus.Hunk[]
     local result = {}
 
@@ -114,8 +114,6 @@ local function parse_diff(lines)
     local content = nil
 
     for _, line in ipairs(lines) do
-        vim.print(step)
-
         if step == "header" then
             ok, file_a, file_b = parse_diff_header(line)
 
@@ -132,6 +130,7 @@ local function parse_diff(lines)
             if content ~= nil and start_line ~= nil and file_a ~= nil then
                 ---@type gitstatus.Hunk
                 local hunk = {
+                    path = file_path,
                     content = content,
                     start_line = start_line,
                     details = {
@@ -193,6 +192,7 @@ local function parse_diff(lines)
     then
         ---@type gitstatus.Hunk
         local hunk = {
+            path = file_path,
             content = content,
             start_line = start_line,
             details = {
@@ -208,17 +208,17 @@ local function parse_diff(lines)
         table.insert(result, hunk)
     end
 
-
     return result
 end
 
 ---@param content string | nil
+---@param file_path gitstatus.Path
 ---@return gitstatus.Hunk[]
-function M.get_diff_file_parsed(content)
+function M.get_diff_file_parsed(content, file_path)
     if content ~= nil then
         local lines = vim.split(content, "\n")
 
-        local hunks = parse_diff(lines)
+        local hunks = parse_diff(lines, file_path)
 
         if hunks ~= nil then
             return hunks
