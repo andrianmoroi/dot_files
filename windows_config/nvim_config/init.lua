@@ -475,38 +475,38 @@ map('n', "<leader>gg", ":0G<CR>", "Git show status.")
 --
 -- , "Git toggle preview hunk.")
 
-map('n', "<M-j>",
-    function()
-        -- package.loaded["gitstatus"] = nil
-        -- package.loaded["gitstatus.helper"] = nil
-        -- package.loaded["gitstatus.renderer"] = nil
-        -- package.loaded["gitstatus.repo_state"] = nil
-        -- package.loaded["gitstatus.shell"] = nil
-        -- package.loaded["gitstatus.types"] = nil
-        -- package.loaded["gitstatus.git_wrapper"] = nil
-        -- package.loaded["gitstatus.git_parser"] = nil
-        -- package.loaded["gitstatus.line_diff"] = nil
-        --
-        require("gitstatus").next_hunk()
-    end,
-    "Git move to previous hunk.")
+-- map('n', "<M-j>",
+--     function()
+--         -- package.loaded["gitstatus"] = nil
+--         -- package.loaded["gitstatus.helper"] = nil
+--         -- package.loaded["gitstatus.renderer"] = nil
+--         -- package.loaded["gitstatus.repo_state"] = nil
+--         -- package.loaded["gitstatus.shell"] = nil
+--         -- package.loaded["gitstatus.types"] = nil
+--         -- package.loaded["gitstatus.git_wrapper"] = nil
+--         -- package.loaded["gitstatus.git_parser"] = nil
+--         -- package.loaded["gitstatus.line_diff"] = nil
+--         --
+--         require("gitstatus").next_hunk()
+--     end,
+--     "Git move to previous hunk.")
 
-map('n', "<M-k>",
-    function()
-        -- package.loaded["gitstatus"] = nil
-        -- package.loaded["gitstatus.helper"] = nil
-        -- package.loaded["gitstatus.renderer"] = nil
-        -- package.loaded["gitstatus.repo_state"] = nil
-        -- package.loaded["gitstatus.shell"] = nil
-        -- package.loaded["gitstatus.types"] = nil
-        -- package.loaded["gitstatus.git_wrapper"] = nil
-        -- package.loaded["gitstatus.git_parser"] = nil
-        -- package.loaded["gitstatus.line_diff"] = nil
-        --
-        require("gitstatus").prev_hunk()
-    end,
-    "Git move to previous hunk.")
-
+-- map('n', "<M-k>",
+--     function()
+--         -- package.loaded["gitstatus"] = nil
+--         -- package.loaded["gitstatus.helper"] = nil
+--         -- package.loaded["gitstatus.renderer"] = nil
+--         -- package.loaded["gitstatus.repo_state"] = nil
+--         -- package.loaded["gitstatus.shell"] = nil
+--         -- package.loaded["gitstatus.types"] = nil
+--         -- package.loaded["gitstatus.git_wrapper"] = nil
+--         -- package.loaded["gitstatus.git_parser"] = nil
+--         -- package.loaded["gitstatus.line_diff"] = nil
+--         --
+--         require("gitstatus").prev_hunk()
+--     end,
+--     "Git move to previous hunk.")
+--
 map('n', "<leader>tn", ":tabNext<CR>", "Move to next tab.")
 map('n', "<leader>tq", ":tabclose<CR>", "Close tab.")
 
