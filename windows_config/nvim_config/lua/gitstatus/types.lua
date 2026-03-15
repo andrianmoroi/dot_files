@@ -10,7 +10,6 @@ M.LINE_STATE = {
     ADD = 3,
 }
 
-
 ---@class gitstatus.Path
 ---@field git_path string
 ---@field full_path string

@@ -153,6 +153,8 @@ require("lazy").setup({
 
     { "uga-rosa/utf8.nvim" },
 
+    { "tpope/vim-fugitive" },
+
     {
         "rebelot/kanagawa.nvim",
         opts = {

@@ -37,8 +37,6 @@ local function initialize_module()
                 end
             end
 
-            vim.print(#all_hunks)
-
             renderer.render_buffer(repo, vim.tbl_keys(props))
         end)
     end)
@@ -92,6 +90,54 @@ local function initialize_module()
     end
 end
 
+
+---@param hunk gitstatus.Hunk
+local function show_diff_floating(hunk)
+
+    local win_id = vim.fn.win_getid()
+    local cursor_x = vim.fn.getcurpos(win_id)[2]
+    local cursor_y = vim.fn.getcurpos(win_id)[3]
+    -- vim.print(cursor_x)
+    -- vim.print(cursor_y)
+
+    vim.cmd("normal! "..hunk.start_line.."gg")
+
+    local position = vim.fn.screenpos(win_id, cursor_x, cursor_y)
+
+    local row = position.row
+    local col = position.col
+    -- vim.print(position)
+
+    local temp_buf = vim.api.nvim_create_buf(false, true)
+    vim.bo[temp_buf].bufhidden = 'delete'
+
+    local lines = vim.tbl_map(function (line)
+        return line.line
+    end, hunk.content)
+
+    local width = 200
+    local win = vim.api.nvim_open_win(temp_buf, true, {
+        relative = 'editor',
+        width = width,
+        height = #lines,
+        row = row,
+        col = col,
+        style = 'minimal',
+        border = 'rounded'
+    })
+
+    vim.api.nvim_buf_set_lines(temp_buf, 0, -1, true, lines)
+    vim.api.nvim_set_current_win(win)
+
+    vim.keymap.set("n", "q", function()
+        if vim.api.nvim_win_is_valid(win) then
+            vim.api.nvim_win_close(win, true)
+        end
+    end, { buffer = temp_buf })
+
+    vim.api.nvim_set_current_win(win_id)
+end
+
 function M.next_hunk()
     if all_hunks ~= nil and #all_hunks > 0 then
         hunk_index = hunk_index % #all_hunks + 1
@@ -99,6 +145,8 @@ function M.next_hunk()
         local hunk = all_hunks[hunk_index]
 
         vim.cmd("e +" .. hunk.start_line .. " " .. hunk.path.cwd_relative_path)
+
+        show_diff_floating(hunk)
 
         -- vim.print(all_hunks[hunk_index])
 
@@ -111,7 +159,7 @@ end
 function M.prev_hunk()
     if all_hunks ~= nil and #all_hunks > 0 then
         hunk_index = (hunk_index + #all_hunks - 2) % #all_hunks + 1
-        vim.print(hunk_index)
+        -- vim.print(hunk_index)
 
         local hunk = all_hunks[hunk_index]
 
