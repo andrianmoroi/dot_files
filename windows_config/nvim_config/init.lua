@@ -458,21 +458,22 @@ map('n', "<leader>gr", require("gitsigns").reset_hunk, "Git reset hunk.")
 map('n', "<leader>gn", require("gitsigns").next_hunk, "Git move to next hunk.")
 map('n', "<leader>gN", require("gitsigns").prev_hunk, "Git move to previous hunk.")
 map('n', "<leader>gp", require("git").toggle_preview_hunk, "Git toggle preview hunk.")
-map('n', "<leader>gg", function()
-    package.loaded["gitstatus"] = nil
-    package.loaded["gitstatus.helper"] = nil
-    package.loaded["gitstatus.renderer"] = nil
-    package.loaded["gitstatus.repo_state"] = nil
-    package.loaded["gitstatus.shell"] = nil
-    package.loaded["gitstatus.types"] = nil
-    package.loaded["gitstatus.git_wrapper"] = nil
-    package.loaded["gitstatus.git_parser"] = nil
-    package.loaded["gitstatus.line_diff"] = nil
-
-    require("gitstatus").open_page()
-end
-
-, "Git toggle preview hunk.")
+map('n', "<leader>gg", ":0G<CR>", "Git show status.")
+-- map('n', "<leader>gg", function()
+--     package.loaded["gitstatus"] = nil
+--     package.loaded["gitstatus.helper"] = nil
+--     package.loaded["gitstatus.renderer"] = nil
+--     package.loaded["gitstatus.repo_state"] = nil
+--     package.loaded["gitstatus.shell"] = nil
+--     package.loaded["gitstatus.types"] = nil
+--     package.loaded["gitstatus.git_wrapper"] = nil
+--     package.loaded["gitstatus.git_parser"] = nil
+--     package.loaded["gitstatus.line_diff"] = nil
+--
+--     require("gitstatus").open_page()
+-- end
+--
+-- , "Git toggle preview hunk.")
 
 map('n', "<M-j>",
     function()
