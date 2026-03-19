@@ -602,24 +602,6 @@ vim.lsp.config["html"] = {
 vim.lsp.config["typescript"] = {
     init_options = { hostInfo = 'neovim' },
     cmd = { 'typescript-language-server', '--stdio' },
-
-    settings = {
-        typescript = {
-            format = {
-                tabSize = 2,
-                indentSize = 2,
-                convertTabsToSpaces = true,
-            },
-        },
-        javascript = {
-            format = {
-                tabSize = 2,
-                indentSize = 2,
-                convertTabsToSpaces = true,
-            },
-        },
-    },
-
     filetypes = {
         'javascript',
         'javascriptreact',
@@ -736,7 +718,7 @@ vim.diagnostic.config({
 --- Treesitter
 -------------------------------------------------------
 
-require 'nvim-treesitter.configs'.setup {
+require 'nvim-treesitter.configs'.setup({
     ensure_installed = { "lua" },
     sync_install = false,
     auto_install = true,
@@ -749,7 +731,7 @@ require 'nvim-treesitter.configs'.setup {
         -- Instead of true it can also be a list of languages
         additional_vim_regex_highlighting = false,
     },
-}
+})
 
 -------------------------------------------------------
 --- Loremipsum
