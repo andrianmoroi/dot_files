@@ -590,7 +590,7 @@ vim.lsp.config["html"] = {
             format = {
                 wrapAttributes = "auto",
                 -- you can also set max line width if needed
-                wrapLineLength = 120,
+                -- wrapLineLength = 120,
             }
         }
     }
