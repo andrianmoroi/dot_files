@@ -309,10 +309,13 @@ require("lazy").setup({
     },
 
     {
-        'echasnovski/mini.completion',
+        'nvim-mini/mini.completion',
         version = '*',
         opts = {
-            lsp_completion = { source_func = 'omnifunc', auto_setup = true }
+            lsp_completion = {
+                source_func = 'omnifunc',
+                auto_setup = true
+            }
         },
     },
 
@@ -326,7 +329,6 @@ require("lazy").setup({
     {
         "jlcrochet/vim-razor"
     }
-
 
 }, { rocks = { enabled = false } })
 
