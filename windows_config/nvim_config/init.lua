@@ -188,8 +188,10 @@ require("lazy").setup({
         end
     },
 
-    { "echasnovski/mini.icons",      opts = {} },
-    { "nvim-tree/nvim-web-devicons", opts = {} },
+    {
+        "nvim-mini/mini.icons",
+        opts = {}
+    },
 
     {
         "echasnovski/mini.files",
