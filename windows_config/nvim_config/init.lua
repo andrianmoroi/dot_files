@@ -13,7 +13,7 @@ vim.keymap.set("i", "jk", "<Esc>", { desc = "Exist insert mode." })
 -------------------------------------------------------
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not (vim.uv or vim.loop).fs_stat(lazypath) then
+if not vim.uv.fs_stat(lazypath) then
     local lazyrepo = "https://github.com/folke/lazy.nvim.git"
     local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
     if vim.v.shell_error ~= 0 then
@@ -121,7 +121,7 @@ local center_scrolloff = 1000
 
 local toggle_center_scroll = function()
     local total = default_scrolloff + center_scrolloff
-    local current = vim.opt.scrolloff._value
+    local current = vim.opt.scrolloff:get()
 
     vim.opt.scrolloff = total - current
 end
@@ -222,7 +222,7 @@ require("lazy").setup({
             })
 
             -- Make LSP and other UI selectors use mini.pick
-            vim.ui.select = MiniPick.ui_select
+            vim.ui.select = require("mini.pick").ui_select
         end,
     },
     {
@@ -376,8 +376,8 @@ map('n', "gd", function() vim.lsp.buf.definition() end, "Go to definition.")
 
 map('n', "<leader>do", function() vim.diagnostic.open_float() end, "Open diagnostics window.")
 map('n', "<leader>dq", function() vim.diagnostic.setqflist() end, "Send diagnostics to quick fix list.")
-map('n', "<leader>dn", function() vim.diagnostic.goto_next() end, "Go to next diagnostic.")
-map('n', "<leader>dp", function() vim.diagnostic.goto_prev() end, "Go to previous diagnostic.")
+map('n', "<leader>dn", function() vim.diagnostic.jump({ count = 1, float = true }) end, "Go to next diagnostic.")
+map('n', "<leader>dp", function() vim.diagnostic.jump({ count = -1, float = true }) end, "Go to previous diagnostic.")
 map('n', "<leader>dw", ":DotnetLoadErrors<CR>", "Load diagnostics from `dotnet watch` command.")
 
 map('n', "<leader>r", ":%s/", "Replace.")
@@ -629,6 +629,7 @@ vim.lsp.config["typescript"] = {
     commands = {
         ['editor.action.showReferences'] = function(command, ctx)
             local client = assert(vim.lsp.get_client_by_id(ctx.client_id))
+            ---@type string, lsp.Position, lsp.Location
             local file_uri, position, references = unpack(command.arguments)
 
             local quickfix_items = vim.lsp.util.locations_to_items(references, client.offset_encoding)
