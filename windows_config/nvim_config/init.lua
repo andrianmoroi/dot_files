@@ -447,7 +447,21 @@ map('n', "<leader>st", function()
             end)
         end
     )
-end, "Search buffers.")
+end, "Search TODOs.")
+
+map('n', "<leader>sH", function()
+    local MiniPick = require("mini.pick")
+    local docs_path = vim.fn.fnamemodify(vim.opt.helpfile:get(), ":h")
+
+    local opts = {
+        source = {
+            name = "Documentation:",
+            cwd = docs_path
+        }
+    }
+
+    return require("mini.pick").builtin.grep_live(nil, opts)
+end, "Search into documentation.")
 
 map('n', "<leader>gd", ":DiffviewOpen<CR>", "Git diff all changes.")
 map('n', "<leader>gs", require("gitsigns").stage_hunk, "Git stage hunk.")
