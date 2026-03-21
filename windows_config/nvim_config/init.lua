@@ -33,10 +33,10 @@ end
 vim.opt.rtp:prepend(lazypath)
 --
 -- Use pwsh if available, otherwise fallback to powershell
-vim.o.shell        = vim.fn.executable('pwsh') == 1 and 'pwsh' or 'powershell'
+vim.o.shell            = vim.fn.executable('pwsh') == 1 and 'pwsh' or 'powershell'
 
 -- Set shell command flags
-vim.o.shellcmdflag = table.concat({
+vim.o.shellcmdflag     = table.concat({
     '-NoLogo',
     '-NonInteractive',
     '-ExecutionPolicy RemoteSigned',
@@ -47,34 +47,30 @@ vim.o.shellcmdflag = table.concat({
 }, ' ')
 
 -- Set shell redirection
-vim.o.shellredir   = '2>&1 | %{{ "$_" }} | Out-File %s; exit $LastExitCode'
-vim.o.shellpipe    = '2>&1 | %{{ "$_" }} | tee %s; exit $LastExitCode'
+vim.o.shellredir       = '2>&1 | %{{ "$_" }} | Out-File %s; exit $LastExitCode'
+vim.o.shellpipe        = '2>&1 | %{{ "$_" }} | tee %s; exit $LastExitCode'
 
 -- Disable shell quoting
-vim.o.shellquote   = ''
-vim.o.shellxquote  = ''
-
--- vim.env.TMP = vim.fn.expand("~/nvim-temp/")
--- vim.env.TEMP = vim.fn.expand("~/nvim-temp/")
-
+vim.o.shellquote       = ''
+vim.o.shellxquote      = ''
 
 -------------------------------------------------------
 --- Options
 -------------------------------------------------------
 
-vim.o.winborder = "rounded"
+vim.o.winborder        = "rounded"
 
-vim.opt.shellcmdflag = "-c"
-vim.opt.cmdheight = 0
+vim.opt.shellcmdflag   = "-c"
+vim.opt.cmdheight      = 0
 
-vim.g.have_nerd_font = true
-vim.opt.number = true
+vim.g.have_nerd_font   = true
+vim.opt.number         = true
 vim.opt.relativenumber = true
-vim.opt.mouse = "a" -- enables mouse support for all modes
+vim.opt.mouse          = "a" -- enables mouse support for all modes
 
-vim.opt.tabstop = 4
-vim.opt.shiftwidth = 4
-vim.opt.expandtab = true
+vim.opt.tabstop        = 4
+vim.opt.shiftwidth     = 4
+vim.opt.expandtab      = true
 vim.cmd("set expandtab") -- use spaces for identation instead of tabs.
 
 -- show an additional message when in Insert/Visual/Replace mode
@@ -149,9 +145,8 @@ vim.g.loaded_ruby_provider = 0
 -------------------------------------------------------
 --- Setup lazy
 -------------------------------------------------------
-require("lazy").setup({
 
-    { "uga-rosa/utf8.nvim" },
+require("lazy").setup({
 
     { "tpope/vim-fugitive" },
 
@@ -177,21 +172,22 @@ require("lazy").setup({
                 dark = "wave", -- try "dragon" !
                 light = "lotus"
             },
+            overrides = function(colors)
+                return {
+                    Visual = {
+                        bg = "#525249"
+                    },
+                    CurSearch = {
+                        bold = true,
+                        fg = "#dcd7ba",
+                        bg = "#525249",
+                    },
+                }
+            end
         },
-        config = function(_, opts)
-            require("kanagawa").setup(opts)
-
-            vim.cmd("colorscheme kanagawa")
-
-            vim.cmd [[highlight Visual guibg=#525249]]
-            vim.cmd [[highlight CurSearch cterm=bold gui=bold guifg=#dcd7ba guibg=#525249]]
-        end
     },
 
-    {
-        "nvim-mini/mini.icons",
-        opts = {}
-    },
+    { "nvim-mini/mini.icons" },
 
     {
         "echasnovski/mini.files",
@@ -350,6 +346,12 @@ require("lazy").setup({
 
 }, { rocks = { enabled = false } })
 
+
+-------------------------------------------------------
+--- Set colorscheme
+-------------------------------------------------------
+
+vim.cmd("colorscheme kanagawa")
 
 -------------------------------------------------------
 --- Keymaps
