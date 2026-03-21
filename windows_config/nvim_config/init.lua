@@ -1,7 +1,6 @@
 -------------------------------------------------------
 --- Leader key
 -------------------------------------------------------
----
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
@@ -187,10 +186,10 @@ require("lazy").setup({
         },
     },
 
-    { "nvim-mini/mini.icons" },
+    { "nvim-mini/mini.icons", opts = {} },
 
     {
-        "echasnovski/mini.files",
+        "nvim-mini/mini.files",
         version = '*',
         opts = {
             mappings = {
@@ -199,30 +198,27 @@ require("lazy").setup({
             },
             windows = {
                 preview = true,
-                width_preview = 50,
+                width_preview = 70,
             },
         }
     },
+
     {
-        "echasnovski/mini.pick",
-        config = function()
-            require("mini.pick").setup({
-                mappings = {
-                    choose_marked = "<C-q>",
-                },
+        "nvim-mini/mini.pick",
+        opts = {
+            mappings = {
+                choose_marked = "<C-q>",
+            },
 
-                window = {
-                    config = {
-                        width = 500,
-                        height = 10
-                    }
+            window = {
+                config = {
+                    width = 500,
+                    height = 10
                 }
-            })
-
-            -- Make LSP and other UI selectors use mini.pick
-            vim.ui.select = require("mini.pick").ui_select
-        end,
+            }
+        },
     },
+
     {
         "echasnovski/mini.surround",
         opts = {
@@ -401,10 +397,10 @@ map({ 'n' }, "<leader>cT", "O// TODO[AM]: ", "Add a todo comment one line above.
 map('n', "<M-e>", require("mini.files").open, "Open file explorer.")
 
 map('n', "<M-p>", function()
-    local MiniPick = require("mini.pick")
+    local miniPick = require("mini.pick")
 
     local show_with_icons = function(buf_id, items, query)
-        MiniPick.default_show(buf_id, items, query, { show_icons = true })
+        miniPick.default_show(buf_id, items, query, { show_icons = true })
     end
 
     local opts = {
@@ -417,7 +413,7 @@ map('n', "<M-p>", function()
         }
     }
 
-    MiniPick.builtin.cli({
+    miniPick.builtin.cli({
         command = { "rg", "--files", "--hidden", "--no-follow", "--no-ignore-vcs", "--color=never", "--ignore-case" },
     }, opts)
 end, "Search by file names.")
