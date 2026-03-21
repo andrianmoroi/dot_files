@@ -234,36 +234,33 @@ require("lazy").setup({
     },
 
     {
-        "echasnovski/mini.statusline",
+        "nvim-mini/mini.statusline",
         opts = {
             use_icons = vim.g.have_nerd_font,
             set_vim_settings = true,
             content = {
                 active = function()
-                    local miniStatusLine  = require("mini.statusline")
-                    local git_module      = require("git")
+                    local mini_status_line = require("mini.statusline")
+                    local git_module       = require("git")
 
-                    local fileformat_icon = function()
+                    local fileformat_icon  = function()
                         local icons = { unix = ' LF', dos = ' CRLF', mac = ' CR' }
                         return icons[vim.bo.fileformat] or vim.bo.fileformat
                     end
 
-                    local mode, mode_hl   = miniStatusLine.section_mode({ trunc_width = 1000000 })
-                    mode                  = git_module.is_mode_enabled() and "" or mode
-                    local fileStatus      = vim.bo.modified and "*" or ""
-                    local fileinfo        = require("mini.icons").get("filetype", vim.bo.filetype)
-                    local git             = miniStatusLine.section_git({ trunc_width = 40 })
-                    -- local fileinfo        = miniStatusLine.section_fileinfo({ trunc_width = 1000000 })
+                    local mode, mode_hl    = mini_status_line.section_mode({ trunc_width = 1000000 })
+                    mode                   = git_module.is_mode_enabled() and "" or mode
 
-                    -- local location      = '%P %l[%L]:%2v[%-2{virtcol("$") - 1}]'
-                    local location        = '%P of %L [%2v:%-2{virtcol("$") - 1}]'
-                    local search          = miniStatusLine.section_searchcount({ trunc_width = 10 })
-                    local lsp             = miniStatusLine.section_lsp({ trunc_width = 75 })
-                    local diagnostics     = miniStatusLine.section_diagnostics({ trunc_width = 75 })
+                    local spell            = vim.api.nvim_get_option_value("spell", {}) and " " or ""
+                    local git              = mini_status_line.section_git({ trunc_width = 40 })
+                    local fileStatus       = vim.bo.modified and "*" or ""
+                    local fileinfo         = vim.bo.filetype ~= "" and
+                    require("mini.icons").get("filetype", vim.bo.filetype)
+                    local location         = '%P of %L [%2v:%-2{virtcol("$") - 1}]'
+                    local search           = mini_status_line.section_searchcount({ trunc_width = 10 })
 
-                    local size            = vim.fn.getfsize(vim.fn.getreg('%'))
-                    local sizeFormat      = ""
-                    local spell           = vim.api.nvim_get_option_value("spell", {}) and " " or ""
+                    local size             = vim.fn.getfsize(vim.fn.getreg('%'))
+                    local sizeFormat       = ""
 
                     if size < 0 then
                         sizeFormat = ""
@@ -275,15 +272,13 @@ require("lazy").setup({
                         sizeFormat = string.format('%.2f MiB', size / 1048576)
                     end
 
-                    return miniStatusLine.combine_groups({
+                    return mini_status_line.combine_groups({
                         { hl = mode_hl,                  strings = { mode } },
                         '%<', -- Mark general truncate point
-                        { hl = 'MiniStatuslineDevinfo',  strings = { git, spell } },
-                        -- { hl = 'MiniStatuslineDevinfo',  strings = { diagnostics, spell, lsp } },
                         { hl = 'MiniStatuslineFilename', strings = { "%{expand('%:~:.')}", fileStatus } },
                         '%=', -- End left alignment
                         { hl = 'MiniStatuslineDevinfo',  strings = { vim.fn.reg_recording() ~= "" and "Recording: " .. vim.fn.reg_recording() or "" } },
-                        { hl = 'MiniStatuslineFileinfo', strings = { fileinfo, sizeFormat, fileformat_icon() } },
+                        { hl = 'MiniStatuslineFileinfo', strings = { spell, git, fileinfo, sizeFormat, fileformat_icon() } },
                         '%<', -- Mark general truncate point
                         { hl = mode_hl, strings = { search, location } },
                     })
