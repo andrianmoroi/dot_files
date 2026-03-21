@@ -220,24 +220,19 @@ require("lazy").setup({
     },
 
     {
-        "echasnovski/mini.surround",
+        "nvim-mini/mini.surround",
         opts = {
-            -- Module mappings. Use `''` (empty string) to disable one.
             mappings = {
                 add = 'sa',       -- Add surrounding in Normal and Visual modes
                 delete = 'sd',    -- Delete surrounding
                 highlight = 'sh', -- Highlight surrounding
                 replace = 'sr',   -- Replace surrounding
-                -- find = 'sf',           -- Find surrounding (to the right)
-                -- find_left = 'sF',      -- Find surrounding (to the left)
-                -- update_n_lines = 'sn', -- Update `n_lines`
-
-                -- suffix_last = 'l',     -- Suffix to search with "prev" method
-                -- suffix_next = 'n',     -- Suffix to search with "next" method
             },
             n_lines = 1000,
+            search_method = "cover_or_next"
         }
     },
+
     {
         "echasnovski/mini.statusline",
         opts = {
