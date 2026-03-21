@@ -255,7 +255,7 @@ require("lazy").setup({
                     local git              = mini_status_line.section_git({ trunc_width = 40 })
                     local fileStatus       = vim.bo.modified and "*" or ""
                     local fileinfo         = vim.bo.filetype ~= "" and
-                    require("mini.icons").get("filetype", vim.bo.filetype)
+                        require("mini.icons").get("filetype", vim.bo.filetype)
                     local location         = '%P of %L [%2v:%-2{virtcol("$") - 1}]'
                     local search           = mini_status_line.section_searchcount({ trunc_width = 10 })
 
@@ -359,13 +359,13 @@ map('n', "<C-n>", ":enew<CR>", "New empty buffer.")
 map('n', "<C-w>n", ":vnew<CR>", "New vertical empty buffer.")
 map('n', "<C-j>", ":cnext<CR>", "Next quickfix bookmark.")
 map('n', "<C-k>", ":cprevious<CR>", "Previous quickfix bookmark.")
-map('n', "<leader>cf", function() vim.lsp.buf.format() end, "Format code.")
+map('n', "<leader>cf", vim.lsp.buf.format, "Format code.")
 map('n', "<leader>cs", ":set spell!<CR>", "Toggle spell checking.")
-map('n', "<leader>vct", function() toggle_center_scroll() end, "Toggle center scroll.")
-map('n', "gd", function() vim.lsp.buf.definition() end, "Go to definition.")
+map('n', "<leader>vct", toggle_center_scroll, "Toggle center scroll.")
+map('n', "gd", vim.lsp.buf.definition, "Go to definition.")
 
-map('n', "<leader>do", function() vim.diagnostic.open_float() end, "Open diagnostics window.")
-map('n', "<leader>dq", function() vim.diagnostic.setqflist() end, "Send diagnostics to quick fix list.")
+map('n', "<leader>do", vim.diagnostic.open_float, "Open diagnostics window.")
+map('n', "<leader>dq", vim.diagnostic.setqflist, "Send diagnostics to quick fix list.")
 map('n', "<leader>dn", function() vim.diagnostic.jump({ count = 1, float = true }) end, "Go to next diagnostic.")
 map('n', "<leader>dp", function() vim.diagnostic.jump({ count = -1, float = true }) end, "Go to previous diagnostic.")
 map('n', "<leader>dw", ":DotnetLoadErrors<CR>", "Load diagnostics from `dotnet watch` command.")
@@ -440,7 +440,6 @@ map('n', "<leader>st", function()
 end, "Search TODOs.")
 
 map('n', "<leader>sH", function()
-    local MiniPick = require("mini.pick")
     local docs_path = vim.fn.fnamemodify(vim.opt.helpfile:get(), ":h")
 
     local opts = {
@@ -453,68 +452,34 @@ map('n', "<leader>sH", function()
     return require("mini.pick").builtin.grep_live(nil, opts)
 end, "Search into documentation.")
 
+map('n', "<leader>gg", ":0G<CR>", "Git show status.")
+map('n', "<leader>bq", ":bufdo bdelete<CR>", "Close all buffers.")
+
 -- map('n', "<leader>gd", ":DiffviewOpen<CR>", "Git diff all changes.")
 map('n', "<leader>gs", require("gitsigns").stage_hunk, "Git stage hunk.")
 map('n', "<leader>ga", require("gitsigns").stage_buffer, "Git stage entire buffer.")
 map('n', "<leader>gq", require("gitsigns").setqflist, "Git move all hunks to quickfix list.")
 map('n', "<leader>gb", require("gitsigns").blame, "Git blame this file.")
 map('n', "<leader>gr", require("gitsigns").reset_hunk, "Git reset hunk.")
-map('n', "<leader>gn", require("gitsigns").next_hunk, "Git move to next hunk.")
-map('n', "<leader>gN", require("gitsigns").prev_hunk, "Git move to previous hunk.")
 map('n', "<leader>gp", require("git").toggle_preview_hunk, "Git toggle preview hunk.")
-map('n', "<leader>gg", ":0G<CR>", "Git show status.")
--- map('n', "<leader>gg", function()
---     package.loaded["gitstatus"] = nil
---     package.loaded["gitstatus.helper"] = nil
---     package.loaded["gitstatus.renderer"] = nil
---     package.loaded["gitstatus.repo_state"] = nil
---     package.loaded["gitstatus.shell"] = nil
---     package.loaded["gitstatus.types"] = nil
---     package.loaded["gitstatus.git_wrapper"] = nil
---     package.loaded["gitstatus.git_parser"] = nil
---     package.loaded["gitstatus.line_diff"] = nil
---
---     require("gitstatus").open_page()
--- end
---
--- , "Git toggle preview hunk.")
 
--- map('n', "<M-j>",
---     function()
---         -- package.loaded["gitstatus"] = nil
---         -- package.loaded["gitstatus.helper"] = nil
---         -- package.loaded["gitstatus.renderer"] = nil
---         -- package.loaded["gitstatus.repo_state"] = nil
---         -- package.loaded["gitstatus.shell"] = nil
---         -- package.loaded["gitstatus.types"] = nil
---         -- package.loaded["gitstatus.git_wrapper"] = nil
---         -- package.loaded["gitstatus.git_parser"] = nil
---         -- package.loaded["gitstatus.line_diff"] = nil
---         --
---         require("gitstatus").next_hunk()
---     end,
---     "Git move to previous hunk.")
+---@type Gitsigns.NavOpts
+local gitsign_hunk_config = {
+    count = 1,
+    foldopen = true,
+    greedy = true,
+    navigation_message = true,
+    target = "all",
+    wrap = true,
+    preview = true
+}
 
--- map('n', "<M-k>",
---     function()
---         -- package.loaded["gitstatus"] = nil
---         -- package.loaded["gitstatus.helper"] = nil
---         -- package.loaded["gitstatus.renderer"] = nil
---         -- package.loaded["gitstatus.repo_state"] = nil
---         -- package.loaded["gitstatus.shell"] = nil
---         -- package.loaded["gitstatus.types"] = nil
---         -- package.loaded["gitstatus.git_wrapper"] = nil
---         -- package.loaded["gitstatus.git_parser"] = nil
---         -- package.loaded["gitstatus.line_diff"] = nil
---         --
---         require("gitstatus").prev_hunk()
---     end,
---     "Git move to previous hunk.")
---
-map('n', "<leader>tn", ":tabNext<CR>", "Move to next tab.")
-map('n', "<leader>tq", ":tabclose<CR>", "Close tab.")
+map('n', "<leader>gn", function() require("gitsigns").nav_hunk("next", gitsign_hunk_config) end,
+    "Git move to next hunk.")
+map('n', "<leader>gN", function() require("gitsigns").nav_hunk("prev", gitsign_hunk_config) end,
+    "Git move to previous hunk.")
 
-map('n', "<leader>bq", ":bufdo bdelete<CR>", "Close all buffers.")
+
 
 map({ 'n', 'v' }, "grx", ":LspTypescriptSourceAction<CR>", "Typescript specific actions.")
 

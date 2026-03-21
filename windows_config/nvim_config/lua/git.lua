@@ -108,18 +108,29 @@ end
 --- Git actions
 ----------------------------------------
 
+---@type Gitsigns.NavOpts
+local gitsign_hunk_config = {
+    count = 1,
+    foldopen = true,
+    greedy = true,
+    navigation_message = true,
+    target = "all",
+    wrap = true,
+    preview = true
+}
+
 local function reset_hunk()
     local gs = load_gitsigns()
 
     gs.reset_hunk()
-    gs.next_hunk()
+    gs.nav_hunk("next", gitsign_hunk_config)
 end
 
 local function stage_hunk()
     local gs = load_gitsigns()
 
     gs.stage_hunk()
-    gs.next_hunk()
+    gs.nav_hunk("next", gitsign_hunk_config)
 end
 
 ----------------------------------------
@@ -138,10 +149,10 @@ function M.enable_git_mode()
     update_preview_state()
     enable_mode()
 
-    gs.next_hunk()
+    gs.nav_hunk("next", gitsign_hunk_config)
 
-    local_map("n", "j", gs.next_hunk, "Next hunk.")
-    local_map("n", "k", gs.prev_hunk, "Previous hunk.")
+    local_map("n", "j", function() gs.nav_hunk("next", gitsign_hunk_config) end, "Next hunk.")
+    local_map("n", "k", function() gs.nav_hunk("prev", gitsign_hunk_config) end, "Previous hunk.")
     local_map("n", "p", M.toggle_preview_hunk, "Previous hunk.")
     local_map("n", "r", reset_hunk, "Reset hunk.")
     local_map("n", "s", stage_hunk, "Stage hunk.")
