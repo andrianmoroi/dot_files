@@ -291,7 +291,7 @@ require("lazy").setup({
     },
 
     { "lewis6991/gitsigns.nvim", opts = {} },
-    { "sindrets/diffview.nvim",  opts = {} },
+    -- { "sindrets/diffview.nvim",  opts = {} },
 
     {
         "folke/which-key.nvim",
@@ -300,8 +300,6 @@ require("lazy").setup({
             preset = "helix",
         },
     },
-
-    { "folke/zen-mode.nvim", opts = {} },
 
     {
         "nvim-treesitter/nvim-treesitter",
@@ -453,7 +451,7 @@ map('n', "<leader>sH", function()
     return require("mini.pick").builtin.grep_live(nil, opts)
 end, "Search into documentation.")
 
-map('n', "<leader>gd", ":DiffviewOpen<CR>", "Git diff all changes.")
+-- map('n', "<leader>gd", ":DiffviewOpen<CR>", "Git diff all changes.")
 map('n', "<leader>gs", require("gitsigns").stage_hunk, "Git stage hunk.")
 map('n', "<leader>ga", require("gitsigns").stage_buffer, "Git stage entire buffer.")
 map('n', "<leader>gq", require("gitsigns").setqflist, "Git move all hunks to quickfix list.")
