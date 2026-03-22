@@ -12,6 +12,7 @@ vim.keymap.set("i", "jk", "<Esc>", { desc = "Exist insert mode." })
 -------------------------------------------------------
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+---@diagnostic disable-next-line
 if not vim.uv.fs_stat(lazypath) then
     local lazyrepo = "https://github.com/folke/lazy.nvim.git"
     local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
@@ -116,6 +117,8 @@ local center_scrolloff = 1000
 
 local toggle_center_scroll = function()
     local total = default_scrolloff + center_scrolloff
+
+    ---@diagnostic disable-next-line
     local current = vim.opt.scrolloff:get()
 
     vim.opt.scrolloff = total - current
@@ -417,6 +420,8 @@ vim.lsp.config["typescript"] = {
     commands = {
         ['editor.action.showReferences'] = function(command, ctx)
             local client = assert(vim.lsp.get_client_by_id(ctx.client_id))
+
+            ---@diagnostic disable
             ---@type string, lsp.Position, lsp.Location
             local file_uri, position, references = unpack(command.arguments)
 
@@ -450,6 +455,7 @@ vim.lsp.config["typescript"] = {
             end, client.server_capabilities.codeActionProvider.codeActionKinds)
 
             vim.lsp.buf.code_action({
+                ---@diagnostic disable-next-line
                 context = {
                     only = source_actions,
                 },
@@ -507,6 +513,7 @@ vim.diagnostic.config({
 --- Treesitter
 -------------------------------------------------------
 
+---@diagnostic disable-next-line
 require 'nvim-treesitter.configs'.setup({
     ensure_installed = { "lua" },
     sync_install = false,
