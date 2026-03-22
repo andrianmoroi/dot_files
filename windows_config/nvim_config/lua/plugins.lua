@@ -153,7 +153,6 @@ return {
             gh = true,
         }
     },
-    -- { "sindrets/diffview.nvim",  opts = {} },
 
     {
         "folke/which-key.nvim",
