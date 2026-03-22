@@ -290,7 +290,16 @@ require("lazy").setup({
         }
     },
 
-    { "lewis6991/gitsigns.nvim", opts = {} },
+    {
+        "lewis6991/gitsigns.nvim",
+        opts = {
+            diff_opts = {
+                internal = false,
+            },
+            update_debounce = 10,
+            gh = true,
+        }
+    },
     -- { "sindrets/diffview.nvim",  opts = {} },
 
     {

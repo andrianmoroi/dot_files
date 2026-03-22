@@ -5,7 +5,7 @@ local M = {}
 ----------------------------------------
 
 local function set_mode_enabled(isEnabled)
-    vim.b.git_mode = isEnabled
+    vim.b.gitstatus_mode = isEnabled
 
     vim.api.nvim_command("redrawstatus")
 end
@@ -19,7 +19,7 @@ local function disable_mode()
 end
 
 function M.is_mode_enabled()
-    return vim.b.git_mode
+    return vim.b.gitstatus_mode
 end
 
 ----------------------------------------
@@ -112,25 +112,33 @@ end
 local gitsign_hunk_config = {
     count = 1,
     foldopen = true,
-    greedy = true,
+    greedy = false,
     navigation_message = true,
-    target = "all",
+    target = "unstaged",
     wrap = true,
     preview = true
 }
 
+local function next()
+    local gs = load_gitsigns()
+
+    gs.nav_hunk("next", gitsign_hunk_config)
+end
+
 local function reset_hunk()
     local gs = load_gitsigns()
 
-    gs.reset_hunk()
-    gs.nav_hunk("next", gitsign_hunk_config)
+    gs.reset_hunk(nil, nil, function(err)
+        -- gs.nav_hunk("next", gitsign_hunk_config)
+    end)
 end
 
 local function stage_hunk()
     local gs = load_gitsigns()
 
-    gs.stage_hunk()
-    gs.nav_hunk("next", gitsign_hunk_config)
+    gs.stage_hunk(nil, nil, function(err)
+        -- gs.nav_hunk("next", gitsign_hunk_config)
+    end)
 end
 
 ----------------------------------------
@@ -139,6 +147,7 @@ end
 
 function M.enable_git_mode()
     local gs = load_gitsigns()
+
 
     local exit_mode = function()
         clear_all_active_mappings()
@@ -151,8 +160,8 @@ function M.enable_git_mode()
 
     gs.nav_hunk("next", gitsign_hunk_config)
 
-    local_map("n", "j", function() gs.nav_hunk("next", gitsign_hunk_config) end, "Next hunk.")
-    local_map("n", "k", function() gs.nav_hunk("prev", gitsign_hunk_config) end, "Previous hunk.")
+    local_map("n", "<M-j>", function() gs.nav_hunk("next", gitsign_hunk_config) end, "Next hunk.")
+    local_map("n", "<M-k>", function() gs.nav_hunk("prev", gitsign_hunk_config) end, "Previous hunk.")
     local_map("n", "p", M.toggle_preview_hunk, "Previous hunk.")
     local_map("n", "r", reset_hunk, "Reset hunk.")
     local_map("n", "s", stage_hunk, "Stage hunk.")
