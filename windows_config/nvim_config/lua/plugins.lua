@@ -24,6 +24,7 @@ return {
                 dark = "wave", -- try "dragon" !
                 light = "lotus"
             },
+            ---@diagnostic disable-next-line
             overrides = function(colors)
                 return {
                     Visual = {
