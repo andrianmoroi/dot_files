@@ -479,8 +479,6 @@ map('n', "<leader>gn", function() require("gitsigns").nav_hunk("next", gitsign_h
 map('n', "<leader>gN", function() require("gitsigns").nav_hunk("prev", gitsign_hunk_config) end,
     "Git move to previous hunk.")
 
-
-
 map({ 'n', 'v' }, "grx", ":LspTypescriptSourceAction<CR>", "Typescript specific actions.")
 
 -------------------------------------------------------
