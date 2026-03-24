@@ -279,7 +279,6 @@ end, "Search into documentation.")
 map('n', "<leader>gg", ":0G<CR>", "Git show status.")
 map('n', "<leader>bq", ":bufdo bdelete<CR>", "Close all buffers.")
 
--- map('n', "<leader>gd", ":DiffviewOpen<CR>", "Git diff all changes.")
 map('n', "<leader>gs", require("gitsigns").stage_hunk, "Git stage hunk.")
 map('n', "<leader>ga", require("gitsigns").stage_buffer, "Git stage entire buffer.")
 map('n', "<leader>gq", require("gitsigns").setqflist, "Git move all hunks to quickfix list.")

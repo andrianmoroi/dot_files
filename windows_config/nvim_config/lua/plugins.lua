@@ -188,8 +188,5 @@ return {
         opts = {},
     },
 
-    {
-        "jlcrochet/vim-razor"
-    }
-
+    { "jlcrochet/vim-razor" },
 }
