@@ -106,7 +106,8 @@ return {
                     mode                   = git_module.is_mode_enabled() and "" or mode
 
                     local spell            = vim.api.nvim_get_option_value("spell", {}) and " " or ""
-                    local git              = mini_status_line.section_git({ trunc_width = 40 })
+                    local git              = ""
+                    -- local git              = mini_status_line.section_git({ trunc_width = 40 })
                     local fileStatus       = vim.bo.modified and "*" or ""
                     local fileinfo         = vim.bo.filetype ~= "" and
                         require("mini.icons").get("filetype", vim.bo.filetype)
