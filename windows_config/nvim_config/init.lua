@@ -5,7 +5,7 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
-vim.keymap.set("i", "jk", "<Esc>", { desc = "Exist insert mode." })
+-- vim.keymap.set("i", "jk", "<Esc>", { desc = "Exist insert mode." })
 
 -------------------------------------------------------
 --- Load lazy.nvim
