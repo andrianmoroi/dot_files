@@ -241,7 +241,7 @@ map('n', "<leader>st", function()
 
     vim.system({
             "rg", "--vimgrep", "--hidden", "--no-follow", "--no-ignore-vcs", "--color=never", "--ignore-case",
-            "TODO\\[AM\\]"
+            "TODO\\[.*AM\\]"
         }, { text = true, cwd = current_cwd },
         function(result)
             if result.code ~= 0 then
