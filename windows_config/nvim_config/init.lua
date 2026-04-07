@@ -188,7 +188,6 @@ vim.pack.add({
 
 }, { load = true })
 
-
 -------------------------------------------------------
 --- Colorscheme
 -------------------------------------------------------
@@ -424,7 +423,6 @@ map({ 'n' }, "<leader>cT", "O// TODO[AM]: ", "Add a todo comment one line above.
 map('n', "<M-e>", mini_files.open, "Open file explorer.")
 
 map('n', "<M-p>", function()
-
     local show_with_icons = function(buf_id, items, query)
         mini_pick.default_show(buf_id, items, query, { show_icons = true })
     end
