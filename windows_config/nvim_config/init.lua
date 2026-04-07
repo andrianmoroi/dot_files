@@ -2,11 +2,12 @@
 --- TODOs
 -------------------------------------------------------
 
---- TODO[AM] use vim.pack instead of lazy.nvim
 --- TODO[AM] configure properly the autocomplete
 ---    1. automatically trigger
 ---    2. use lsp options
 ---    3. use snippets
+--- TODO[AM] confiure status line
+--- TODO[AM] split lsp config into multiple files
 
 -------------------------------------------------------
 --- Leader key
@@ -15,70 +16,39 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
-
 -------------------------------------------------------
 --- UI 2.0
 -------------------------------------------------------
 
 require('vim._core.ui2').enable({
-    enable = true,   -- Whether to enable or disable the UI.
-    msg = {          -- Options related to the message module.
+    enable = true, -- Whether to enable or disable the UI.
+    msg = {        -- Options related to the message module.
         ---@type 'cmd'|'msg' Default message target, either in the
         ---cmdline or in a separate ephemeral message window.
         ---@type string|table<string, 'cmd'|'msg'|'pager'> Default message target
         ---or table mapping |ui-messages| kinds and triggers to a target.
         targets = 'cmd',
-        cmd = {           -- Options related to messages in the cmdline window.
-            height = 0.5  -- Maximum height while expanded for messages beyond 'cmdheight'.
+        cmd = {             -- Options related to messages in the cmdline window.
+            height = 0.5    -- Maximum height while expanded for messages beyond 'cmdheight'.
         },
-        dialog = {        -- Options related to dialog window.
-            height = 0.5, -- Maximum height.
+        dialog = {          -- Options related to dialog window.
+            height = 0.5,   -- Maximum height.
         },
-        msg = {           -- Options related to msg window.
-            height = 0.5, -- Maximum height.
+        msg = {             -- Options related to msg window.
+            height = 0.5,   -- Maximum height.
             timeout = 4000, -- Time a message is visible in the message window.
         },
-        pager = {         -- Options related to message window.
-            height = 1,   -- Maximum height.
+        pager = {           -- Options related to message window.
+            height = 1,     -- Maximum height.
         },
     },
 })
 
--------------------------------------------------------
---- Load vim.pack
--------------------------------------------------------
-
--- vim.pack.add({
---     -- "https://github.com/tpope/vim-fugitive", 
---     --    "https://github.com/lewis6991/gitsigns.nvim",
--- }, { load = true })
-
-
--------------------------------------------------------
---- Load lazy.nvim
--------------------------------------------------------
-
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
----@diagnostic disable-next-line
-if not vim.uv.fs_stat(lazypath) then
-    local lazyrepo = "https://github.com/folke/lazy.nvim.git"
-    local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
-    if vim.v.shell_error ~= 0 then
-        vim.api.nvim_echo({
-            { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
-            { out,                            "WarningMsg" },
-            { "\nPress any key to exit..." },
-        }, true, {})
-        vim.fn.getchar()
-        os.exit(1)
-    end
-end
 
 -------------------------------------------------------
 --- Shell option
 -------------------------------------------------------
-vim.opt.rtp:prepend(lazypath)
---
+
 -- Use pwsh if available, otherwise fallback to powershell
 vim.o.shell            = vim.fn.executable('pwsh') == 1 and 'pwsh' or 'powershell'
 
@@ -108,7 +78,7 @@ vim.o.shellxquote      = ''
 vim.o.winborder        = "rounded"
 
 vim.opt.shellcmdflag   = "-c"
-vim.opt.cmdheight      = 0
+vim.opt.cmdheight      = 1
 
 vim.g.have_nerd_font   = true
 vim.opt.number         = true
@@ -190,25 +160,221 @@ vim.g.loaded_perl_provider = 0
 vim.g.loaded_python3_provider = 0
 vim.g.loaded_ruby_provider = 0
 
-
 -------------------------------------------------------
---- Setup lazy
+--- Load vim.pack
 -------------------------------------------------------
 
-require("lazy").setup(
-    "plugins",
+vim.pack.add({
+    "https://github.com/tpope/vim-fugitive",
+    "https://github.com/lewis6991/gitsigns.nvim",
+
+    "https://github.com/rebelot/kanagawa.nvim",
+    "https://github.com/nvim-mini/mini.icons",
+    "https://github.com/nvim-mini/mini.files",
+    "https://github.com/nvim-mini/mini.pick",
+    "https://github.com/nvim-mini/mini.surround",
+    "https://github.com/nvim-mini/mini.statusline",
+    'https://github.com/nvim-mini/mini.completion',
+    "https://github.com/seblyng/roslyn.nvim",
+    "https://github.com/lewis6991/gitsigns.nvim",
+    "https://github.com/folke/which-key.nvim",
+
     {
-        rocks = {
-            enabled = false
+        src = "https://github.com/nvim-treesitter/nvim-treesitter",
+        version = "main"
+    },
+
+    -- { "jlcrochet/vim-razor" },
+
+}, { load = true })
+
+
+-------------------------------------------------------
+--- Colorscheme
+-------------------------------------------------------
+
+local kanagawa = require("kanagawa")
+
+kanagawa.setup({
+    compile = false,  -- enable compiling the colorscheme
+    undercurl = true, -- enable undercurls
+    commentStyle = { italic = true },
+    functionStyle = {},
+    keywordStyle = { italic = true },
+    statementStyle = { bold = true },
+    typeStyle = {},
+    transparent = true,    -- do not set background color
+    dimInactive = false,   -- dim inactive window `:h hl-NormalNC`
+    terminalColors = true, -- define vim.g.terminal_color_{0,17}
+    colors = {             -- add/modify theme and palette colors
+        palette = {},
+        theme = { wave = {}, lotus = {}, dragon = {}, all = {} },
+    },
+    theme = "wave",    -- Load "wave" theme
+    background = {     -- map the value of 'background' option to a theme
+        dark = "wave", -- try "dragon" !
+        light = "lotus"
+    },
+    overrides = function(_)
+        return {
+            Visual = {
+                bg = "#525249"
+            },
+            CurSearch = {
+                bold = true,
+                fg = "#dcd7ba",
+                bg = "#525249",
+            },
         }
-    })
-
-
--------------------------------------------------------
---- Set colorscheme
--------------------------------------------------------
+    end
+})
 
 vim.cmd("colorscheme kanagawa")
+
+-------------------------------------------------------
+--- Mini icons
+-------------------------------------------------------
+
+require("mini.icons").setup({})
+
+-------------------------------------------------------
+--- Mini files
+-------------------------------------------------------
+
+local mini_files = require("mini.files")
+
+mini_files.setup({
+    mappings = {
+        go_in_plus = "<Enter>",
+        close = "<M-e>",
+    },
+    windows = {
+        preview = true,
+        width_preview = 70,
+    },
+})
+
+-------------------------------------------------------
+--- Mini pick
+-------------------------------------------------------
+
+local mini_pick = require("mini.pick")
+
+mini_pick.setup({
+    mappings = {
+        choose_marked = "<C-q>",
+    },
+
+    window = {
+        config = {
+            width = 500,
+            height = 10
+        }
+    }
+})
+
+-------------------------------------------------------
+--- Mini surround
+-------------------------------------------------------
+
+require("mini.surround").setup({
+    n_lines = 1000,
+    search_method = "cover_or_next",
+})
+
+-------------------------------------------------------
+--- Mini status line
+-------------------------------------------------------
+
+require("mini.statusline").setup({
+    use_icons = vim.g.have_nerd_font,
+    set_vim_settings = true,
+    content = {
+        active = function()
+            local mini_status_line = require("mini.statusline")
+            local git_module       = require("git")
+
+            local fileformat_icon  = function()
+                local icons = { unix = ' LF', dos = ' CRLF', mac = ' CR' }
+                return icons[vim.bo.fileformat] or vim.bo.fileformat
+            end
+
+            local mode, mode_hl    = mini_status_line.section_mode({ trunc_width = 1000000 })
+            mode                   = git_module.is_mode_enabled() and "" or mode
+
+            local spell            = vim.api.nvim_get_option_value("spell", {}) and " " or ""
+            local git              = ""
+            -- local git              = mini_status_line.section_git({ trunc_width = 40 })
+            local fileStatus       = vim.bo.modified and "*" or ""
+            local fileinfo         = vim.bo.filetype ~= "" and
+                require("mini.icons").get("filetype", vim.bo.filetype)
+            local location         = '%P of %L [%2v:%-2{virtcol("$") - 1}]'
+            local search           = mini_status_line.section_searchcount({ trunc_width = 10 })
+
+            local size             = vim.fn.getfsize(vim.fn.getreg('%'))
+            local sizeFormat       = ""
+
+            if size < 0 then
+                sizeFormat = ""
+            elseif size < 1024 then
+                sizeFormat = string.format('%d B', size)
+            elseif size < 1048576 then
+                sizeFormat = string.format('%.2f KiB', size / 1024)
+            else
+                sizeFormat = string.format('%.2f MiB', size / 1048576)
+            end
+
+            return mini_status_line.combine_groups({
+                { hl = mode_hl,                  strings = { mode } },
+                '%<', -- Mark general truncate point
+                { hl = 'MiniStatuslineFilename', strings = { "%{expand('%:~:.')}", fileStatus } },
+                '%=', -- End left alignment
+                { hl = 'MiniStatuslineDevinfo',  strings = { vim.fn.reg_recording() ~= "" and "Recording: " .. vim.fn.reg_recording() or "" } },
+                { hl = 'MiniStatuslineFileinfo', strings = { spell, git, fileinfo, sizeFormat, fileformat_icon() } },
+                '%<', -- Mark general truncate point
+                { hl = mode_hl, strings = { search, location } },
+            })
+        end,
+        inactive = function()
+            return "%{expand('%:~:.')}"
+        end
+    }
+})
+
+
+-------------------------------------------------------
+--- Gitsings
+-------------------------------------------------------
+
+local gitsings = require("gitsigns")
+
+gitsings.setup({
+    diff_opts = {
+        internal = false,
+    },
+    update_debounce = 10,
+    gh = true,
+})
+
+-------------------------------------------------------
+--- Setup other plugins
+-------------------------------------------------------
+
+require("which-key").setup({ preset = "helix" })
+
+require("nvim-treesitter").update()
+
+---@diagnostic disable-next-line: undefined-field
+require("roslyn").setup({
+    silent = true
+})
+
+require("mini.completion").setup({
+    lsp_completion = {
+        source_func = 'omnifunc',
+        auto_setup = true
+    }
+})
 
 -------------------------------------------------------
 --- Keymaps
@@ -255,13 +421,12 @@ map({ 'n', 'x' }, "<leader>P", "\"+P", "Paste from clipboard.")
 map({ 'n' }, "<leader>ct", "A  // TODO[AM]: ", "Apped a todo comment at the end of the line.")
 map({ 'n' }, "<leader>cT", "O// TODO[AM]: ", "Add a todo comment one line above.")
 
-map('n', "<M-e>", require("mini.files").open, "Open file explorer.")
+map('n', "<M-e>", mini_files.open, "Open file explorer.")
 
 map('n', "<M-p>", function()
-    local miniPick = require("mini.pick")
 
     local show_with_icons = function(buf_id, items, query)
-        miniPick.default_show(buf_id, items, query, { show_icons = true })
+        mini_pick.default_show(buf_id, items, query, { show_icons = true })
     end
 
     local opts = {
@@ -274,14 +439,14 @@ map('n', "<M-p>", function()
         }
     }
 
-    miniPick.builtin.cli({
+    mini_pick.builtin.cli({
         command = { "rg", "--files", "--hidden", "--no-follow", "--no-ignore-vcs", "--color=never", "--ignore-case" },
     }, opts)
 end, "Search by file names.")
-map('n', "<M-e>", require("mini.files").open, "Open file explorer.")
-map('n', "<leader>sg", require("mini.pick").builtin.grep_live, "Search in files.")
-map('n', "<leader>sh", require("mini.pick").builtin.help, "Search help.")
-map('n', "<leader>sb", require("mini.pick").builtin.buffers, "Search buffers.")
+map('n', "<M-e>", mini_files.open, "Open file explorer.")
+map('n', "<leader>sg", mini_pick.builtin.grep_live, "Search in files.")
+map('n', "<leader>sh", mini_pick.builtin.help, "Search help.")
+map('n', "<leader>sb", mini_pick.builtin.buffers, "Search buffers.")
 map('n', "<leader>st", function()
     vim.cmd("copen")
     local current_cwd = vim.fn.getcwd()
@@ -320,17 +485,17 @@ map('n', "<leader>sH", function()
         }
     }
 
-    return require("mini.pick").builtin.grep_live(nil, opts)
-end, "Search into documentation.")
+    return mini_pick.builtin.grep_live(nil, opts)
+end, "Searcmini_pick.")
 
 map('n', "<leader>gg", ":0G<CR>", "Git show status.")
 map('n', "<leader>bq", ":bufdo bdelete<CR>", "Close all buffers.")
 
-map('n', "<leader>gs", require("gitsigns").stage_hunk, "Git stage hunk.")
-map('n', "<leader>ga", require("gitsigns").stage_buffer, "Git stage entire buffer.")
-map('n', "<leader>gq", require("gitsigns").setqflist, "Git move all hunks to quickfix list.")
-map('n', "<leader>gb", require("gitsigns").blame, "Git blame this file.")
-map('n', "<leader>gr", require("gitsigns").reset_hunk, "Git reset hunk.")
+map('n', "<leader>gs", gitsings.stage_hunk, "Git stage hunk.")
+map('n', "<leader>ga", gitsings.stage_buffer, "Git stage entire buffer.")
+map('n', "<leader>gq", gitsings.setqflist, "Git move all hunks to quickfix list.")
+map('n', "<leader>gb", gitsings.blame, "Git blame this file.")
+map('n', "<leader>gr", gitsings.reset_hunk, "Git reset hunk.")
 map('n', "<leader>gp", require("git").toggle_preview_hunk, "Git toggle preview hunk.")
 
 ---@type Gitsigns.NavOpts
@@ -344,9 +509,9 @@ local gitsign_hunk_config = {
     preview = true
 }
 
-map('n', "<leader>gn", function() require("gitsigns").nav_hunk("next", gitsign_hunk_config) end,
+map('n', "<leader>gn", function() gitsings.nav_hunk("next", gitsign_hunk_config) end,
     "Git move to next hunk.")
-map('n', "<leader>gN", function() require("gitsigns").nav_hunk("prev", gitsign_hunk_config) end,
+map('n', "<leader>gN", function() gitsings.nav_hunk("prev", gitsign_hunk_config) end,
     "Git move to previous hunk.")
 
 map({ 'n', 'v' }, "grx", ":LspTypescriptSourceAction<CR>", "Typescript specific actions.")
