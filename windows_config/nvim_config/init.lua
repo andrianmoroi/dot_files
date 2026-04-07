@@ -1,4 +1,14 @@
 -------------------------------------------------------
+--- TODOs
+-------------------------------------------------------
+
+--- TODO[AM] use vim.pack instead of lazy.nvim
+--- TODO[AM] configure properly the autocomplete
+---    1. automatically trigger
+---    2. use lsp options
+---    3. use snippets
+
+-------------------------------------------------------
 --- Leader key
 -------------------------------------------------------
 
