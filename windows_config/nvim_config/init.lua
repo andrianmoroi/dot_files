@@ -194,8 +194,6 @@ vim.pack.add({
         version = "main"
     },
 
-    -- { "jlcrochet/vim-razor" },
-
 }, { load = true })
 
 -------------------------------------------------------
@@ -369,10 +367,7 @@ gitsings.setup({
 --- Treesitter
 -------------------------------------------------------
 
--- vim.opt.runtimepath:prepend(vim.fn.stdpath('config'))
--- vim.opt.runtimepath:prepend(vim.fn.stdpath('data') .. "/site")
-
-require("nvim-treesitter").install({ "c_sharp", "javascript", "typescript" })
+require("nvim-treesitter").install({ "c_sharp", "javascript", "typescript", "jsx", "tsx", "html", "css" })
 
 vim.api.nvim_create_autocmd('FileType', {
     pattern = { 'javascript', 'typescript', 'json', 'jsx', 'tsx', 'html' },
