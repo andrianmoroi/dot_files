@@ -11,60 +11,8 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
--------------------------------------------------------
---- UI 2.0
--------------------------------------------------------
-
-require('vim._core.ui2').enable({
-    enable = true, -- Whether to enable or disable the UI.
-    msg = {        -- Options related to the message module.
-        ---@type 'cmd'|'msg' Default message target, either in the
-        ---cmdline or in a separate ephemeral message window.
-        ---@type string|table<string, 'cmd'|'msg'|'pager'> Default message target
-        ---or table mapping |ui-messages| kinds and triggers to a target.
-        targets = 'cmd',
-        cmd = {             -- Options related to messages in the cmdline window.
-            height = 0.5    -- Maximum height while expanded for messages beyond 'cmdheight'.
-        },
-        dialog = {          -- Options related to dialog window.
-            height = 0.5,   -- Maximum height.
-        },
-        msg = {             -- Options related to msg window.
-            height = 0.5,   -- Maximum height.
-            timeout = 4000, -- Time a message is visible in the message window.
-        },
-        pager = {           -- Options related to message window.
-            height = 1,     -- Maximum height.
-        },
-    },
-})
-
-
--------------------------------------------------------
---- Shell option
--------------------------------------------------------
-
--- Use pwsh if available, otherwise fallback to powershell
-vim.o.shell            = vim.fn.executable('pwsh') == 1 and 'pwsh' or 'powershell'
-
--- Set shell command flags
-vim.o.shellcmdflag     = table.concat({
-    '-NoLogo',
-    '-NonInteractive',
-    '-ExecutionPolicy RemoteSigned',
-    '-Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.UTF8Encoding]::new();',
-    "$PSDefaultParameterValues['Out-File:Encoding']='utf8';",
-    "$PSStyle.OutputRendering='plaintext';",
-    'Remove-Alias -Force -ErrorAction SilentlyContinue tee;'
-}, ' ')
-
--- Set shell redirection
-vim.o.shellredir       = '2>&1 | %{{ "$_" }} | Out-File %s; exit $LastExitCode'
-vim.o.shellpipe        = '2>&1 | %{{ "$_" }} | tee %s; exit $LastExitCode'
-
--- Disable shell quoting
-vim.o.shellquote       = ''
-vim.o.shellxquote      = ''
+require("configs.ui2")
+require("configs.shell")
 
 -------------------------------------------------------
 --- Options
@@ -161,7 +109,7 @@ vim.opt.fillchars = {
 
 
 -------------------------------------------------------
---- Disable nvim providers
+--- Disable unused providers
 -------------------------------------------------------
 
 vim.g.loaded_node_provider = 0
@@ -179,13 +127,6 @@ vim.pack.add({
     "https://github.com/tpope/vim-fugitive",
     "https://github.com/lewis6991/gitsigns.nvim",
 
-    "https://github.com/rebelot/kanagawa.nvim",
-    "https://github.com/nvim-mini/mini.icons",
-    "https://github.com/nvim-mini/mini.files",
-    "https://github.com/nvim-mini/mini.pick",
-    "https://github.com/nvim-mini/mini.surround",
-    "https://github.com/nvim-mini/mini.statusline",
-    'https://github.com/nvim-mini/mini.completion',
     "https://github.com/lewis6991/gitsigns.nvim",
     "https://github.com/folke/which-key.nvim",
 
@@ -196,157 +137,11 @@ vim.pack.add({
 
 }, { load = true })
 
--------------------------------------------------------
---- Colorscheme
--------------------------------------------------------
+require("configs.colorscheme")
 
-local kanagawa = require("kanagawa")
 
-kanagawa.setup({
-    compile = false,  -- enable compiling the colorscheme
-    undercurl = true, -- enable undercurls
-    commentStyle = { italic = true },
-    functionStyle = {},
-    keywordStyle = { italic = true },
-    statementStyle = { bold = true },
-    typeStyle = {},
-    transparent = true,    -- do not set background color
-    dimInactive = false,   -- dim inactive window `:h hl-NormalNC`
-    terminalColors = true, -- define vim.g.terminal_color_{0,17}
-    colors = {             -- add/modify theme and palette colors
-        palette = {},
-        theme = { wave = {}, lotus = {}, dragon = {}, all = {} },
-    },
-    theme = "wave",    -- Load "wave" theme
-    background = {     -- map the value of 'background' option to a theme
-        dark = "wave", -- try "dragon" !
-        light = "lotus"
-    },
-    overrides = function(_)
-        return {
-            Visual = {
-                bg = "#525249"
-            },
-            CurSearch = {
-                bold = true,
-                fg = "#dcd7ba",
-                bg = "#525249",
-            },
-        }
-    end
-})
+local mini = require("configs.mini")
 
-vim.cmd("colorscheme kanagawa")
-
--------------------------------------------------------
---- Mini icons
--------------------------------------------------------
-
-require("mini.icons").setup({})
-
--------------------------------------------------------
---- Mini files
--------------------------------------------------------
-
-local mini_files = require("mini.files")
-
-mini_files.setup({
-    mappings = {
-        go_in_plus = "<Enter>",
-        close = "<M-e>",
-    },
-    windows = {
-        preview = true,
-        width_preview = 70,
-    },
-})
-
--------------------------------------------------------
---- Mini pick
--------------------------------------------------------
-
-local mini_pick = require("mini.pick")
-
-mini_pick.setup({
-    mappings = {
-        choose_marked = "<C-q>",
-    },
-
-    window = {
-        config = {
-            width = 500,
-            height = 10
-        }
-    }
-})
-
--------------------------------------------------------
---- Mini surround
--------------------------------------------------------
-
-require("mini.surround").setup({
-    n_lines = 1000,
-    search_method = "cover_or_next",
-})
-
--------------------------------------------------------
---- Mini status line
--------------------------------------------------------
-
-require("mini.statusline").setup({
-    use_icons = vim.g.have_nerd_font,
-    set_vim_settings = true,
-    content = {
-        active = function()
-            local mini_status_line = require("mini.statusline")
-            local git_module       = require("git")
-
-            local fileformat_icon  = function()
-                local icons = { unix = ' LF', dos = ' CRLF', mac = ' CR' }
-                return icons[vim.bo.fileformat] or vim.bo.fileformat
-            end
-
-            local mode, mode_hl    = mini_status_line.section_mode({ trunc_width = 1000000 })
-            mode                   = git_module.is_mode_enabled() and "" or mode
-
-            local spell            = vim.api.nvim_get_option_value("spell", {}) and " " or ""
-            local git              = ""
-            -- local git              = mini_status_line.section_git({ trunc_width = 40 })
-            local fileStatus       = vim.bo.modified and "*" or ""
-            local fileinfo         = vim.bo.filetype ~= "" and
-                require("mini.icons").get("filetype", vim.bo.filetype)
-            local location         = '%P of %L [%2v:%-2{virtcol("$") - 1}]'
-            local search           = mini_status_line.section_searchcount({ trunc_width = 10 })
-
-            local size             = vim.fn.getfsize(vim.fn.getreg('%'))
-            local sizeFormat       = ""
-
-            if size < 0 then
-                sizeFormat = ""
-            elseif size < 1024 then
-                sizeFormat = string.format('%d B', size)
-            elseif size < 1048576 then
-                sizeFormat = string.format('%.2f KiB', size / 1024)
-            else
-                sizeFormat = string.format('%.2f MiB', size / 1048576)
-            end
-
-            return mini_status_line.combine_groups({
-                { hl = mode_hl,                  strings = { mode } },
-                '%<', -- Mark general truncate point
-                { hl = 'MiniStatuslineFilename', strings = { "%{expand('%:~:.')}", fileStatus } },
-                '%=', -- End left alignment
-                { hl = 'MiniStatuslineDevinfo',  strings = { vim.fn.reg_recording() ~= "" and "Recording: " .. vim.fn.reg_recording() or "" } },
-                { hl = 'MiniStatuslineFileinfo', strings = { spell, git, fileinfo, sizeFormat, fileformat_icon() } },
-                '%<', -- Mark general truncate point
-                { hl = mode_hl, strings = { search, location } },
-            })
-        end,
-        inactive = function()
-            return "%{expand('%:~:.')}"
-        end
-    }
-})
 
 
 -------------------------------------------------------
@@ -384,14 +179,6 @@ require("nvim-treesitter").update()
 -------------------------------------------------------
 
 require("which-key").setup({ preset = "helix" })
-
-
-require("mini.completion").setup({
-    lsp_completion = {
-        source_func = 'omnifunc',
-        auto_setup = true
-    }
-})
 
 -------------------------------------------------------
 --- Keymaps
@@ -440,11 +227,11 @@ map({ 'n', 'x' }, "<leader>P", "\"+P", "Paste from clipboard.")
 map({ 'n' }, "<leader>ct", "A  // TODO[AM]: ", "Apped a todo comment at the end of the line.")
 map({ 'n' }, "<leader>cT", "O// TODO[AM]: ", "Add a todo comment one line above.")
 
-map('n', "<M-e>", mini_files.open, "Open file explorer.")
+map('n', "<M-e>", mini.files.open, "Open file explorer.")
 
 map('n', "<M-p>", function()
     local show_with_icons = function(buf_id, items, query)
-        mini_pick.default_show(buf_id, items, query, { show_icons = true })
+        mini.picker.default_show(buf_id, items, query, { show_icons = true })
     end
 
     local opts = {
@@ -457,14 +244,14 @@ map('n', "<M-p>", function()
         }
     }
 
-    mini_pick.builtin.cli({
+    mini.picker.builtin.cli({
         command = { "rg", "--files", "--hidden", "--no-follow", "--no-ignore-vcs", "--color=never", "--ignore-case" },
     }, opts)
 end, "Search by file names.")
-map('n', "<M-e>", mini_files.open, "Open file explorer.")
-map('n', "<leader>sg", mini_pick.builtin.grep_live, "Search in files.")
-map('n', "<leader>sh", mini_pick.builtin.help, "Search help.")
-map('n', "<leader>sb", mini_pick.builtin.buffers, "Search buffers.")
+map('n', "<M-e>", mini.files.open, "Open file explorer.")
+map('n', "<leader>sg", mini.picker.builtin.grep_live, "Search in files.")
+map('n', "<leader>sh", mini.picker.builtin.help, "Search help.")
+map('n', "<leader>sb", mini.picker.builtin.buffers, "Search buffers.")
 map('n', "<leader>st", function()
     vim.cmd("copen")
     local current_cwd = vim.fn.getcwd()
@@ -503,8 +290,8 @@ map('n', "<leader>sH", function()
         }
     }
 
-    return mini_pick.builtin.grep_live(nil, opts)
-end, "Searcmini_pick.")
+    return mini.picker.builtin.grep_live(nil, opts)
+end, "Search healp.")
 
 map('n', "<leader>gg", ":0G<CR>", "Git show status.")
 map('n', "<leader>bq", ":bufdo bdelete<CR>", "Close all buffers.")
@@ -574,7 +361,7 @@ vim.lsp.config['luals'] = {
                 library = {
                     vim.fn.expand("$VIMRUNTIME/lua"),
                     vim.fn.stdpath("config") .. "/lua",
-                    vim.fn.stdpath("data") .. "/lazy",
+                    vim.fn.stdpath("data") .. "site/pack/core/opt/",
                 },
                 checkThirdParty = false,
             },
