@@ -341,16 +341,7 @@ vim.lsp.config['luals'] = {
     }
 }
 
-
--- To install run:
--- Go to
--- https://dev.azure.com/azure-public/vside/_artifacts/feed/vs-impl/NuGet/Microsoft.CodeAnalysis.LanguageServer.<platform>/overview
--- replace <platform> with one of the following linux-x64, osx-x64, win-x64, neutral.
--- Download and extract it (nuget's are zip files).
-
 require("dotnetLspRoslyn")
-
-
 
 -- To install run:
 -- npm i -g vscode-langservers-extracted

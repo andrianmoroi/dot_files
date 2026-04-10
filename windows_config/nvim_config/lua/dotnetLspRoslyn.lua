@@ -89,6 +89,12 @@ local code_analisys_path = vim.fs.joinpath(
     'Microsoft.CodeAnalysis.LanguageServer.dll')
 
 
+-- To install run:
+-- Go to
+-- https://dev.azure.com/azure-public/vside/_artifacts/feed/vs-impl/NuGet/Microsoft.CodeAnalysis.LanguageServer.<platform>/overview
+-- replace <platform> with one of the following linux-x64, osx-x64, win-x64, neutral.
+-- Download and extract it (nuget's are zip files).
+
 ---@type vim.lsp.Config
 vim.lsp.config['roslyn'] = {
     name = 'roslyn_ls',
