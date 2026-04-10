@@ -151,6 +151,21 @@ vim.opt.textwidth = text_width
 -- the histogram diff algorithm for diff operations
 vim.opt.diffopt:append("algorithm:histogram")
 
+function _G.custom_foldtext()
+    local start_line = vim.fn.getline(vim.v.foldstart)
+    local end_line = vim.fn.getline(vim.v.foldend)
+    local lines = vim.v.foldend - vim.v.foldstart + 1
+
+    return string.format("▸%s  (%d lines)  ◂", start_line, lines)
+end
+
+vim.opt.foldtext = "v:lua.custom_foldtext()"
+vim.opt.foldcolumn = "1"
+vim.opt.fillchars = {
+    fold = " "
+}
+
+
 -------------------------------------------------------
 --- Disable nvim providers
 -------------------------------------------------------
@@ -360,18 +375,15 @@ gitsings.setup({
 --- Treesitter
 -------------------------------------------------------
 
-vim.opt.runtimepath:prepend(vim.fn.stdpath('data') .. "/site")
+-- vim.opt.runtimepath:prepend(vim.fn.stdpath('config'))
+-- vim.opt.runtimepath:prepend(vim.fn.stdpath('data') .. "/site")
 
 require("nvim-treesitter").install({ "c_sharp", "javascript", "typescript" })
 
 vim.api.nvim_create_autocmd('FileType', {
-    pattern = { 'cs', 'javascript', 'typescript', 'json', 'jsx', 'tsx', 'html' },
+    pattern = { 'javascript', 'typescript', 'json', 'jsx', 'tsx', 'html' },
     callback = function()
-        vim.treesitter.start()                                            -- highlighting
-        vim.wo.foldmethod = 'expr'
-
-        -- vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'               -- folds
-        -- vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()" -- indentation
+        vim.treesitter.start()
     end,
 })
 
@@ -412,6 +424,8 @@ map('n', "<C-n>", ":enew<CR>", "New empty buffer.")
 map('n', "<C-w>n", ":vnew<CR>", "New vertical empty buffer.")
 map('n', "<C-j>", ":cnext<CR>", "Next quickfix bookmark.")
 map('n', "<C-k>", ":cprevious<CR>", "Previous quickfix bookmark.")
+map('n', "<M-j>", "zj", "Next fold.")
+map('n', "<M-k>", "zk", "Previous fold.")
 map('n', "<leader>cf", vim.lsp.buf.format, "Format code.")
 map('n', "<leader>cs", ":set spell!<CR>", "Toggle spell checking.")
 map('n', "<leader>vct", toggle_center_scroll, "Toggle center scroll.")
