@@ -1,6 +1,23 @@
 local uv = vim.uv
 local fs = vim.fs
 
+-------------------------------------------------------
+--- Load roslyn.nvim package
+-------------------------------------------------------
+
+vim.pack.add({
+    "https://github.com/seblyng/roslyn.nvim",
+}, { load = true })
+
+require("roslyn").setup({
+    silent = true,
+    filewatching = "roslyn"
+})
+
+-------------------------------------------------------
+--- Setup Roslyn
+-------------------------------------------------------
+
 ---@param client vim.lsp.Client
 ---@param target string
 local function on_init_sln(client, target)
@@ -28,12 +45,15 @@ local function roslyn_handlers()
         ['workspace/projectInitializationComplete'] = function(_, _, ctx)
             vim.notify('Roslyn project initialization complete', vim.log.levels.INFO, { title = 'roslyn_ls' })
 
-            local buffers = vim.lsp.get_buffers_by_client_id(ctx.client_id)
+            local buffers = vim.lsp.get_client_by_id(ctx.client_id).attached_buffers
             local client = assert(vim.lsp.get_client_by_id(ctx.client_id))
-            for _, buf in ipairs(buffers) do
-                client:request(vim.lsp.protocol.Methods.textDocument_diagnostic, {
-                    textDocument = vim.lsp.util.make_text_document_params(buf),
-                }, nil, buf)
+
+            for buf, is_attached in pairs(buffers) do
+                if is_attached then
+                    client:request(vim.lsp.protocol.Methods.textDocument_diagnostic, {
+                        textDocument = vim.lsp.util.make_text_document_params(buf),
+                    }, nil, buf)
+                end
             end
         end,
         ['workspace/_roslyn_projectHasUnresolvedDependencies'] = function()
@@ -64,8 +84,10 @@ local function roslyn_handlers()
     return result
 end
 
-local code_analisys_path = vim.fs.joinpath(os.getenv("MicrosoftCodeAnalysisLanguageServer"),
+local code_analisys_path = vim.fs.joinpath(
+    os.getenv("MicrosoftCodeAnalysisLanguageServer"),
     'Microsoft.CodeAnalysis.LanguageServer.dll')
+
 
 ---@type vim.lsp.Config
 vim.lsp.config['roslyn'] = {
@@ -74,7 +96,7 @@ vim.lsp.config['roslyn'] = {
     cmd = {
         'dotnet',
         code_analisys_path,
-        '--logLevel=Information',
+        '--logLevel=Warning',
         '--stdio',
         '--extensionLogDirectory=' .. vim.fs.dirname(vim.lsp.log.get_filename()),
     },
@@ -105,7 +127,6 @@ vim.lsp.config['roslyn'] = {
     on_init = {
         function(client)
             local root_dir = client.config.root_dir
-            vim.print(root_dir)
 
             -- try load first solution we find
             for entry, type in fs.dir(root_dir) do
@@ -136,6 +157,14 @@ vim.lsp.config['roslyn'] = {
             dotnet_analyzer_diagnostics_scope = 'fullSolution',
             dotnet_compiler_diagnostics_scope = 'fullSolution',
         },
+        ['csharp|code_lens'] = {
+            dotnet_enable_references_code_lens = true,
+        },
+        ['csharp|completion'] = {
+            dotnet_show_name_completion_suggestions = true,
+            dotnet_show_completion_items_from_unimported_namespaces = true,
+            dotnet_provide_regex_completions = true,
+        },
         ['csharp|inlay_hints'] = {
             csharp_enable_inlay_hints_for_implicit_object_creation = true,
             csharp_enable_inlay_hints_for_implicit_variable_types = true,
@@ -153,17 +182,10 @@ vim.lsp.config['roslyn'] = {
         ['csharp|symbol_search'] = {
             dotnet_search_reference_assemblies = true,
         },
-        ['csharp|completion'] = {
-            dotnet_show_name_completion_suggestions = true,
-            dotnet_show_completion_items_from_unimported_namespaces = true,
-            dotnet_provide_regex_completions = true,
-        },
-        ['csharp|code_lens'] = {
-            dotnet_enable_references_code_lens = true,
-        },
     },
 }
 
+vim.lsp.log.set_level(vim.log.levels.INFO)
 
 vim.lsp.enable("roslyn")
 
@@ -218,11 +240,11 @@ local function load_erros_and_warnings_to_qfl(logfile)
         if line:match("error CS%d+") or line:match("warning CS%d+") or line:match("Exception") then
             -- Try to parse file/line/col/message
             local file, lnum, col, type, msg = line:match(
-                "([%w%p]+%.%w+)" -- file path
-                .. "%s*[%(:]?%s*" -- optional '(' or ':' after file
-                .. "(%d*)"  -- optional line number
-                .. ",?(%d*)[%)]?" -- optional column number, optional ')'
-                .. "[:]?%s*" -- optional ':' after line/col
+                "([%w%p]+%.%w+)"    -- file path
+                .. "%s*[%(:]?%s*"   -- optional '(' or ':' after file
+                .. "(%d*)"          -- optional line number
+                .. ",?(%d*)[%)]?"   -- optional column number, optional ')'
+                .. "[:]?%s*"        -- optional ':' after line/col
                 .. "(%a+)%s*%w+[:]" -- type: warning / error
                 .. "(.*)%[?%w*%]?$" -- message
             )
@@ -281,7 +303,6 @@ local function load_erros_and_warnings_to_qfl(logfile)
 end
 
 
-
 vim.api.nvim_create_user_command("DotnetLoadErrors", function()
     local current_path = vim.fn.getcwd()
     local vs_path = find_vs_folder(current_path)
@@ -292,6 +313,60 @@ vim.api.nvim_create_user_command("DotnetLoadErrors", function()
 
         load_erros_and_warnings_to_qfl(log_file)
     else
-        vim.api.nvim_err_writeln("VS folder not found.")
+        vim.api.nvim_echo({ { "VS folder not found." } }, true, {})
     end
 end, {})
+
+
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function(args)
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    local bufnr = args.buf
+
+    if client and (client.name == "roslyn" or client.name == "roslyn_ls") then
+      vim.api.nvim_create_autocmd("InsertCharPre", {
+        desc = "Roslyn: Trigger an auto insert on '/'.",
+        buffer = bufnr,
+        callback = function()
+          local char = vim.v.char
+
+          if char ~= "/" then
+            return
+          end
+
+          local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+          row, col = row - 1, col + 1
+          local uri = vim.uri_from_bufnr(bufnr)
+
+          local params = {
+            _vs_textDocument = { uri = uri },
+            _vs_position = { line = row, character = col },
+            _vs_ch = char,
+            _vs_options = {
+              tabSize = vim.bo[bufnr].tabstop,
+              insertSpaces = vim.bo[bufnr].expandtab,
+            },
+          }
+
+          -- NOTE: We should send textDocument/_vs_onAutoInsert request only after
+          -- buffer has changed.
+          vim.defer_fn(function()
+            client:request(
+              ---@diagnostic disable-next-line: param-type-mismatch
+              "textDocument/_vs_onAutoInsert",
+              params,
+              function(err, result, _)
+                if err or not result then
+                  return
+                end
+
+                vim.snippet.expand(result._vs_textEdit.newText)
+              end,
+              bufnr
+            )
+          end, 1)
+        end,
+      })
+    end
+  end,
+})

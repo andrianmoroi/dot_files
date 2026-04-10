@@ -165,6 +165,8 @@ vim.g.loaded_ruby_provider = 0
 -------------------------------------------------------
 
 vim.pack.add({
+    "https://github.com/nvim-lua/plenary.nvim", -- need for nvim-treesitter
+
     "https://github.com/tpope/vim-fugitive",
     "https://github.com/lewis6991/gitsigns.nvim",
 
@@ -175,7 +177,6 @@ vim.pack.add({
     "https://github.com/nvim-mini/mini.surround",
     "https://github.com/nvim-mini/mini.statusline",
     'https://github.com/nvim-mini/mini.completion',
-    "https://github.com/seblyng/roslyn.nvim",
     "https://github.com/lewis6991/gitsigns.nvim",
     "https://github.com/folke/which-key.nvim",
 
@@ -356,17 +357,33 @@ gitsings.setup({
 })
 
 -------------------------------------------------------
+--- Treesitter
+-------------------------------------------------------
+
+vim.opt.runtimepath:prepend(vim.fn.stdpath('data') .. "/site")
+
+require("nvim-treesitter").install({ "c_sharp", "javascript", "typescript" })
+
+vim.api.nvim_create_autocmd('FileType', {
+    pattern = { 'cs', 'javascript', 'typescript', 'json', 'jsx', 'tsx', 'html' },
+    callback = function()
+        vim.treesitter.start()                                            -- highlighting
+        vim.wo.foldmethod = 'expr'
+
+        -- vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'               -- folds
+        -- vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()" -- indentation
+    end,
+})
+
+require("nvim-treesitter").update()
+
+
+-------------------------------------------------------
 --- Setup other plugins
 -------------------------------------------------------
 
 require("which-key").setup({ preset = "helix" })
 
-require("nvim-treesitter").update()
-
----@diagnostic disable-next-line: undefined-field
-require("roslyn").setup({
-    silent = true
-})
 
 require("mini.completion").setup({
     lsp_completion = {
@@ -718,11 +735,6 @@ vim.diagnostic.config({
     }
 })
 
--------------------------------------------------------
---- Treesitter
--------------------------------------------------------
-
-vim.opt.rtp:prepend(vim.fn.stdpath('data') .. "/site")
 
 -------------------------------------------------------
 --- Loremipsum
