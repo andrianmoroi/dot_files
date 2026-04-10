@@ -2,11 +2,6 @@
 --- TODOs
 -------------------------------------------------------
 
---- TODO[AM] configure properly the autocomplete
----    1. automatically trigger
----    2. use lsp options
----    3. use snippets
---- TODO[AM] confiure status line
 --- TODO[AM] split lsp config into multiple files
 
 -------------------------------------------------------
@@ -153,7 +148,6 @@ vim.opt.diffopt:append("algorithm:histogram")
 
 function _G.custom_foldtext()
     local start_line = vim.fn.getline(vim.v.foldstart)
-    local end_line = vim.fn.getline(vim.v.foldend)
     local lines = vim.v.foldend - vim.v.foldstart + 1
 
     return string.format("▸%s  (%d lines)  ◂", start_line, lines)
