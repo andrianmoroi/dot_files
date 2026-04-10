@@ -118,35 +118,25 @@ vim.g.loaded_python3_provider = 0
 vim.g.loaded_ruby_provider = 0
 
 -------------------------------------------------------
---- Load vim.pack
+--- Load configs
 -------------------------------------------------------
 
-vim.pack.add({
-    "https://github.com/nvim-lua/plenary.nvim", -- need for nvim-treesitter
-
-    "https://github.com/tpope/vim-fugitive",
-    "https://github.com/lewis6991/gitsigns.nvim",
-
-    "https://github.com/lewis6991/gitsigns.nvim",
-    "https://github.com/folke/which-key.nvim",
-
-    {
-        src = "https://github.com/nvim-treesitter/nvim-treesitter",
-        version = "main"
-    },
-
-}, { load = true })
-
 require("configs.colorscheme")
-
+require("configs.treesitter")
 
 local mini = require("configs.mini")
 
-
-
 -------------------------------------------------------
---- Gitsings
+--- Setup other plugins
 -------------------------------------------------------
+
+vim.pack.add({
+
+    "https://github.com/tpope/vim-fugitive",
+    "https://github.com/lewis6991/gitsigns.nvim",
+    "https://github.com/folke/which-key.nvim",
+
+}, { load = true })
 
 local gitsings = require("gitsigns")
 
@@ -158,25 +148,6 @@ gitsings.setup({
     gh = true,
 })
 
--------------------------------------------------------
---- Treesitter
--------------------------------------------------------
-
-require("nvim-treesitter").install({ "c_sharp", "javascript", "typescript", "jsx", "tsx", "html", "css" })
-
-vim.api.nvim_create_autocmd('FileType', {
-    pattern = { 'javascript', 'typescript', 'json', 'jsx', 'tsx', 'html' },
-    callback = function()
-        vim.treesitter.start()
-    end,
-})
-
-require("nvim-treesitter").update()
-
-
--------------------------------------------------------
---- Setup other plugins
--------------------------------------------------------
 
 require("which-key").setup({ preset = "helix" })
 
@@ -198,13 +169,14 @@ map('n', "<leader>q", ":bdelete<CR>", "Close buffer.")
 map('n', "<leader>Q", ":bdelete!<CR>", "Close buffer.")
 map('n', "<C-n>", ":enew<CR>", "New empty buffer.")
 map('n', "<C-w>n", ":vnew<CR>", "New vertical empty buffer.")
-map('n', "<C-j>", ":cnext<CR>", "Next quickfix bookmark.")
-map('n', "<C-k>", ":cprevious<CR>", "Previous quickfix bookmark.")
+map('n', "<C-j>", ":cnext<CR>", "Next quickfix.")
+map('n', "<C-k>", ":cprevious<CR>", "Previous quickfix.")
 map('n', "<M-j>", "zj", "Next fold.")
 map('n', "<M-k>", "zk", "Previous fold.")
+map('n', "<leader>vct", toggle_center_scroll, "Toggle center scroll.")
+
 map('n', "<leader>cf", vim.lsp.buf.format, "Format code.")
 map('n', "<leader>cs", ":set spell!<CR>", "Toggle spell checking.")
-map('n', "<leader>vct", toggle_center_scroll, "Toggle center scroll.")
 map('n', "gd", vim.lsp.buf.definition, "Go to definition.")
 
 map('n', "<leader>do", vim.diagnostic.open_float, "Open diagnostics window.")

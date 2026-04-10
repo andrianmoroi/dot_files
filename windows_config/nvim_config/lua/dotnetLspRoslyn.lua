@@ -185,31 +185,8 @@ vim.lsp.config['roslyn'] = {
     },
 }
 
-vim.api.nvim_create_autocmd('FileType', {
-    pattern = { 'cs' },
-    callback = function()
-        vim.treesitter.start() -- highlighting
-        vim.wo.foldmethod = 'expr'
-
-        vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()' -- folds
-
-        vim.treesitter.query.set("c_sharp", "folds", [[
-            (method_declaration
-              body: (block) @fold)
-
-            (constructor_declaration
-              body: (block) @fold)
-        ]])
-        -- vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()" -- indentation
-        -- vim.wo.foldmethod = 'manual'
-    end,
-})
-
-
-vim.lsp.log.set_level(vim.log.levels.INFO)
-
+vim.lsp.log.set_level(vim.log.levels.WARN)
 vim.lsp.enable("roslyn")
-
 
 --------------------------------------------------------------------------------
 --- Dotnet load errors and warnings from watch to QuickFixList
