@@ -107,6 +107,7 @@ vim.opt.fillchars = {
     fold = " "
 }
 
+-- vim.opt.foldopen = "all"
 
 -------------------------------------------------------
 --- Disable unused providers
@@ -169,8 +170,8 @@ map('n', "<leader>q", ":bdelete<CR>", "Close buffer.")
 map('n', "<leader>Q", ":bdelete!<CR>", "Close buffer.")
 map('n', "<C-n>", ":enew<CR>", "New empty buffer.")
 map('n', "<C-w>n", ":vnew<CR>", "New vertical empty buffer.")
-map('n', "<C-j>", ":cnext<CR>", "Next quickfix.")
-map('n', "<C-k>", ":cprevious<CR>", "Previous quickfix.")
+map('n', "<C-j>", ":cnext | silent! foldopen!<CR>", "Next quickfix.")
+map('n', "<C-k>", ":cprevious | silent! foldopen!<CR>", "Previous quickfix.")
 map('n', "<M-j>", "zj", "Next fold.")
 map('n', "<M-k>", "zk", "Previous fold.")
 map('n', "<leader>vct", toggle_center_scroll, "Toggle center scroll.")
@@ -292,6 +293,17 @@ map('n', "<leader>gN", function() gitsings.nav_hunk("prev", gitsign_hunk_config)
     "Git move to previous hunk.")
 
 map({ 'n', 'v' }, "grx", ":LspTypescriptSourceAction<CR>", "Typescript specific actions.")
+
+local fold_enable = true
+
+map("n", "<leader>zi", function()
+    fold_enable = not fold_enable
+
+    for _, win in ipairs(vim.api.nvim_list_wins()) do
+        vim.api.nvim_set_option_value("foldenable", fold_enable, { scope = "local", win = win })
+    end
+end, "Toggle fold enable.")
+
 
 -------------------------------------------------------
 --- Highlight yanked text

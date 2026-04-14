@@ -19,34 +19,32 @@ vim.api.nvim_create_autocmd("FileType", {
         "cs", "javascript", "typescript", "json", "javascriptreact", "typescriptreact", "html"
     },
     callback = function()
-        vim.treesitter.start() -- highlighting
-        vim.wo.foldmethod = 'expr'
-
-        vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()' -- folds
-
-        vim.treesitter.query.set("c_sharp", "folds", [[
-            (method_declaration
-              body: (block) @fold)
-
-            (constructor_declaration
-              body: (block) @fold)
-        ]])
-
-        vim.treesitter.query.set("typescript", "folds", [[
-            (type_alias_declaration
-              value: (object_type) @fold)
-
-            (function_declaration
-              body: (statement_block) @fold)
-        ]])
-
-        vim.treesitter.query.set("tsx", "folds", [[
-            (function_declaration
-              body: (statement_block) @fold)
-        ]])
-        -- vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()" -- indentation
-        -- vim.wo.foldmethod = 'manual'
+        vim.treesitter.start()                               -- highlighting
+        vim.opt.foldmethod = 'expr'
+        vim.opt.foldexpr = 'v:lua.vim.treesitter.foldexpr()' -- folds
     end,
 })
+
+
+vim.treesitter.query.set("c_sharp", "folds", [[
+    (method_declaration
+      body: (block) @fold)
+
+    (constructor_declaration
+      body: (block) @fold)
+]])
+
+vim.treesitter.query.set("typescript", "folds", [[
+    (type_alias_declaration
+      value: (object_type) @fold)
+
+    (function_declaration
+      body: (statement_block) @fold)
+]])
+
+vim.treesitter.query.set("tsx", "folds", [[
+    (function_declaration
+      body: (statement_block) @fold)
+]])
 
 require("nvim-treesitter").update()
