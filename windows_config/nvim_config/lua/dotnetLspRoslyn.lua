@@ -53,6 +53,12 @@ local function roslyn_handlers()
                     client:request(vim.lsp.protocol.Methods.textDocument_diagnostic, {
                         textDocument = vim.lsp.util.make_text_document_params(buf),
                     }, nil, buf)
+
+                    -- delay to allow Roslyn to finish loading solution
+                    -- HACK: to load the diagnostics
+                    vim.defer_fn(function()
+                        vim.cmd("edit")
+                    end, 0)
                 end
             end
         end,
