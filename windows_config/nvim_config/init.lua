@@ -94,21 +94,6 @@ vim.opt.textwidth = text_width
 -- the histogram diff algorithm for diff operations
 vim.opt.diffopt:append("algorithm:histogram")
 
-function _G.custom_foldtext()
-    local start_line = vim.fn.getline(vim.v.foldstart)
-    local lines = vim.v.foldend - vim.v.foldstart + 1
-
-    return string.format("▸%s  (%d lines)  ◂", start_line, lines)
-end
-
-vim.opt.foldtext = "v:lua.custom_foldtext()"
-vim.opt.foldcolumn = "1"
-vim.opt.fillchars = {
-    fold = " "
-}
-
--- vim.opt.foldopen = "all"
-
 -------------------------------------------------------
 --- Disable unused providers
 -------------------------------------------------------
@@ -124,6 +109,7 @@ vim.g.loaded_ruby_provider = 0
 
 require("configs.colorscheme")
 require("configs.treesitter")
+require("configs.fold")
 
 local mini = require("configs.mini")
 
@@ -172,8 +158,6 @@ map('n', "<C-n>", ":enew<CR>", "New empty buffer.")
 map('n', "<C-w>n", ":vnew<CR>", "New vertical empty buffer.")
 map('n', "<C-j>", ":cnext | silent! foldopen!<CR>", "Next quickfix.")
 map('n', "<C-k>", ":cprevious | silent! foldopen!<CR>", "Previous quickfix.")
-map('n', "<M-j>", "zj", "Next fold.")
-map('n', "<M-k>", "zk", "Previous fold.")
 map('n', "<leader>vct", toggle_center_scroll, "Toggle center scroll.")
 
 map('n', "<leader>cf", vim.lsp.buf.format, "Format code.")
@@ -293,16 +277,6 @@ map('n', "<leader>gN", function() gitsings.nav_hunk("prev", gitsign_hunk_config)
     "Git move to previous hunk.")
 
 map({ 'n', 'v' }, "grx", ":LspTypescriptSourceAction<CR>", "Typescript specific actions.")
-
-local fold_enable = true
-
-map("n", "<leader>zi", function()
-    fold_enable = not fold_enable
-
-    for _, win in ipairs(vim.api.nvim_list_wins()) do
-        vim.api.nvim_set_option_value("foldenable", fold_enable, { scope = "local", win = win })
-    end
-end, "Toggle fold enable.")
 
 
 -------------------------------------------------------
