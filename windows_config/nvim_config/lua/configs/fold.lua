@@ -14,7 +14,7 @@ vim.opt.fillchars = {
 -- vim.opt.foldopen = "all"
 
 vim.keymap.set('n', "<M-j>", "zjzt", { desc = "Next fold." })
-vim.keymap.set('n', "<M-k>", "zkzt", { desc = "Previous fold." })
+vim.keymap.set('n', "<M-k>", "zkzb", { desc = "Previous fold." })
 
 vim.g.fold_enable = true
 
