@@ -24,8 +24,8 @@ vim.opt.shellcmdflag   = "-c"
 vim.opt.cmdheight      = 1
 
 vim.g.have_nerd_font   = true
-vim.opt.number         = true
-vim.opt.relativenumber = true
+vim.opt.number         = false
+vim.opt.relativenumber = false
 vim.opt.mouse          = "a" -- enables mouse support for all modes
 
 vim.opt.tabstop        = 4
