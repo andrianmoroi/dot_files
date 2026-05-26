@@ -14,6 +14,25 @@ vim.pack.add({
 require("nvim-treesitter")
     .install({ "c_sharp", "javascript", "typescript", "jsx", "tsx", "html", "css" })
 
+function _G.js_indent_expr()
+    local lnum = vim.v.lnum
+    local line = vim.fn.getline(lnum)
+
+    -- check syntax group (comment/doc)
+    local syn_id = vim.fn.synID(lnum, 1, 1)
+    local syn_name = vim.fn.synIDattr(syn_id, "name")
+
+    vim.print("indent")
+    vim.print(syn_name)
+    vim.print(syn_id)
+
+    if line:match("^%s*%*") then
+        return 2
+    end
+
+    return vim.fn.GetJavascriptIndent()
+end
+
 vim.api.nvim_create_autocmd("FileType", {
     pattern = {
         "cs", "javascript", "typescript", "json", "javascriptreact", "typescriptreact", "html"
@@ -24,6 +43,8 @@ vim.api.nvim_create_autocmd("FileType", {
         vim.opt.foldexpr = 'v:lua.vim.treesitter.foldexpr()' -- folds
 
         vim.wo.foldenable = vim.g.fold_enable
+
+        vim.bo.indentexpr = "v:lua.js_indent_expr()"
     end,
 })
 
