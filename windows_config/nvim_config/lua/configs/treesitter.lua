@@ -18,33 +18,33 @@ function _G.js_indent_expr()
     local lnum = vim.v.lnum
     local line = vim.fn.getline(lnum)
 
-    -- check syntax group (comment/doc)
-    local syn_id = vim.fn.synID(lnum, 1, 1)
-    local syn_name = vim.fn.synIDattr(syn_id, "name")
-
-    vim.print("indent")
-    vim.print(syn_name)
-    vim.print(syn_id)
+    local result = vim.fn.GetJavascriptIndent()
 
     if line:match("^%s*%*") then
-        return 2
+        return result - 2
     end
 
-    return vim.fn.GetJavascriptIndent()
+    return result
 end
 
 vim.api.nvim_create_autocmd("FileType", {
     pattern = {
         "cs", "javascript", "typescript", "json", "javascriptreact", "typescriptreact", "html"
     },
-    callback = function()
+    callback = function(event)
         vim.treesitter.start()                               -- highlighting
         vim.opt.foldmethod = 'expr'
         vim.opt.foldexpr = 'v:lua.vim.treesitter.foldexpr()' -- folds
 
         vim.wo.foldenable = vim.g.fold_enable
 
-        vim.bo.indentexpr = "v:lua.js_indent_expr()"
+        if event.match == "javascript"
+            or event.match == "javascriptreact"
+            or event.match == "typescript"
+            or event.match == "typescriptreact"
+        then
+            vim.bo.indentexpr = "v:lua.js_indent_expr()"
+        end
     end,
 })
 
