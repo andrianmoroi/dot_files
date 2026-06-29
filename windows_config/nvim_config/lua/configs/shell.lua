@@ -17,8 +17,9 @@ vim.o.shellcmdflag     = table.concat({
 }, ' ')
 
 -- Set shell redirection
-vim.o.shellredir       = '2>&1 | %{{ "$_" }} | Out-File %s; exit $LastExitCode'
-vim.o.shellpipe        = '2>&1 | %{{ "$_" }} | tee %s; exit $LastExitCode'
+-- vim.o.shellredir       = '2>&1 | %{{ "$_" }} | Out-File %s; exit $LastExitCode'
+-- vim.o.shellpipe        = '2>&1 | %{{ "$_" }} | tee %s; exit $LastExitCode'
+vim.o.shellpipe        = '> %s 2>&1'
 
 -- Disable shell quoting
 vim.o.shellquote       = ''
