@@ -1,7 +1,15 @@
 local M = {}
 
-local function parse(lines)
-    local first = lines[1]
+local function parse(lines, index_line)
+    while lines[index_line]:sub(1, 3) ~= "---" and index_line > 1 do
+        index_line = index_line - 1
+    end
+
+    while lines[index_line]:sub(1, 3) == "---" and index_line >= 1 do
+        index_line = index_line + 1
+    end
+
+    local first = lines[index_line]
     assert(first, "Empty buffer")
 
     local method, url = first:match("^(%S+)%s+(%S+)$")
@@ -12,7 +20,7 @@ local function parse(lines)
 
     local in_body = false
 
-    for i = 2, #lines do
+    for i = index_line + 1, #lines do
         local line = lines[i]
 
         if not in_body then
@@ -22,8 +30,22 @@ local function parse(lines)
                 table.insert(headers, line)
             end
         else
+            if line:sub(1, 3) == "---" then
+                break
+            end
+
             table.insert(body, line)
         end
+    end
+
+    local last = #body
+
+    while last > 0 and body[last]:match("^$") do
+        last = last - 1
+    end
+
+    for i = #body, last + 1, -1 do
+        table.remove(body, i)
     end
 
     return method, url, headers, table.concat(body, "\n")
@@ -31,8 +53,9 @@ end
 
 function M.send()
     local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+    local current_line = vim.api.nvim_win_get_cursor(0)[1]
 
-    local method, url, headers, body = parse(lines)
+    local method, url, headers, body = parse(lines, current_line)
 
     local cmd = {
         "curl",
