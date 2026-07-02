@@ -260,6 +260,8 @@ map('n', "<leader>gb", gitsings.blame, "Git blame this file.")
 map('n', "<leader>gr", gitsings.reset_hunk, "Git reset hunk.")
 map('n', "<leader>gp", require("git").toggle_preview_hunk, "Git toggle preview hunk.")
 
+map('n', "<leader>ms", require("myhttp").send, "Send HTTP Request.")
+
 ---@type Gitsigns.NavOpts
 local gitsign_hunk_config = {
     count = 1,
