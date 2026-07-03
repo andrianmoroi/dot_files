@@ -59,6 +59,7 @@ function M.send()
 
     local cmd = {
         "curl",
+        "--ssl-revoke-best-effort",
         "-i",
         "-X", method,
     }
