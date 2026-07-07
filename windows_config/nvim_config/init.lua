@@ -251,6 +251,7 @@ map('n', "<leader>sH", function()
 end, "Search healp.")
 
 map('n', "<leader>gg", ":0G<CR>", "Git show status.")
+map('n', "<leader>gl", ":Gclog<CR>", "Git show logs.")
 map('n', "<leader>bq", ":bufdo bdelete<CR>", "Close all buffers.")
 
 map('n', "<leader>gs", gitsings.stage_hunk, "Git stage hunk.")

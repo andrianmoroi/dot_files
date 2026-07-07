@@ -1,11 +1,12 @@
 local M = {}
 
 local function parse(lines, index_line)
-    while lines[index_line]:sub(1, 3) ~= "---" and index_line > 1 do
+    local commentPrefix = "###"
+    while lines[index_line]:sub(1, #commentPrefix) ~= commentPrefix and index_line > 1 do
         index_line = index_line - 1
     end
 
-    while lines[index_line]:sub(1, 3) == "---" and index_line >= 1 do
+    while lines[index_line]:sub(1, #commentPrefix) == commentPrefix and index_line >= 1 do
         index_line = index_line + 1
     end
 
@@ -59,7 +60,7 @@ function M.send()
 
     local cmd = {
         "curl",
-        "--ssl-revoke-best-effort",
+        -- "--ssl-revoke-best-effort",
         "-i",
         "-X", method,
     }
@@ -86,11 +87,11 @@ function M.send()
                 vim.list_extend(out, vim.split(result.stdout, "\n"))
             end
 
-            if result.stderr ~= "" then
-                table.insert(out, "")
-                table.insert(out, "=== STDERR ===")
-                vim.list_extend(out, vim.split(result.stderr, "\n"))
-            end
+            -- if result.stderr ~= "" then
+            --     table.insert(out, "")
+            --     table.insert(out, "=== STDERR ===")
+            --     vim.list_extend(out, vim.split(result.stderr, "\n"))
+            -- end
 
             vim.api.nvim_buf_set_lines(0, 0, -1, false, out)
             vim.bo.buftype = "nofile"
