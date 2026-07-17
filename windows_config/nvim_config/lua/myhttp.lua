@@ -95,6 +95,7 @@ function M.send()
 
             vim.api.nvim_buf_set_lines(0, 0, -1, false, out)
             vim.bo.buftype = "nofile"
+            vim.bo.filetype = "http"
             vim.bo.bufhidden = "wipe"
             vim.bo.swapfile = false
         end)
