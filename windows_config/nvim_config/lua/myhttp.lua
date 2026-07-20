@@ -60,7 +60,8 @@ function M.send()
 
     local cmd = {
         "curl",
-        -- "--ssl-revoke-best-effort",
+        "--ssl-revoke-best-effort",
+        "--insecure",
         "-i",
         "-X", method,
     }
@@ -87,11 +88,12 @@ function M.send()
                 vim.list_extend(out, vim.split(result.stdout, "\n"))
             end
 
-            -- if result.stderr ~= "" then
-            --     table.insert(out, "")
-            --     table.insert(out, "=== STDERR ===")
-            --     vim.list_extend(out, vim.split(result.stderr, "\n"))
-            -- end
+            if result.stderr ~= "" then
+                table.insert(out, "")
+                table.insert(out, "=== STDERR ===")
+                local stderr = result.stderr:gsub("\r\n", "\n"):gsub("\r", "\n")
+                vim.list_extend(out, vim.split(stderr, "\n", { trimempty = true }))
+            end
 
             vim.api.nvim_buf_set_lines(0, 0, -1, false, out)
             vim.bo.buftype = "nofile"
