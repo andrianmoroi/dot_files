@@ -29,7 +29,7 @@ end
 
 vim.api.nvim_create_autocmd("FileType", {
     pattern = {
-        "cs", "javascript", "typescript", "json", "javascriptreact", "typescriptreact", "html", "http"
+        "cs", "javascript", "typescript", "json", "javascriptreact", "typescriptreact", "html", "http", "razor"
     },
     callback = function(event)
         vim.treesitter.start()                               -- highlighting
