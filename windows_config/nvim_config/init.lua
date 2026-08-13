@@ -111,6 +111,8 @@ require("configs.colorscheme")
 require("configs.treesitter")
 require("configs.fold")
 
+require("copilot")
+
 local mini = require("configs.mini")
 
 -------------------------------------------------------
