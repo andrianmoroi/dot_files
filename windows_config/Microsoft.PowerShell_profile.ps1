@@ -14,3 +14,7 @@ Set-PSReadlineKeyHandler -Key ctrl+d -Function ViExit
 
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 $OutputEncoding = [System.Text.Encoding]::UTF8
+
+# Set default editor to Neovim
+$env:EDITOR = 'nvim'
+$env:VISUAL = 'nvim'
