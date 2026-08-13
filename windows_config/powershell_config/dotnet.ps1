@@ -92,7 +92,7 @@ function Dotnet-Command {
     {
         $logFile = Join-Path $vsPath $DOTNET_LOG_FILE_NAME
 
-        dotnet $command --project $path | Watch-AndTee -File $logFile -Trigger "File updated:|Restart requested.|Building.*\.\.\."
+        dotnet $command --project $path | Watch-AndTee -File $logFile -Trigger "File updated:|Determining projects to restore|Restart requested.|Building.*\.\.\."
     } else {
         Write-Error "Project '$bookmark' not found or path does not exist."
     }

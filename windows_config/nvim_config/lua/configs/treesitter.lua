@@ -48,6 +48,14 @@ vim.api.nvim_create_autocmd("FileType", {
     end,
 })
 
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "markdown",
+    callback = function(_)
+        vim.treesitter.start(0, "markdown")
+        vim.opt_local.foldmethod = 'expr'
+        vim.opt_local.foldexpr = 'v:lua.vim.treesitter.foldexpr()' -- folds
+    end,
+})
 
 vim.treesitter.query.set("c_sharp", "folds", [[
     (method_declaration
