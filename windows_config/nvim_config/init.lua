@@ -112,6 +112,7 @@ require("configs.treesitter")
 require("configs.fold")
 
 require("copilot")
+require("github")
 
 local mini = require("configs.mini")
 
