@@ -25,8 +25,8 @@ vim.keymap.set("n", "<leader>cc", function()
         vim.api.nvim_buf_set_name(buf, BufferName)
 
         vim.api.nvim_buf_set_keymap(buf, "t", "<M-q>", "<C-\\><C-n>:close<CR>", { desc = "Hide copilot."})
-        vim.api.nvim_buf_set_keymap(buf, "t", "<C-W><C-W>", "<C-\\><C-n><C-W><C-W>", { desc = "Move next window."})
-        vim.api.nvim_buf_set_keymap(buf, "t", "<C-W>o", "<C-\\><C-n><C-W>o:startinsert<CR>", { desc = "Maximize window."})
+        -- vim.api.nvim_buf_set_keymap(buf, "t", "<C-W><C-W>", "<C-\\><C-n><C-W><C-W>", { desc = "Move next window."})
+        -- vim.api.nvim_buf_set_keymap(buf, "t", "<C-W>o", "<C-\\><C-n><C-W>o:startinsert<CR>", { desc = "Maximize window."})
 
         vim.bo.buflisted = false
 

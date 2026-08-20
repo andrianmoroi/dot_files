@@ -89,7 +89,7 @@ vim.opt.scrolloff = default_scrolloff
 
 local text_width = 100
 vim.opt.colorcolumn = tostring(text_width)
-vim.opt.textwidth = text_width
+-- vim.opt.textwidth = text_width
 
 -- the histogram diff algorithm for diff operations
 vim.opt.diffopt:append("algorithm:histogram")
