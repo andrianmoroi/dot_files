@@ -1,7 +1,8 @@
 local M = {}
 
 local BufferName = "[Github]"
-local PRs = {}
+
+local state = require("github.state")
 
 local function find_buf_by_name(name)
     for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
@@ -15,48 +16,33 @@ local function find_buf_by_name(name)
     return nil
 end
 
-local function render_screen(buf)
-    vim.schedule(function()
-        vim.bo.modifiable = true
+local function get_all_PRs()
+    state.start_loading()
 
-        vim.api.nvim_buf_set_lines(buf, 0, -1, false, {
-            "Github",
-            "",
-            "r - refresh all PRs",
-            "w - open PR in web",
-            "e - edit PR body",
-            ""
-        })
-
-        for _, obj in ipairs(PRs) do
-            vim.api.nvim_buf_set_lines(buf, -1, -1, false, {
-                string.format("#%d (%s) - %s - %s", obj.number, obj.state, obj.author.name, obj.title)
-            })
-        end
-
-        vim.bo.modifiable = false
-        vim.bo.modified = false
-    end)
-end
-
-
-local function get_all_PRs(buf)
     vim.system({ "gh", "pr", "list", "--json", "number,title,author,state" }, { text = true }, function(result)
-        PRs = vim.json.decode(result.stdout)
+        local prs = vim.json.decode(result.stdout)
 
-        render_screen(buf)
+        state.update_prs(prs)
     end)
 end
 
 
-local function render(buf)
-    get_all_PRs(buf)
+local function init_shortcuts()
+    get_all_PRs()
 
     vim.keymap.set("n", "r", function()
-        get_all_PRs(buf)
+        get_all_PRs()
     end, { buffer = true })
 
-    vim.keymap.set("n", "w", function()
+    vim.keymap.set("n", ")", function()
+        vim.fn.search("^#\\d* *-", "W")
+    end, { buffer = state.get_buf_id() })
+
+    vim.keymap.set("n", "(", function()
+        vim.fn.search("^#\\d* *-", "bW")
+    end, { buffer = state.get_buf_id() })
+
+    vim.keymap.set("n", "o", function()
         local line = vim.api.nvim_get_current_line()
         local number = line:match("^#(%d+)")
 
@@ -118,11 +104,11 @@ vim.keymap.set("n", "<leader>gh", function()
         vim.bo.swapfile = false
         vim.bo.modified = false
         vim.bo.buflisted = false
-
-        render(buf)
-
-        vim.bo.modified = false
         vim.bo.modifiable = false
+
+        state.init(buf)
+
+        init_shortcuts()
     else
         vim.api.nvim_set_current_buf(github_buf)
     end
