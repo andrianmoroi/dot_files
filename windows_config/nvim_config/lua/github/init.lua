@@ -24,6 +24,10 @@ local function init_shortcuts()
         flow.load_all_prs()
     end, { buffer = true })
 
+    vim.keymap.set("n", "d", function()
+        flow.toggle_pr_details()
+    end, { buffer = true })
+
     vim.keymap.set("n", ")", function()
         vim.fn.search("^#\\d* *-", "W")
     end, { buffer = state.get_buf_id() })

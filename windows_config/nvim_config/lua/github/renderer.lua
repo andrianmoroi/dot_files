@@ -32,15 +32,18 @@ end
 ---Render menu
 ---@param state State
 local function render_menu(state)
+
+    local toggle_message = state.show_details and "hide" or "show"
+
     vim.api.nvim_buf_set_lines(state.buf_id, -1, -1, false, {
-        Padding .. "┌───────────────────────────┐",
-        Padding .. "│ ( - previous PR           │",
-        Padding .. "│ ) - next PR               │",
-        Padding .. "│                           │",
-        Padding .. "│ r - refresh all PRs       │",
-        Padding .. "│ o - open PR in web        │",
-        Padding .. "│ e - edit PR body          │",
-        Padding .. "└───────────────────────────┘",
+        Padding .. "┌───────────────────────────────────────────────────┐",
+        Padding .. "│ ( - previous PR                                   │",
+        Padding .. "│ ) - next PR                                       │",
+        Padding .. "│                                                   │",
+        Padding .. "│ r - refresh all PRs      d - " ..toggle_message .." details         │",
+        Padding .. "│ o - open PR in web                                │",
+        Padding .. "│ e - edit PR body                                  │",
+        Padding .. "└───────────────────────────────────────────────────┘",
     })
 end
 
@@ -80,25 +83,40 @@ end
 ---Render a PR
 ---@param buf_id number
 ---@param pr PR
-local function render_pr(buf_id, pr)
+---@param show_details boolean
+local function render_pr(buf_id, pr, show_details)
     local pr_id_marker = string.format("#%d", pr.id)
+    local start_index = 0
+    local end_index = 0
 
-    vim.api.nvim_buf_set_lines(buf_id, -1, -1, false, {
-        pr_id_marker .. Padding .. string.format("- %d %s", pr.id, pr.title),
-        pr_id_marker .. Padding .. string.format("  %s [ %s / %s]", pr.author, pr.state, pr.reviewDecision),
-        pr_id_marker .. Padding .. string.format("  %s (commits:%d +%d ~%d -%d)",
-            pr.baseRefName,
-            pr.commits,
-            pr.additions,
-            pr.changedFiles,
-            pr.deletions
-        ),
-        "",
-    })
+    if show_details then
+        vim.api.nvim_buf_set_lines(buf_id, -1, -1, false, {
+            pr_id_marker .. Padding .. string.format("- %d %s", pr.id, pr.title),
+            pr_id_marker .. Padding .. string.format("  %s [ %s / %s]", pr.author, pr.state, pr.reviewDecision),
+            pr_id_marker .. Padding .. string.format("  %s (commits:%d +%d ~%d -%d)",
+                pr.baseRefName,
+                pr.commits,
+                pr.additions,
+                pr.changedFiles,
+                pr.deletions
+            ),
+            "",
+        })
+
+        start_index = 4
+        end_index = 2
+    else
+        vim.api.nvim_buf_set_lines(buf_id, -1, -1, false, {
+            pr_id_marker .. Padding .. string.format("- %d %s", pr.id, pr.title),
+        })
+
+        start_index = 1
+        end_index = 1
+    end
 
     local line_index = vim.api.nvim_buf_line_count(buf_id)
 
-    for line = line_index - 4, line_index - 2 do
+    for line = line_index - start_index, line_index - end_index do
         vim.api.nvim_buf_set_extmark(buf_id, ns, line, 0, {
             end_col = #pr_id_marker,
             conceal = "",
@@ -126,7 +144,7 @@ function M.render(state)
             render_loading(state)
         else
             for _, obj in ipairs(state.prs) do
-                render_pr(state.buf_id, obj)
+                render_pr(state.buf_id, obj, state.show_details)
             end
         end
 

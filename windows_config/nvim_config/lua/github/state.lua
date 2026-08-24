@@ -7,6 +7,7 @@ local renderer = require("github.renderer")
 local state = {
     buf_id = -1,
     is_loading = false,
+    show_details = true,
     prs = {}
 }
 
@@ -43,6 +44,13 @@ end
 ---Set loading state
 function M.start_loading()
     state.is_loading = true
+
+    renderer.render(state)
+end
+
+---Set loading state
+function M.toggle_details()
+    state.show_details = not state.show_details
 
     renderer.render(state)
 end

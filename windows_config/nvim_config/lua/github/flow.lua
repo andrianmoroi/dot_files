@@ -3,6 +3,10 @@ local M = {}
 require("github.types")
 local state = require("github.state")
 
+---Toggle details for all PRs
+function M.toggle_pr_details()
+    state.toggle_details()
+end
 
 ---Load all PRs
 function M.load_all_prs()
