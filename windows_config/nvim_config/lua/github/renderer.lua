@@ -32,13 +32,11 @@ end
 ---Render menu
 ---@param state State
 local function render_menu(state)
-
     local toggle_message = state.show_details and "hide" or "show"
 
     vim.api.nvim_buf_set_lines(state.buf_id, -1, -1, false, {
         Padding .. "┌───────────────────────────────────────────────────┐",
-        Padding .. "│ ( - previous PR                                   │",
-        Padding .. "│ ) - next PR                                       │",
+        Padding .. "│ ( / ) - previous / next PR                        │",
         Padding .. "│                                                   │",
         Padding .. "│ r - refresh all PRs      d - " ..toggle_message .." details         │",
         Padding .. "│ o - open PR in web                                │",
