@@ -3,6 +3,7 @@ local M = {}
 local BufferName = "[Github]"
 
 local state = require("github.state")
+local flow = require("github.flow")
 
 local function find_buf_by_name(name)
     for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
@@ -16,22 +17,11 @@ local function find_buf_by_name(name)
     return nil
 end
 
-local function get_all_PRs()
-    state.start_loading()
-
-    vim.system({ "gh", "pr", "list", "--json", "number,title,author,state" }, { text = true }, function(result)
-        local prs = vim.json.decode(result.stdout)
-
-        state.update_prs(prs)
-    end)
-end
-
-
 local function init_shortcuts()
-    get_all_PRs()
+    flow.load_all_prs()
 
     vim.keymap.set("n", "r", function()
-        get_all_PRs()
+        flow.load_all_prs()
     end, { buffer = true })
 
     vim.keymap.set("n", ")", function()

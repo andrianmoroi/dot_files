@@ -22,7 +22,13 @@ function M.update_prs(prs)
             id = obj.number,
             author = obj.author.name,
             state = obj.state,
-            title = obj.title
+            title = obj.title,
+            reviewDecision = obj.reviewDecision,
+            commits = #obj.commits,
+            changedFiles = obj.changedFiles,
+            additions = obj.additions,
+            deletions = obj.deletions,
+            baseRefName = obj.baseRefName,
         }
 
         table.insert(state_prs, pr)

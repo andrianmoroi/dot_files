@@ -34,6 +34,9 @@ end
 local function render_menu(state)
     vim.api.nvim_buf_set_lines(state.buf_id, -1, -1, false, {
         Padding .. "┌───────────────────────────┐",
+        Padding .. "│ ( - previous PR           │",
+        Padding .. "│ ) - next PR               │",
+        Padding .. "│                           │",
         Padding .. "│ r - refresh all PRs       │",
         Padding .. "│ o - open PR in web        │",
         Padding .. "│ e - edit PR body          │",
@@ -82,8 +85,14 @@ local function render_pr(buf_id, pr)
 
     vim.api.nvim_buf_set_lines(buf_id, -1, -1, false, {
         pr_id_marker .. Padding .. string.format("- %d %s", pr.id, pr.title),
-        pr_id_marker .. Padding .. string.format("  [ %s ]", pr.state),
-        pr_id_marker .. Padding .. string.format("  %s", pr.author),
+        pr_id_marker .. Padding .. string.format("  %s [ %s / %s]", pr.author, pr.state, pr.reviewDecision),
+        pr_id_marker .. Padding .. string.format("  %s (commits:%d +%d ~%d -%d)",
+            pr.baseRefName,
+            pr.commits,
+            pr.additions,
+            pr.changedFiles,
+            pr.deletions
+        ),
         "",
     })
 
@@ -95,8 +104,6 @@ local function render_pr(buf_id, pr)
             conceal = "",
         })
     end
-
-
 end
 
 ---Render the state inside buffer
@@ -107,7 +114,7 @@ function M.render(state)
 
         vim.bo[buf_id].modifiable = true
         vim.opt_local.conceallevel = 3
-        vim.opt_local.concealcursor = "n"
+        vim.opt_local.concealcursor = "nv"
 
         clear_buffer(state)
         render_logo(state)
