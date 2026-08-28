@@ -75,11 +75,13 @@ local function init_shortcuts()
                         else
                             vim.notify("Failed to update PR body", vim.log.levels.ERROR)
                         end
-
-                        vim.cmd("bdelete!")
-                        vim.cmd("close")
                     end,
                 })
+
+                vim.keymap.set("n", "<M-q>", function()
+                    vim.cmd("bdelete!")
+                    vim.cmd("close")
+                end, { buffer = buf_write })
             end)
         end)
     end, { buffer = true })

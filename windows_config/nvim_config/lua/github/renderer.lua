@@ -38,7 +38,7 @@ local function render_menu(state)
         Padding .. "┌───────────────────────────────────────────────────┐",
         Padding .. "│ ( / ) - previous / next PR                        │",
         Padding .. "│                                                   │",
-        Padding .. "│ r - refresh all PRs      d - " ..toggle_message .." details         │",
+        Padding .. "│ r - refresh all PRs      d - " .. toggle_message .. " details         │",
         Padding .. "│ o - open PR in web                                │",
         Padding .. "│ e - edit PR body                                  │",
         Padding .. "└───────────────────────────────────────────────────┘",
@@ -84,12 +84,20 @@ end
 ---@param show_details boolean
 local function render_pr(buf_id, pr, show_details)
     local pr_id_marker = string.format("#%d", pr.id)
-    local start_index = 0
-    local end_index = 0
+    local start_index = 1
+    local end_index = 1
+
+    local icon = pr.reviewDecision == "REVIEW_REQUIRED" and "" or
+        pr.reviewDecision == "APPROVED" and "" or
+        " "
+
+
+    vim.api.nvim_buf_set_lines(buf_id, -1, -1, false, {
+        pr_id_marker .. Padding .. string.format("- %s %d %s", icon, pr.id, pr.title),
+    })
 
     if show_details then
         vim.api.nvim_buf_set_lines(buf_id, -1, -1, false, {
-            pr_id_marker .. Padding .. string.format("- %d %s", pr.id, pr.title),
             pr_id_marker .. Padding .. string.format("  %s [ %s / %s]", pr.author, pr.state, pr.reviewDecision),
             pr_id_marker .. Padding .. string.format("  %s (commits:%d +%d ~%d -%d)",
                 pr.baseRefName,
@@ -103,13 +111,6 @@ local function render_pr(buf_id, pr, show_details)
 
         start_index = 4
         end_index = 2
-    else
-        vim.api.nvim_buf_set_lines(buf_id, -1, -1, false, {
-            pr_id_marker .. Padding .. string.format("- %d %s", pr.id, pr.title),
-        })
-
-        start_index = 1
-        end_index = 1
     end
 
     local line_index = vim.api.nvim_buf_line_count(buf_id)
@@ -130,7 +131,7 @@ function M.render(state)
 
         vim.bo[buf_id].modifiable = true
         vim.opt_local.conceallevel = 3
-        vim.opt_local.concealcursor = "nv"
+        vim.opt_local.concealcursor = "nvic"
 
         clear_buffer(state)
         render_logo(state)
