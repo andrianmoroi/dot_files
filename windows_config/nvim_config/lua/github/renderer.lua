@@ -37,9 +37,9 @@ local function render_menu(state)
 
     vim.api.nvim_buf_set_lines(state.buf_id, -1, -1, false, {
         Padding .. "┌───────────────────────────────────────────────────┐",
-        Padding .. "│ ( / ) - previous / next PR                        │",
         Padding .. "│ "..repo_name_line.." │",
         Padding .. "│                                                   │",
+        Padding .. "│ ( / ) - previous / next PR                        │",
         Padding .. "│ r - refresh all PRs      d - " .. toggle_message .. " details         │",
         Padding .. "│ o - open PR in web                                │",
         Padding .. "│ e - edit PR body                                  │",

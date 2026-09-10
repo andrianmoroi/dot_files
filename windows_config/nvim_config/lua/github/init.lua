@@ -42,7 +42,7 @@ local function init_shortcuts()
         local number = line:match("^#(%d+)")
 
         vim.system({ "gh", "pr", "view", number, "-w" })
-        vim.print(number)
+        vim.print("Open PR #"..number.." in browser.")
     end, { buffer = true })
 
     vim.keymap.set("n", "e", function()
@@ -111,6 +111,6 @@ vim.keymap.set("n", "<leader>gh", function()
     end
 end, { desc = "Open github." })
 
-vim.keymap.set("n", "<leader>tt", ":restart<CR>", {})
+vim.keymap.set("n", "<leader>tt", ":restart!<CR>", {})
 
 return M
