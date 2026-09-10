@@ -1,6 +1,7 @@
 ---@class State
 ---@field buf_id number
 ---@field is_loading boolean
+---@field show_details boolean
 ---@field prs PR[]
 ---@field repo_name string
 

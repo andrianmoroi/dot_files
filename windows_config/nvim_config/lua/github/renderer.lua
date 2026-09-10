@@ -1,7 +1,13 @@
 local M = {}
 
 local Padding = "     "
-local ns = vim.api.nvim_create_namespace("dashboard")
+local ns = vim.api.nvim_create_namespace("github_dashboard")
+
+vim.api.nvim_set_hl(0, "GithubRepoName", {
+    fg = "#7aa89f", -- Bright pink text
+    -- bg = "#2e303f", -- Dark grey background
+    bold = true
+})
 
 require("github.types")
 
@@ -33,11 +39,12 @@ end
 ---@param state State
 local function render_menu(state)
     local toggle_message = state.show_details and "hide" or "show"
-    local repo_name_line = string.format("%-49s", "'"..state.repo_name.."'")
+    local repo_name_line = string.format("%-49s", state.repo_name)
+    local row_count = vim.api.nvim_buf_line_count(0)
 
     vim.api.nvim_buf_set_lines(state.buf_id, -1, -1, false, {
         Padding .. "┌───────────────────────────────────────────────────┐",
-        Padding .. "│ "..repo_name_line.." │",
+        Padding .. "│ " .. repo_name_line .. " │",
         Padding .. "│                                                   │",
         Padding .. "│ ( / ) - previous / next PR                        │",
         Padding .. "│ r - refresh all PRs      d - " .. toggle_message .. " details         │",
@@ -45,6 +52,12 @@ local function render_menu(state)
         Padding .. "│ e - edit PR body                                  │",
         Padding .. "└───────────────────────────────────────────────────┘",
     })
+
+    vim.api.nvim_buf_set_extmark(state.buf_id, ns, row_count + 1, #Padding + 2, {
+        end_col = #Padding + 2 + #repo_name_line,
+        hl_group = "GitHubRepoName"
+    })
+
 end
 
 ---Render loading spinner
