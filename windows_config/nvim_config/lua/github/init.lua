@@ -18,6 +18,7 @@ local function find_buf_by_name(name)
 end
 
 local function init_shortcuts()
+    flow.load_repo_name()
     flow.load_all_prs()
 
     vim.keymap.set("n", "r", function()

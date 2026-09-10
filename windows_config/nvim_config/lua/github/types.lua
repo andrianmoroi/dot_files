@@ -2,6 +2,7 @@
 ---@field buf_id number
 ---@field is_loading boolean
 ---@field prs PR[]
+---@field repo_name string
 
 ---@class PR
 ---@field id number

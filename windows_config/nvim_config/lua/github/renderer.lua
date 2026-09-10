@@ -33,10 +33,12 @@ end
 ---@param state State
 local function render_menu(state)
     local toggle_message = state.show_details and "hide" or "show"
+    local repo_name_line = string.format("%-49s", "'"..state.repo_name.."'")
 
     vim.api.nvim_buf_set_lines(state.buf_id, -1, -1, false, {
         Padding .. "┌───────────────────────────────────────────────────┐",
         Padding .. "│ ( / ) - previous / next PR                        │",
+        Padding .. "│ "..repo_name_line.." │",
         Padding .. "│                                                   │",
         Padding .. "│ r - refresh all PRs      d - " .. toggle_message .. " details         │",
         Padding .. "│ o - open PR in web                                │",

@@ -8,6 +8,7 @@ local state = {
     buf_id = -1,
     is_loading = false,
     show_details = true,
+    repo_name = "",
     prs = {}
 }
 
@@ -37,6 +38,15 @@ function M.update_prs(prs)
 
     state.prs = state_prs
     state.is_loading = false
+
+    renderer.render(state)
+end
+
+---Update repo name
+---@param name string
+function M.update_repo_name(name)
+    state.is_loading = false
+    state.repo_name = name
 
     renderer.render(state)
 end
