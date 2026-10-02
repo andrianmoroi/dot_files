@@ -12,7 +12,7 @@ vim.pack.add({
 }, { load = true })
 
 require("nvim-treesitter")
-    .install({ "c_sharp", "javascript", "typescript", "jsx", "tsx", "html", "css" })
+    .install({ "c_sharp", "razor", "javascript", "typescript", "jsx", "tsx", "html", "css" })
 
 function _G.js_indent_expr()
     local lnum = vim.v.lnum

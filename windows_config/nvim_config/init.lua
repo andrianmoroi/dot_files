@@ -267,7 +267,7 @@ map('n', "<leader>gp", require("git").toggle_preview_hunk, "Git toggle preview h
 map('n', "<leader>ms", require("myhttp").send, "Send HTTP Request.")
 map('v', "<leader>cj", ":!jq<CR>", "Format JSON.")
 map('n', "<leader>cj", ":.!jq<CR>", "Format JSON.")
-map('n', "<leader>cr", ":Roslyn restart<CR>", "Restart roslyn server.")
+map('n', "<leader>cr", ":lsp restart<CR>", "Restart lsp server.")
 
 ---@type Gitsigns.NavOpts
 local gitsign_hunk_config = {

@@ -1,22 +1,31 @@
+---@brief
+---
+--- https://github.com/dotnet/roslyn
+--
+-- The server can be installed as a dotnet tool (see https://github.com/dotnet/roslyn/blob/main/src/LanguageServer/Microsoft.CodeAnalysis.LanguageServer/README.md).
+-- This command will install the server in ~/.dotnet/tools:
+-- ```bash
+-- dotnet tool install --global roslyn-language-server --prerelease
+-- ```
+-- Alternatively, compile from source or download as nuget package.
+-- Go to `https://dev.azure.com/azure-public/vside/_artifacts/feed/vs-impl/NuGet/Microsoft.CodeAnalysis.LanguageServer.<platform>/overview`
+-- replace `<platform>` with one of the following `linux-x64`, `osx-x64`, `win-x64`, `neutral` (for more info on the download location see https://github.com/dotnet/roslyn/issues/71474#issuecomment-2177303207).
+-- Download and extract it (nuget's are zip files).
+-- - if you chose `neutral` nuget version, then you have to change the `cmd` like so:
+--   ```lua
+--   cmd = {
+--     'dotnet',
+--     '<my_folder>/Microsoft.CodeAnalysis.LanguageServer.dll',
+--     '--stdio',
+--   },
+--   ```
+--   where `<my_folder>` has to be the folder you extracted the nuget package to.
+-- - for all other platforms put the extracted folder to neovim's PATH (`vim.env.PATH`)
+
 local uv = vim.uv
 local fs = vim.fs
 
--------------------------------------------------------
---- Load roslyn.nvim package
--------------------------------------------------------
-
-vim.pack.add({
-    "https://github.com/seblyng/roslyn.nvim",
-}, { load = true })
-
-require("roslyn").setup({
-    silent = true,
-    filewatching = "roslyn"
-})
-
--------------------------------------------------------
---- Setup Roslyn
--------------------------------------------------------
+local group = vim.api.nvim_create_augroup('lspconfig.roslyn_ls', { clear = true })
 
 ---@param client vim.lsp.Client
 ---@param target string
@@ -40,85 +49,216 @@ local function on_init_project(client, project_files)
     })
 end
 
+---@param client vim.lsp.Client
+local function refresh_diagnostics(client)
+    local capabilities = vim
+        .iter(client.dynamic_capabilities.capabilities.diagnosticProvider or {})
+        :map(function(cap)
+            return cap.registerOptions.identifier
+        end)
+        :totable()
+
+    for buf, _ in pairs(client.attached_buffers) do
+        if vim.api.nvim_buf_is_loaded(buf) then
+            for _, cap in pairs(capabilities) do
+                client:request(vim.lsp.protocol.Methods.textDocument_diagnostic, {
+                    identifier = cap,
+                    textDocument = vim.lsp.util.make_text_document_params(buf),
+                }, nil, buf)
+            end
+        end
+    end
+end
+
 local function roslyn_handlers()
-    local result = {
+    return {
         ['workspace/projectInitializationComplete'] = function(_, _, ctx)
             vim.notify('Roslyn project initialization complete', vim.log.levels.INFO, { title = 'roslyn_ls' })
-
-            local buffers = vim.lsp.get_client_by_id(ctx.client_id).attached_buffers
             local client = assert(vim.lsp.get_client_by_id(ctx.client_id))
-
-            for buf, is_attached in pairs(buffers) do
-                if is_attached then
-                    client:request(vim.lsp.protocol.Methods.textDocument_diagnostic, {
-                        textDocument = vim.lsp.util.make_text_document_params(buf),
-                    }, nil, buf)
-
-                    -- delay to allow Roslyn to finish loading solution
-                    -- HACK: to load the diagnostics
-                    vim.defer_fn(function()
-                        vim.cmd("edit")
-                    end, 0)
-                end
-            end
-        end,
-        ['workspace/_roslyn_projectHasUnresolvedDependencies'] = function()
-            vim.notify('Detected missing dependencies. Run `dotnet restore` command.', vim.log.levels.ERROR, {
-                title = 'roslyn_ls',
-            })
+            refresh_diagnostics(client)
             return vim.NIL
         end,
-        ['workspace/_roslyn_projectNeedsRestore'] = function(_, result, ctx)
-            local client = assert(vim.lsp.get_client_by_id(ctx.client_id))
-
-            ---@diagnostic disable-next-line: param-type-mismatch
-            client:request('workspace/_roslyn_restore', result, function(err, response)
-                if err then
-                    vim.notify(err.message, vim.log.levels.ERROR, { title = 'roslyn_ls' })
-                end
-                if response then
-                    for _, v in ipairs(response) do
-                        vim.notify(v.message, vim.log.levels.INFO, { title = 'roslyn_ls' })
-                    end
-                end
-            end)
-
+        ['razor/provideDynamicFileInfo'] = function(_, _, _)
+            vim.notify(
+                'Razor is not supported.\nPlease use https://github.com/seblyng/roslyn.nvim',
+                vim.log.levels.WARN,
+                { title = 'roslyn_ls' }
+            )
             return vim.NIL
         end,
     }
-
-    return result
 end
 
-local code_analisys_path = vim.fs.joinpath(
-    os.getenv("MicrosoftCodeAnalysisLanguageServer"),
-    'Microsoft.CodeAnalysis.LanguageServer.dll')
+---@param bufname string
+---@return boolean
+local function is_decompiled(bufname)
+    local _, endpos = bufname:find('[/\\]MetadataAsSource[/\\]')
+    if endpos == nil then
+        return false
+    end
+    return vim.fn.finddir(bufname:sub(1, endpos), uv.os_tmpdir()) ~= ''
+end
 
+---@param client vim.lsp.Client
+---@param action table
+local function apply_action(client, action)
+    if action.edit then
+        vim.lsp.util.apply_workspace_edit(action.edit, client.offset_encoding)
+    end
+    if action.command then
+        client:exec_cmd(action.command)
+    end
+end
 
--- To install run:
--- Go to
--- https://dev.azure.com/azure-public/vside/_artifacts/feed/vs-impl/NuGet/Microsoft.CodeAnalysis.LanguageServer.<platform>/overview
--- replace <platform> with one of the following linux-x64, osx-x64, win-x64, neutral.
--- Download and extract it (nuget's are zip files).
+---@param client vim.lsp.Client
+---@param command table
+---@param bufnr integer
+local function handle_fix_all_action(client, command, bufnr)
+    local arg = command.arguments and command.arguments[1]
+    if type(arg) ~= 'table' then
+        vim.notify('roslyn_ls: invalid fixAllCodeAction arguments', vim.log.levels.ERROR)
+        return
+    end
 
----@type vim.lsp.Config
-vim.lsp.config['roslyn'] = {
+    local flavors = arg.FixAllFlavors
+    if type(flavors) ~= 'table' or vim.tbl_isempty(flavors) then
+        vim.notify('roslyn_ls: fixAllCodeAction has no FixAllFlavors', vim.log.levels.WARN)
+        return
+    end
+
+    vim.ui.select(flavors, {
+        prompt = 'Fix All Scope:',
+    }, function(chosen_scope)
+        if not chosen_scope then
+            return
+        end
+
+        client:request('codeAction/resolveFixAll', {
+            title = command.title,
+            data = arg,
+            scope = chosen_scope,
+        }, function(err, resolved)
+            if err then
+                vim.notify(
+                    'roslyn_ls: fixAllCodeAction resolve error: ' .. (err.message or tostring(err)),
+                    vim.log.levels.ERROR
+                )
+                return
+            end
+            if resolved then
+                apply_action(client, resolved)
+            end
+        end, bufnr)
+    end)
+end
+
+vim.lsp.enable('roslyn_ls', true)
+
+vim.lsp.config('roslyn_ls', {
     name = 'roslyn_ls',
-    offset_encoding = 'utf-8',
     cmd = {
-        'dotnet',
-        code_analisys_path,
-        '--logLevel=Warning',
+        'roslyn-language-server',
         '--stdio',
-        '--extensionLogDirectory=' .. vim.fs.dirname(vim.lsp.log.get_filename()),
     },
-    filetypes = { 'cs' },
+
+    cmd_env = {
+        -- Fixes LSP navigation in decompiled files for systems with symlinked TMPDIR (macOS)
+        TMPDIR = vim.env.TMPDIR and vim.env.TMPDIR ~= '' and vim.fn.resolve(vim.env.TMPDIR) or nil,
+    },
+
+    filetypes = { 'cs', 'razor' },
     handlers = roslyn_handlers(),
+
+    commands = {
+        ['roslyn.client.completionComplexEdit'] = function(command, ctx)
+            local client = assert(vim.lsp.get_client_by_id(ctx.client_id))
+            local args = command.arguments or {}
+            local uri, edit = args[1], args[2]
+
+            ---@diagnostic disable: undefined-field
+            if uri and edit and edit.newText and edit.range then
+                local workspace_edit = {
+                    changes = {
+                        [uri.uri] = {
+                            {
+                                range = edit.range,
+                                newText = edit.newText,
+                            },
+                        },
+                    },
+                }
+                vim.lsp.util.apply_workspace_edit(workspace_edit, client.offset_encoding)
+                ---@diagnostic enable: undefined-field
+            else
+                vim.notify('roslyn_ls: completionComplexEdit args not understood: ' .. vim.inspect(args),
+                    vim.log.levels.WARN)
+            end
+        end,
+
+        ['roslyn.client.nestedCodeAction'] = function(command, ctx)
+            local client = assert(vim.lsp.get_client_by_id(ctx.client_id))
+            local arg = command.arguments and command.arguments[1]
+
+            if type(arg) ~= 'table' then
+                vim.notify('roslyn_ls: invalid nestedCodeAction arguments', vim.log.levels.ERROR)
+                return
+            end
+
+            local function handle(action)
+                if not action then
+                    return
+                end
+
+                if action.data and not action.edit and not action.command then
+                    client:request('codeAction/resolve', action, function(err, resolved)
+                        if err then
+                            vim.notify(err.message or tostring(err), vim.log.levels.ERROR)
+                            return
+                        end
+                        if resolved then
+                            handle(resolved)
+                        end
+                    end, ctx.bufnr)
+                    return
+                end
+
+                local nested = vim.islist(action) and action or action.NestedCodeActions
+                if type(nested) ~= 'table' or vim.tbl_isempty(nested) then
+                    apply_action(client, action)
+                    return
+                end
+
+                if #nested == 1 then
+                    handle(nested[1])
+                    return
+                end
+
+                vim.ui.select(nested, {
+                    prompt = action.title or 'Select code action',
+                    format_item = function(item)
+                        return item.title or (item.command and item.command.title) or 'Unnamed action'
+                    end,
+                }, function(choice)
+                    if choice then
+                        handle(choice)
+                    end
+                end)
+            end
+
+            handle(arg)
+        end,
+
+        ['roslyn.client.fixAllCodeAction'] = function(command, ctx)
+            local client = assert(vim.lsp.get_client_by_id(ctx.client_id))
+            handle_fix_all_action(client, command, ctx.bufnr)
+        end,
+    },
+
     root_dir = function(bufnr, cb)
         local bufname = vim.api.nvim_buf_get_name(bufnr)
         -- don't try to find sln or csproj for files from libraries
         -- outside of the project
-        if not bufname:match('^' .. fs.joinpath('/tmp/MetadataAsSource/')) then
+        if not is_decompiled(bufname) then
             -- try find solutions root first
             local root_dir = fs.root(bufnr, function(fname, _)
                 return fname:match('%.sln[x]?$') ~= nil
@@ -133,6 +273,16 @@ vim.lsp.config['roslyn'] = {
 
             if root_dir then
                 cb(root_dir)
+            end
+        else
+            -- Decompiled code (example: "/tmp/MetadataAsSource/f2bfba/DecompilationMetadataAsSourceFileProvider/d5782a/Console.cs")
+            local prev_buf = vim.fn.bufnr('#')
+            local client = vim.lsp.get_clients({
+                name = 'roslyn_ls',
+                bufnr = prev_buf ~= 1 and prev_buf or nil,
+            })[1]
+            if client then
+                cb(client.config.root_dir)
             end
         end
     end,
@@ -156,6 +306,23 @@ vim.lsp.config['roslyn'] = {
             end
         end,
     },
+
+    on_attach = function(client, bufnr)
+        -- avoid duplicate autocmds for same buffer
+        if vim.api.nvim_get_autocmds({ buffer = bufnr, group = group })[1] then
+            return
+        end
+
+        vim.api.nvim_create_autocmd({ 'BufWritePost', 'InsertLeave' }, {
+            group = group,
+            buffer = bufnr,
+            callback = function()
+                refresh_diagnostics(client)
+            end,
+            desc = 'roslyn_ls: refresh diagnostics',
+        })
+    end,
+
     capabilities = {
         -- HACK: Doesn't show any diagnostics if we do not set this to true
         textDocument = {
@@ -168,14 +335,6 @@ vim.lsp.config['roslyn'] = {
         ['csharp|background_analysis'] = {
             dotnet_analyzer_diagnostics_scope = 'fullSolution',
             dotnet_compiler_diagnostics_scope = 'fullSolution',
-        },
-        ['csharp|code_lens'] = {
-            dotnet_enable_references_code_lens = true,
-        },
-        ['csharp|completion'] = {
-            dotnet_show_name_completion_suggestions = true,
-            dotnet_show_completion_items_from_unimported_namespaces = true,
-            dotnet_provide_regex_completions = true,
         },
         ['csharp|inlay_hints'] = {
             csharp_enable_inlay_hints_for_implicit_object_creation = true,
@@ -194,189 +353,14 @@ vim.lsp.config['roslyn'] = {
         ['csharp|symbol_search'] = {
             dotnet_search_reference_assemblies = true,
         },
+        ['csharp|completion'] = {
+            dotnet_show_name_completion_suggestions = true,
+            dotnet_show_completion_items_from_unimported_namespaces = true,
+            dotnet_provide_regex_completions = true,
+        },
+        ['csharp|code_lens'] = {
+            dotnet_enable_references_code_lens = true,
+        },
     },
-}
-
-vim.lsp.log.set_level(vim.log.levels.WARN)
-vim.lsp.enable("roslyn")
-
---------------------------------------------------------------------------------
---- Dotnet load errors and warnings from watch to QuickFixList
---------------------------------------------------------------------------------
-
-local function is_dir(path)
-    local stat = uv.fs_stat(path)
-
-    return stat and stat.type == "directory"
-end
-
-local function find_vs_folder(path)
-    local vs_path = path .. "\\.vs"
-
-    if is_dir(vs_path) then
-        return vs_path
-    end
-
-    local parent = path:match("^(.*)/[^/]+$")
-    if not parent or parent == path then
-        return nil
-    end
-
-    return find_vs_folder(parent)
-end
-
-local function load_erros_and_warnings_to_qfl(logfile)
-    local quickfix_items = {}
-
-    vim.fn.setqflist({}, 'r')
-
-    for line in io.lines(logfile) do
-        -- 1. Remove ANSI color codes
-        line = line:gsub("\27%[[%d;]*[A-Za-z]", "")
-    end
-
-    -- 2. Normalize Windows paths to forward slashes
-    vim.fn.setqflist({}, 'r')
-
-    for line in io.lines(logfile) do
-        -- 1. Remove ANSI color codes
-        line = line:gsub("\27%[[%d;]*[A-Za-z]", "")
-
-        -- 2. Normalize Windows paths to forward slashes
-        line = line:gsub("\\", "/")
-
-        -- 3. Match only lines you care about
-        -- Example: errors, warnings, exceptions
-        if line:match("error CS%d+") or line:match("warning CS%d+") or line:match("Exception") then
-            -- Try to parse file/line/col/message
-            local file, lnum, col, type, msg = line:match(
-                "([%w%p]+%.%w+)"    -- file path
-                .. "%s*[%(:]?%s*"   -- optional '(' or ':' after file
-                .. "(%d*)"          -- optional line number
-                .. ",?(%d*)[%)]?"   -- optional column number, optional ')'
-                .. "[:]?%s*"        -- optional ':' after line/col
-                .. "(%a+)%s*%w+[:]" -- type: warning / error
-                .. "(.*)%[?%w*%]?$" -- message
-            )
-
-            lnum = tonumber(lnum) or 0
-            col = tonumber(col) or 0
-            msg = msg or line
-
-            local qf_type = nil
-            if type == nil then
-
-            elseif type:lower():match("^error") then
-                qf_type = "E"
-            elseif type:lower():match("^warn") then
-                qf_type = "W"
-            else
-                qf_type = "I" -- info or unknown
-            end
-
-            table.insert(quickfix_items, {
-                filename = file or "",
-                lnum = lnum,
-                col = col,
-                text = msg:gsub("^%s+", ""):gsub("%s+$", ""),
-                type = qf_type
-            })
-        end
-    end
-
-    local function distinct_quickfix(items)
-        local seen = {}
-        local result = {}
-
-        for _, item in ipairs(items) do
-            -- Use a combination of filename, line, column, text, and type as the key
-            local key = string.format("%s|%d|%d|%s|%s",
-                item.filename or "",
-                item.lnum or 0,
-                item.col or 0,
-                item.text or "",
-                item.type or ""
-            )
-
-            if not seen[key] then
-                table.insert(result, item)
-                seen[key] = true
-            end
-        end
-
-        return result
-    end
-
-    -- Populate Neovim quickfix
-    vim.fn.setqflist({}, ' ', { title = 'Dotnet Watch', items = distinct_quickfix(quickfix_items) })
-    vim.cmd("copen")
-end
-
-
-vim.api.nvim_create_user_command("DotnetLoadErrors", function()
-    local current_path = vim.fn.getcwd()
-    local vs_path = find_vs_folder(current_path)
-
-    if vs_path then
-        local log_file_name = "dotnet_log_file.txt" -- vim.fn.getenv("DOTNET_LOG_FILE_NAME")
-        local log_file = vs_path .. "\\" .. log_file_name
-
-        load_erros_and_warnings_to_qfl(log_file)
-    else
-        vim.api.nvim_echo({ { "VS folder not found." } }, true, {})
-    end
-end, {})
-
-
-vim.api.nvim_create_autocmd("LspAttach", {
-    callback = function(args)
-        local client = vim.lsp.get_client_by_id(args.data.client_id)
-        local bufnr = args.buf
-
-        if client and (client.name == "roslyn" or client.name == "roslyn_ls") then
-            vim.api.nvim_create_autocmd("InsertCharPre", {
-                desc = "Roslyn: Trigger an auto insert on '/'.",
-                buffer = bufnr,
-                callback = function()
-                    local char = vim.v.char
-
-                    if char ~= "/" then
-                        return
-                    end
-
-                    local row, col = unpack(vim.api.nvim_win_get_cursor(0))
-                    row, col = row - 1, col + 1
-                    local uri = vim.uri_from_bufnr(bufnr)
-
-                    local params = {
-                        _vs_textDocument = { uri = uri },
-                        _vs_position = { line = row, character = col },
-                        _vs_ch = char,
-                        _vs_options = {
-                            tabSize = vim.bo[bufnr].tabstop,
-                            insertSpaces = vim.bo[bufnr].expandtab,
-                        },
-                    }
-
-                    -- NOTE: We should send textDocument/_vs_onAutoInsert request only after
-                    -- buffer has changed.
-                    vim.defer_fn(function()
-                        client:request(
-                        ---@diagnostic disable-next-line: param-type-mismatch
-                            "textDocument/_vs_onAutoInsert",
-                            params,
-                            function(err, result, _)
-                                if err or not result then
-                                    return
-                                end
-
-                                vim.snippet.expand(result._vs_textEdit.newText)
-                            end,
-                            bufnr
-                        )
-                    end, 1)
-                end,
-            })
-        end
-    end,
 })
+
