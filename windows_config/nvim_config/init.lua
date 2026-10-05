@@ -288,6 +288,13 @@ map('n', "<leader>gN", function() gitsings.nav_hunk("prev", gitsign_hunk_config)
 map({ 'n', 'v' }, "grx", ":LspTypescriptSourceAction<CR>", "Typescript specific actions.")
 
 
+map("n", "<leader>tr", ":restart!<CR>", "Restart neovim.")
+map("n", "<leader>tt", function ()
+    vim.cmd("terminal")
+    vim.cmd("startinsert")
+end, "Restart neovim.")
+
+
 -------------------------------------------------------
 --- Highlight yanked text
 -------------------------------------------------------

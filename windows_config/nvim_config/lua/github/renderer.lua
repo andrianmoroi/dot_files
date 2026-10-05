@@ -3,8 +3,8 @@ local M = {}
 local Padding = "     "
 local ns = vim.api.nvim_create_namespace("github_dashboard")
 
-vim.api.nvim_set_hl(0, "GithubLogo", {
-    fg = "#e6c384",
+vim.api.nvim_set_hl(0, "GithubDefault", {
+    fg = "#d7c384",
     bold = true,
     italic = true,
 })
@@ -44,7 +44,7 @@ local function render_logo(state)
     vim.api.nvim_buf_set_extmark(state.buf_id, ns, 1, 0, {
         end_row = row_count,
         hl_eol = true,
-        hl_group = "GithubLogo"
+        hl_group = "GithubDefault"
     })
 end
 
@@ -64,6 +64,14 @@ local function render_menu(state)
         Padding .. "│ o - open PR in web                                │",
         Padding .. "│ e - edit PR body                                  │",
         Padding .. "└───────────────────────────────────────────────────┘",
+    })
+
+    local end_count = vim.api.nvim_buf_line_count(0)
+
+    vim.api.nvim_buf_set_extmark(state.buf_id, ns, row_count, #Padding, {
+        end_row = end_count,
+        hl_eol = true,
+        hl_group = "GithubDefault"
     })
 
     vim.api.nvim_buf_set_extmark(state.buf_id, ns, row_count + 1, #Padding + 2, {

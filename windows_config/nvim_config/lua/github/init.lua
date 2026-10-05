@@ -111,6 +111,4 @@ vim.keymap.set("n", "<leader>gh", function()
     end
 end, { desc = "Open github." })
 
-vim.keymap.set("n", "<leader>tt", ":restart!<CR>", {})
-
 return M
