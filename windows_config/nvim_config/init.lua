@@ -292,8 +292,12 @@ map("n", "<leader>tr", ":restart!<CR>", "Restart neovim.")
 map("n", "<leader>tt", function ()
     vim.cmd("terminal")
     vim.cmd("startinsert")
-end, "Restart neovim.")
+end, "Open terminal.")
 
+map("n", "<leader>tl", function ()
+    vim.cmd("terminal lazygit.exe")
+    vim.cmd("startinsert")
+end, "Open lazygit..")
 
 -------------------------------------------------------
 --- Highlight yanked text
