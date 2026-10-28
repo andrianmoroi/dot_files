@@ -61,7 +61,7 @@ local function render_menu(state)
         Padding .. "│                                                   │",
         Padding .. "│ ( / ) - previous / next PR                        │",
         Padding .. "│ r - refresh all PRs            d - " .. toggle_message .. " details   │",
-        Padding .. "│ o - open PR in web                                │",
+        Padding .. "│ o - open PR in web             c - checkout PR    │",
         Padding .. "│ e - edit PR body                                  │",
         Padding .. "└───────────────────────────────────────────────────┘",
     })

@@ -45,6 +45,14 @@ local function init_shortcuts()
         vim.print("Open PR #"..number.." in browser.")
     end, { buffer = true })
 
+    vim.keymap.set("n", "c", function()
+        local line = vim.api.nvim_get_current_line()
+        local number = line:match("^#(%d+)")
+
+        vim.system({ "gh", "pr", "checkout", number })
+        vim.print("Checkout PR #"..number.." in current folder.")
+    end, { buffer = true })
+
     vim.keymap.set("n", "e", function()
         local line = vim.api.nvim_get_current_line()
         local number = line:match("^#(%d+)")
