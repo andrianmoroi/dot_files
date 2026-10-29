@@ -1,6 +1,27 @@
 -------------------------------------------------------
 --- TODOs
 -------------------------------------------------------
+---
+
+vim.api.nvim_create_user_command('DivideBy16', function()
+    local line = vim.fn.getline('.')
+    local col = vim.fn.col('.')
+
+    for pos, num, endpos in line:gmatch('()([%d.]+)()') do
+        if pos <= col and col <= endpos - 1 then
+            local value = tonumber(num)
+
+            if value then
+                local result = value / 16
+                -- Remove trailing zeros after decimal point
+                local formatted = string.format("%.10f", result):gsub('0+$', ''):gsub('%.$', '')
+                local new_line = line:sub(1, pos - 1) .. formatted .. "rem" .. line:sub(endpos)
+                vim.fn.setline('.', new_line)
+                return
+            end
+        end
+    end
+end, {})
 
 --- TODO[AM] split lsp config into multiple files
 
@@ -178,7 +199,7 @@ map({ 'x', 'v' }, "<leader>r", ":s/", "Replace.")
 
 map('i', "<S-Tab>", "<C-V><Tab>", "Insert tab character.")
 
-map('t', "<Esc><Esc>", "<C-\\><C-n>", "Exit terminal mode.")
+-- map('t', "<Esc><Esc>", "<C-\\><C-n>", "Exit terminal mode.")
 
 map({ 'n', 'x' }, "<leader>y", "\"+y", "Copy to clipboard.")
 map({ 'n', 'x' }, "<leader>p", "\"+p", "Paste from clipboard.")
